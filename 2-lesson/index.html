@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDP Junior - DRF CRUD usullari</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #f0f4f8; overflow: hidden; }
+    .font-mono, pre, code { font-family: 'Fira Code', monospace; }
+    .slider-window { width: 100%; height: calc(100vh - 80px); position: relative; overflow: hidden; }
+    .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform .7s cubic-bezier(0.65, 0, 0.35, 1); }
+    .slide { min-width: 100%; height: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 2rem 6rem 2rem; box-sizing:border-box; overflow-y:auto; overflow-x:hidden; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .pdp-logo-fixed { position: fixed; top: 15px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 12px; }
+    .pdp-logo-circle { width: 45px; height: 45px; background: #00D1D1; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .pdp-logo-circle div { width: 28px; height: 14px; background: #0F172A; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+    .copy-btn { position:absolute; top:14px; right:14px; z-index:5; }
+    .code-wrap { max-height: 440px; overflow:auto; }
+    .copy-toast {
+      position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+      background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+      font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+      pointer-events:none; transition: opacity .25s; z-index: 200;
+    }
+    .copy-toast.show { opacity: 1; }
+    .hljs { background: #111827 !important; border-radius: 1rem; padding: 1.25rem !important; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+  <div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+
+  <div class="pdp-logo-fixed">
+    <div class="pdp-logo-circle"><div><span class="text-[8px] text-[#00D1D1] font-bold mt-[-1px]">&gt;_</span></div></div>
+    <div class="flex flex-col line-none leading-none"><span class="text-pdp-dark font-black text-xl tracking-tighter leading-none">PDP</span><span class="text-pdp-cyan font-bold text-sm tracking-tight leading-none">Junior</span></div>
+  </div>
+
+  <header class="h-[80px] w-full flex items-center justify-end px-12 bg-white/80 backdrop-blur-md z-50 shrink-0 border-b border-gray-100 shadow-sm">
+    <div class="flex gap-4 items-center">
+      <button class="w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:border-django-light hover:text-django-light flex items-center justify-center transition-all" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+      <span class="text-sm font-bold text-gray-500 font-mono" id="slide-counter">1 / 14</span>
+      <button class="w-10 h-10 rounded-full bg-django-light text-white shadow-lg flex items-center justify-center hover:bg-[#3ca47d] transition-all" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </header>
+
+  <main class="slider-window" id="touchArea">
+    <div class="slides-wrapper" id="slidesWrapper">
+
+
+      <section class="slide bg-slate-900 text-white relative">
+        <div class="max-w-5xl text-center relative z-10">
+          <div class="inline-block mb-6 relative z-10">
+            <i class="fab fa-python text-8xl text-django-light animate-float mr-4"></i>
+            <i class="fas fa-code text-7xl text-front-blue animate-float" style="animation-delay: 1s;"></i>
+          </div>
+          <span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">DRF CRUD</span>
+          <h1 class="text-5xl md:text-7xl font-black text-white tracking-tighter mb-4">4 xil usulda <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light to-front-blue">CRUD yozish</span></h1>
+          <p class="text-xl text-gray-400 font-medium mt-6">APIView, alohida GenericAPIView’lar, ListCreateAPIView + RetrieveUpdateDestroyAPIView va ModelViewSet</p>
+          <div class="mt-8 inline-flex items-center gap-3 bg-white/10 border border-white/10 rounded-full px-5 py-3 text-sm font-bold">
+            <i class="fas fa-layer-group text-django-light"></i>
+            Shu sahifa siz yuborgan index dizayni asosida qayta tuzildi
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-[#F8FAFC]">
+        <div class="max-w-6xl w-full">
+          <h2 class="text-4xl font-black mb-3 text-pdp-dark text-center">Bugun nimani ko‘ramiz?</h2>
+          <p class="text-gray-500 text-center mb-10 max-w-3xl mx-auto">Oldingi yozgan kodlaringizni endi sayt ichida dars ko‘rinishida, bir xil ketma-ketlikda tushuntiramiz. Har bir bo‘limda qanday ishlashi, qachon ishlatish va kod namunasi bor.</p>
+          <div class="grid md:grid-cols-4 gap-5">
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center mx-auto mb-4"><i class="fas fa-hand text-xl"></i></div>
+              <div class="font-black text-pdp-dark">1. APIView</div>
+              <p class="text-sm text-gray-500 mt-2">Hammasi qo‘lda yoziladi</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-django-light text-white flex items-center justify-center mx-auto mb-4"><i class="fas fa-list text-xl"></i></div>
+              <div class="font-black text-pdp-dark">2. List / Create / Retrieve...</div>
+              <p class="text-sm text-gray-500 mt-2">Har amal alohida class</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-front-blue text-white flex items-center justify-center mx-auto mb-4"><i class="fas fa-compress text-xl"></i></div>
+              <div class="font-black text-pdp-dark">3. ListCreate + RUD</div>
+              <p class="text-sm text-gray-500 mt-2">Eng qulay generic variant</p>
+            </div>
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center mx-auto mb-4"><i class="fas fa-rocket text-xl"></i></div>
+              <div class="font-black text-pdp-dark">4. ModelViewSet</div>
+              <p class="text-sm text-gray-500 mt-2">Eng tez va kuchli usul</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+        <div class="w-full max-w-6xl mx-auto">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-cubes"></i> Boshlanishdan oldin</div>
+            <h2 class="text-4xl font-black text-pdp-dark">Student modeli va Serializer hammaga umumiy</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Qaysi view turini ishlatmaylik, odatda <b>Student modeli</b> va <b>StudentSerializer</b> bir xil bo‘ladi. Farq asosan view va url yozilishida bo‘ladi.</p>
+          </div>
+          <div class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('commonModel')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">models.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="commonModel">from django.db import models
+
+class Student(models.Model):
+    full_name = models.CharField(max_length=150)
+    age = models.PositiveIntegerField()
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=20)
+    course = models.CharField(max_length=100)
+    address = models.TextField()
+    enrolled_at = models.DateField()
+
+    def __str__(self):
+        return self.full_name</code></pre></div>
+            </div>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('commonSerializer')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">serializers.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="commonSerializer">from rest_framework import serializers
+from .models import Student
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'full_name', 'age', 'email', 'phone_number', 'course', 'address', 'enrolled_at']</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+        <div class="w-full max-w-6xl mx-auto space-y-8">
+          <div class="text-center">
+            <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-hand"></i> 1-usul</div>
+            <h2 class="text-4xl font-black text-pdp-dark">APIView bilan CRUD</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng fundamental usul. <b>get</b>, <b>post</b>, <b>put</b>, <b>patch</b>, <b>delete</b> metodlarini o‘zingiz yozasiz. O‘rganish uchun juda foydali.</p>
+          </div>
+          <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
+            <div class="space-y-4">
+              <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6">
+                <div class="text-sm uppercase tracking-widest text-django-light font-black mb-2">Qanday ishlaydi?</div>
+                <ul class="space-y-3 text-sm text-gray-700 font-medium">
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> List va create uchun bitta class yoziladi</li>
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> Detail, update, delete uchun alohida class yoziladi</li>
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> Xatoliklarni ham qo‘lda boshqarasiz</li>
+                </ul>
+              </div>
+              <div class="bg-blue-50 rounded-3xl border border-blue-100 shadow-sm p-6">
+                <div class="font-black text-pdp-dark text-lg mb-2">Qachon ishlatiladi?</div>
+                <p class="text-sm text-gray-600">DRF ichki mexanizmini tushunish uchun, custom logika ko‘p bo‘lsa yoki CRUD ni to‘liq nazorat qilish kerak bo‘lsa.</p>
+              </div>
+            </div>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('apiViewCrud')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="apiViewCrud">from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student
+from .serializers import StudentSerializer
+
+class StudentListCreateAPIView(APIView):
+    def get(self, request):
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class StudentDetailAPIView(APIView):
+    def get_object(self, pk):
+        try:
+            return Student.objects.get(pk=pk)
+        except Student.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        student = self.get_object(pk)
+        if not student:
+            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = StudentSerializer(student)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        student = self.get_object(pk)
+        if not student:
+            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = StudentSerializer(student, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk):
+        student = self.get_object(pk)
+        if not student:
+            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = StudentSerializer(student, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        student = self.get_object(pk)
+        if not student:
+            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+        student.delete()
+        return Response({"message": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-white">
+        <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-start">
+          <div>
+            <h2 class="text-4xl font-black text-pdp-dark mb-4">APIView uchun URL</h2>
+            <p class="text-gray-500 mb-6">Bu yerda list/create bitta yo‘lda, detail/update/delete esa <code class="font-mono text-sm bg-slate-100 px-2 py-1 rounded">pk</code> bilan ishlaydi.</p>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('apiViewUrls')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">urls.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="apiViewUrls">from django.urls import path
+from .views import StudentListCreateAPIView, StudentDetailAPIView
+
+urlpatterns = [
+    path('', StudentListCreateAPIView.as_view(), name='student-list-create'),
+    path('&lt;int:pk&gt;/', StudentDetailAPIView.as_view(), name='student-detail'),
+]</code></pre></div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-green-50 border border-green-100 rounded-3xl p-6">
+              <div class="font-black text-pdp-dark text-xl mb-3">Endpointlar</div>
+              <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                <li><span class="font-black text-green-600">GET</span> localhost:8000/ → hamma studentlar</li>
+                <li><span class="font-black text-blue-600">POST</span> localhost:8000/ → yangi student</li>
+                <li><span class="font-black text-purple-600">GET</span> localhost:8000/1/ → bitta student</li>
+                <li><span class="font-black text-orange-600">PUT/PATCH</span> localhost:8000/1/ → yangilash</li>
+                <li><span class="font-black text-red-600">DELETE</span> localhost:8000/1/ → o‘chirish</li>
+              </ul>
+            </div>
+            <div class="bg-slate-900 rounded-3xl p-6 text-white">
+              <div class="font-black text-django-light mb-2">Muhim eslatma</div>
+              <p class="text-sm text-gray-300">APIView ko‘p kod yozdiradi, lekin DRF ni eng chuqur tushuntirib beradi. Shuning uchun odatda birinchi shu usul o‘rganiladi.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+        <div class="w-full max-w-6xl mx-auto space-y-8">
+          <div class="text-center">
+            <div class="inline-flex items-center gap-3 bg-django-light text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-list"></i> 2-usul</div>
+            <h2 class="text-4xl font-black text-pdp-dark">Alohida Generic Views bilan CRUD</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu usulda har bir amal uchun alohida class yoziladi: list, create, retrieve, update, destroy. Kod tozaroq bo‘ladi, lekin class soni ko‘payadi.</p>
+          </div>
+          <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
+            <div class="space-y-4">
+              <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6">
+                <div class="text-sm uppercase tracking-widest text-django-light font-black mb-2">Afzalligi</div>
+                <ul class="space-y-3 text-sm text-gray-700 font-medium">
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> Queryset va serializer qisqa yoziladi</li>
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> Har class faqat bitta ish qiladi</li>
+                  <li><i class="fas fa-check-circle text-django-light mr-2"></i> Tushunish oson</li>
+                </ul>
+              </div>
+              <div class="bg-indigo-50 rounded-3xl border border-indigo-100 shadow-sm p-6">
+                <div class="font-black text-pdp-dark text-lg mb-2">Kamchiligi</div>
+                <p class="text-sm text-gray-600">CRUD to‘liq bo‘lsa 5 ta class bo‘lib ketadi. Kichik loyiha uchun bazan ortiqcha uzunlik paydo qiladi.</p>
+              </div>
+            </div>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('separateGenericViews')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="separateGenericViews">from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+)
+from .models import Student
+from .serializers import StudentSerializer
+
+class StudentListAPIView(ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentCreateAPIView(CreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentRetrieveAPIView(RetrieveAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentUpdateAPIView(UpdateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentDestroyAPIView(DestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-white">
+        <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-start">
+          <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+            <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('separateGenericUrls')"><i class="fas fa-copy"></i></button>
+            <div class="px-5 py-3 border-b border-slate-800 text-white font-black">urls.py</div>
+            <div class="p-4 code-wrap"><pre><code class="language-python" id="separateGenericUrls">from django.urls import path
+from .views import (
+    StudentListAPIView,
+    StudentCreateAPIView,
+    StudentRetrieveAPIView,
+    StudentUpdateAPIView,
+    StudentDestroyAPIView,
+)
+
+urlpatterns = [
+    path('', StudentListAPIView.as_view(), name='student-list'),
+    path('create/', StudentCreateAPIView.as_view(), name='student-create'),
+    path('&lt;int:pk&gt;/', StudentRetrieveAPIView.as_view(), name='student-retrieve'),
+    path('&lt;int:pk&gt;/update/', StudentUpdateAPIView.as_view(), name='student-update'),
+    path('&lt;int:pk&gt;/delete/', StudentDestroyAPIView.as_view(), name='student-delete'),
+]</code></pre></div>
+          </div>
+          <div class="space-y-4">
+            <h2 class="text-4xl font-black text-pdp-dark">Bu usulda yo‘llar qanday?</h2>
+            <div class="bg-blue-50 border border-blue-100 rounded-3xl p-6">
+              <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                <li><span class="font-black text-green-600">GET</span> localhost:8000/</li>
+                <li><span class="font-black text-blue-600">POST</span> localhost:8000/create/</li>
+                <li><span class="font-black text-purple-600">GET</span> localhost:8000/1/</li>
+                <li><span class="font-black text-orange-600">PUT/PATCH</span> localhost:8000/1/update/</li>
+                <li><span class="font-black text-red-600">DELETE</span> localhost:8000/1/delete/</li>
+              </ul>
+            </div>
+            <div class="bg-slate-900 rounded-3xl p-6 text-white">
+              <div class="font-black text-django-light mb-2">Qisqa xulosa</div>
+              <p class="text-sm text-gray-300">Agar har endpointni alohida boshqarmoqchi bo‘lsangiz, shu usul yaxshi. Lekin ko‘p class chiqib ketadi.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+        <div class="w-full max-w-6xl mx-auto space-y-8">
+          <div class="text-center">
+            <div class="inline-flex items-center gap-3 bg-front-blue text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-compress"></i> 3-usul</div>
+            <h2 class="text-4xl font-black text-pdp-dark">ListCreateAPIView + RetrieveUpdateDestroyAPIView</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng ko‘p ishlatiladigan generics usullardan biri. CRUD ni juda ixcham qiladi. Faqat 2 ta class bilan hammasi chiqadi.</p>
+          </div>
+          <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
+            <div class="space-y-4">
+              <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6">
+                <div class="text-sm uppercase tracking-widest text-front-blue font-black mb-2">Nega qulay?</div>
+                <ul class="space-y-3 text-sm text-gray-700 font-medium">
+                  <li><i class="fas fa-check-circle text-front-blue mr-2"></i> List va create bitta classda</li>
+                  <li><i class="fas fa-check-circle text-front-blue mr-2"></i> Retrieve, update, delete bitta classda</li>
+                  <li><i class="fas fa-check-circle text-front-blue mr-2"></i> URL ham sodda bo‘ladi</li>
+                </ul>
+              </div>
+              <div class="bg-cyan-50 rounded-3xl border border-cyan-100 shadow-sm p-6">
+                <div class="font-black text-pdp-dark text-lg mb-2">Real loyihada</div>
+                <p class="text-sm text-gray-600">Ko‘p backendchilar oddiy CRUD endpointlar uchun aynan shu yozilishdan foydalanadi.</p>
+              </div>
+            </div>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('combinedGenericViews')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="combinedGenericViews">from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .models import Student
+from .serializers import StudentSerializer
+
+class StudentListCreateAPIView(ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer</code></pre></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-white">
+        <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-start">
+          <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+            <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('combinedGenericUrls')"><i class="fas fa-copy"></i></button>
+            <div class="px-5 py-3 border-b border-slate-800 text-white font-black">urls.py</div>
+            <div class="p-4 code-wrap"><pre><code class="language-python" id="combinedGenericUrls">from django.urls import path
+from .views import StudentListCreateAPIView, StudentRetrieveUpdateDestroyAPIView
+
+urlpatterns = [
+    path('', StudentListCreateAPIView.as_view(), name='book-list-create'),
+    path('&lt;int:pk&gt;/', StudentRetrieveUpdateDestroyAPIView.as_view(), name='book-rud'),
+]</code></pre></div>
+          </div>
+          <div class="space-y-4">
+            <h2 class="text-4xl font-black text-pdp-dark">Endpointlar juda toza</h2>
+            <div class="bg-cyan-50 border border-cyan-100 rounded-3xl p-6">
+              <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                <li><span class="font-black text-green-600">GET</span> localhost:8000/ → list</li>
+                <li><span class="font-black text-blue-600">POST</span> localhost:8000/ → create</li>
+                <li><span class="font-black text-purple-600">GET</span> localhost:8000/1/ → retrieve</li>
+                <li><span class="font-black text-orange-600">PUT/PATCH</span> localhost:8000/1/ → update</li>
+                <li><span class="font-black text-red-600">DELETE</span> localhost:8000/1/ → destroy</li>
+              </ul>
+            </div>
+            <div class="bg-slate-900 rounded-3xl p-6 text-white">
+              <div class="font-black text-front-blue mb-2">Eslab qoling</div>
+              <p class="text-sm text-gray-300">CRUD kerak, lekin ViewSet ishlatishni hozircha xohlamasangiz — eng yaxshi oraliq variant shu.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+        <div class="w-full max-w-6xl mx-auto space-y-8">
+          <div class="text-center">
+            <div class="inline-flex items-center gap-3 bg-purple-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-rocket"></i> 4-usul</div>
+            <h2 class="text-4xl font-black text-pdp-dark">ModelViewSet bilan CRUD</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng qisqa va kuchli variant. DRF sizga list, create, retrieve, update, partial_update, destroy metodlarini tayyor beradi. Router esa URL’larni avtomatik ochadi.</p>
+          </div>
+          <div class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('modelViewSetCode')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="modelViewSetCode">from rest_framework.viewsets import ModelViewSet
+from .models import Student
+from .serializers import StudentSerializer
+
+class StudentModelViewSet(ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer</code></pre></div>
+            </div>
+            <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('modelViewSetUrls')"><i class="fas fa-copy"></i></button>
+              <div class="px-5 py-3 border-b border-slate-800 text-white font-black">urls.py</div>
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="modelViewSetUrls">from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import StudentModelViewSet
+
+router = DefaultRouter()
+router.register('', StudentModelViewSet, basename='student')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]</code></pre></div>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-3xl border border-gray-200 shadow-lg p-6">
+              <div class="font-black text-pdp-dark text-xl mb-3">Afzalliklari</div>
+              <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                <li><i class="fas fa-check-circle text-purple-600 mr-2"></i> Eng kam kod</li>
+                <li><i class="fas fa-check-circle text-purple-600 mr-2"></i> Router avtomatik URL yaratadi</li>
+                <li><i class="fas fa-check-circle text-purple-600 mr-2"></i> Katta loyihalarda juda mashhur</li>
+              </ul>
+            </div>
+            <div class="bg-purple-50 rounded-3xl border border-purple-100 shadow-sm p-6">
+              <div class="font-black text-pdp-dark text-xl mb-3">Endpointlar</div>
+              <ul class="text-sm text-gray-700 space-y-3 font-medium">
+                <li><span class="font-black text-green-600">GET</span> localhost:8000/</li>
+                <li><span class="font-black text-blue-600">POST</span> localhost:8000/</li>
+                <li><span class="font-black text-purple-600">GET</span> localhost:8000/1/</li>
+                <li><span class="font-black text-orange-600">PUT/PATCH</span> localhost:8000/1/</li>
+                <li><span class="font-black text-red-600">DELETE</span> localhost:8000/1/</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-white">
+        <div class="max-w-6xl w-full">
+          <h2 class="text-4xl font-black text-pdp-dark mb-8 text-center">Qaysi birini qachon tanlash kerak?</h2>
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-xl">
+              <div class="text-django-light font-black mb-2">APIView</div>
+              <div class="text-sm text-gray-300">DRF ni chuqur o‘rganish uchun</div>
+            </div>
+            <div class="bg-green-50 border border-green-100 rounded-3xl p-6 shadow-sm">
+              <div class="text-django-green font-black mb-2">Separate Generics</div>
+              <div class="text-sm text-gray-700">Har endpointni alohida ko‘rmoqchi bo‘lsangiz</div>
+            </div>
+            <div class="bg-cyan-50 border border-cyan-100 rounded-3xl p-6 shadow-sm">
+              <div class="text-front-blue font-black mb-2">ListCreate + RUD</div>
+              <div class="text-sm text-gray-700">Amaliy CRUD uchun juda qulay</div>
+            </div>
+            <div class="bg-purple-50 border border-purple-100 rounded-3xl p-6 shadow-sm">
+              <div class="text-purple-700 font-black mb-2">ModelViewSet</div>
+              <div class="text-sm text-gray-700">Eng tez va professional variant</div>
+            </div>
+          </div>
+          <div class="mt-8 bg-[#F8FAFC] border border-gray-200 rounded-3xl p-6 text-center">
+            <div class="text-lg font-black text-pdp-dark">Tavsiya etilgan o‘rganish ketma-ketligi</div>
+            <p class="text-gray-600 mt-2">APIView → Separate Generic Views → ListCreateAPIView + RetrieveUpdateDestroyAPIView → ModelViewSet</p>
+          </div>
+        </div>
+      </section>
+
+
+
+
+      <section class="slide bg-[#F8FAFC]" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 2.5rem;">
+        <div class="max-w-4xl w-full">
+          <div class="text-center mb-5">
+            <div class="inline-flex items-center gap-3 bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-black mb-3 shadow-sm text-sm">
+              <i class="fas fa-briefcase"></i> MUSTAQIL ISH
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-pdp-dark">Book mustaqil ish</h2>
+            <p class="text-gray-500 max-w-2xl mx-auto mt-2 text-sm">
+              Homework sahifasidagidek, bu safar <b>Book</b> modeli uchun mustaqil CRUD API tayyorlang.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-[24px] border border-gray-200 shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-600 to-front-blue text-white px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+                  <i class="fas fa-book"></i>
+                </div>
+                <div>
+                  <div class="text-xs uppercase tracking-widest font-bold text-white/80">Topshiriq</div>
+                  <h3 class="text-xl font-black">Book CRUD API</h3>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5">
+              <div class="grid md:grid-cols-3 gap-3 mb-4">
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">title</div>
+                  <div class="text-[11px] text-gray-500 mt-1">kitob nomi</div>
+                </div>
+                <div class="bg-green-50 border border-green-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">author</div>
+                  <div class="text-[11px] text-gray-500 mt-1">muallif ismi</div>
+                </div>
+                <div class="bg-purple-50 border border-purple-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">price</div>
+                  <div class="text-[11px] text-gray-500 mt-1">kitob narxi</div>
+                </div>
+                <div class="bg-orange-50 border border-orange-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">pages</div>
+                  <div class="text-[11px] text-gray-500 mt-1">sahifalar soni</div>
+                </div>
+                <div class="bg-cyan-50 border border-cyan-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">genre</div>
+                  <div class="text-[11px] text-gray-500 mt-1">janri</div>
+                </div>
+                <div class="bg-pink-50 border border-pink-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">published_at</div>
+                  <div class="text-[11px] text-gray-500 mt-1">nashr qilingan sana</div>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-3 text-center md:col-span-2">
+                  <div class="font-black text-pdp-dark text-sm">description</div>
+                  <div class="text-[11px] text-gray-500 mt-1">qisqacha tavsif</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">is_available</div>
+                  <div class="text-[11px] text-gray-500 mt-1">mavjudlik holati</div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">1. Book model yarating</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">2. Serializer yozing</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">3. 4 xil usuldan bittasida view yozing</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">4. URL yoki Router orqali endpoint oching</div>
+              </div>
+
+              <div class="mt-4 bg-[#0F172A] text-white rounded-2xl p-4 text-center">
+                <div class="text-xs uppercase tracking-widest text-front-blue font-black mb-2">Natija</div>
+                <div class="text-lg md:text-xl font-black">localhost:8000/</div>
+                <div class="text-xs text-gray-300 mt-2">
+                  Shu endpointda GET, POST, PUT, PATCH va DELETE ishlashi kerak.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
+      <section class="slide bg-[#F8FAFC]" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 2.5rem;">
+        <div class="max-w-4xl w-full">
+          <div class="text-center mb-5">
+            <div class="inline-flex items-center gap-3 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full font-black mb-3 shadow-sm text-sm">
+              <i class="fas fa-box-open"></i> HOMEWORK
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-pdp-dark">Uyga vazifa</h2>
+            <p class="text-gray-500 max-w-2xl mx-auto mt-2 text-sm">
+              Endi uyga vazifada <b>Product</b> modeli bilan CRUD API yozing.
+            </p>
+          </div>
+
+          <div class="bg-white rounded-[24px] border border-gray-200 shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-django-light to-front-blue text-white px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+                  <i class="fas fa-box"></i>
+                </div>
+                <div>
+                  <div class="text-xs uppercase tracking-widest font-bold text-white/80">Topshiriq</div>
+                  <h3 class="text-xl font-black">Product CRUD API</h3>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-5">
+              <div class="grid md:grid-cols-3 gap-3 mb-4">
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">name</div>
+                  <div class="text-[11px] text-gray-500 mt-1">mahsulot nomi</div>
+                </div>
+                <div class="bg-green-50 border border-green-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">price</div>
+                  <div class="text-[11px] text-gray-500 mt-1">narxi</div>
+                </div>
+                <div class="bg-purple-50 border border-purple-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">quantity</div>
+                  <div class="text-[11px] text-gray-500 mt-1">soni</div>
+                </div>
+                <div class="bg-orange-50 border border-orange-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">category</div>
+                  <div class="text-[11px] text-gray-500 mt-1">kategoriyasi</div>
+                </div>
+                <div class="bg-cyan-50 border border-cyan-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">brand</div>
+                  <div class="text-[11px] text-gray-500 mt-1">brendi</div>
+                </div>
+                <div class="bg-pink-50 border border-pink-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">description</div>
+                  <div class="text-[11px] text-gray-500 mt-1">qisqacha tavsifi</div>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-3 text-center md:col-span-2">
+                  <div class="font-black text-pdp-dark text-sm">created_at</div>
+                  <div class="text-[11px] text-gray-500 mt-1">qo‘shilgan sana</div>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 text-center">
+                  <div class="font-black text-pdp-dark text-sm">is_available</div>
+                  <div class="text-[11px] text-gray-500 mt-1">sotuvda bor yoki yo‘qligi</div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">1. Product model yarating</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">2. Serializer yozing</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">3. 4 xil usuldan bittasida view yozing</div>
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">4. URL yoki Router orqali endpoint oching</div>
+              </div>
+
+              <div class="mt-4 bg-[#0F172A] text-white rounded-2xl p-4 text-center">
+                <div class="text-xs uppercase tracking-widest text-django-light font-black mb-2">Natija</div>
+                <div class="text-lg md:text-xl font-black">localhost:8000/</div>
+                <div class="text-xs text-gray-300 mt-2">
+                  Shu endpointda GET, POST, PUT, PATCH va DELETE ishlashi kerak.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section class="slide bg-slate-900 text-white relative overflow-hidden">
+        <div class="max-w-4xl w-full text-center relative z-10">
+          <div class="mx-auto mb-8 relative w-28 h-28 flex items-center justify-center">
+            <div class="w-24 h-24 rounded-full bg-django-light flex items-center justify-center shadow-[0_0_40px_rgba(68,183,139,0.2)]">
+              <i class="fas fa-check text-5xl text-pdp-dark"></i>
+            </div>
+          </div>
+          <h1 class="text-5xl md:text-6xl font-black tracking-tighter mb-6 uppercase leading-none">Tayyor</h1>
+          <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">Endi sizda 4 xil CRUD usulini bitta dars ko‘rinishida tushuntiradigan tayyor HTML sahifa bor.</p>
+          <button id="btn-restart" class="mt-10 bg-white text-pdp-dark px-10 py-4 rounded-full font-black uppercase tracking-widest hover:bg-django-light hover:text-white hover:scale-105 transition-all shadow-2xl group">
+            <i class="fas fa-rotate-right mr-3 group-hover:-rotate-180 transition-transform duration-500"></i>
+            Boshiga qaytish
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('copyToast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1200);
+      });
+    }
+
+    (function() {
+      let currentSlide = 0;
+      const wrapper = document.getElementById('slidesWrapper');
+      const counter = document.getElementById('slide-counter');
+      const slides = document.querySelectorAll('.slide');
+      const total = slides.length;
+
+      function update() {
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+        counter.innerText = `${currentSlide + 1} / ${total}`;
+        const currentSlideEl = slides[currentSlide];
+        currentSlideEl.querySelectorAll('h1, h2, h3, p, .grid > div, .space-y-4 > div, .space-y-8 > div').forEach((el, i) => {
+          el.style.opacity = '0';
+          el.style.animation = 'none';
+          setTimeout(() => { el.style.animation = `slideInUp 0.5s ease-out ${i * 0.05}s forwards`; }, 30);
+        });
+      }
+
+      function nextSlide() { if (currentSlide < total - 1) { currentSlide++; update(); } }
+      function prevSlide() { if (currentSlide > 0) { currentSlide--; update(); } }
+
+      document.getElementById('btn-next').addEventListener('click', nextSlide);
+      document.getElementById('btn-prev').addEventListener('click', prevSlide);
+      document.getElementById('btn-restart').addEventListener('click', () => { currentSlide = 0; update(); });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+      });
+
+      let touchStartX = 0;
+      const touchArea = document.getElementById('touchArea');
+      touchArea.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+      touchArea.addEventListener('touchend', e => {
+        let touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) nextSlide();
+        if (touchEndX - touchStartX > 50) prevSlide();
+      }, {passive: true});
+
+      if (window.hljs) hljs.highlightAll();
+      update();
+    })();
+  </script>
+</body>
+</html>

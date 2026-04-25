@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>12-modul darslari</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --card: rgba(255,255,255,0.06);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --secondary: #22c55e;
+      --border: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #020617, #0f172a 40%, #111827);
+      color: var(--text);
+    }
+    .container {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+    .hero {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+    h1 { margin: 0 0 14px; font-size: clamp(28px, 5vw, 44px); }
+    .hero p { margin: 0; color: var(--muted); font-size: 18px; line-height: 1.6; }
+    .stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      min-width: 150px;
+    }
+    .stat strong { display:block; font-size: 24px; margin-bottom: 6px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .badge {
+      display: inline-block;
+      width: fit-content;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(56,189,248,0.15);
+      color: #7dd3fc;
+      border: 1px solid rgba(56,189,248,0.35);
+    }
+    .card h2 { margin: 0; font-size: 22px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto; }
+    .btn {
+      text-decoration: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); opacity: .95; }
+    .btn.primary { background: var(--primary); color: #082f49; }
+    .btn.secondary { background: var(--secondary); color: #052e16; }
+    footer { margin-top: 26px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>12-modul bosh sahifasi</h1>
+      <p>Bu sahifa orqali 12-modul ichidagi lesson va mentor qo‘llanmalariga bitta joydan o‘tishingiz mumkin.</p>
+      <div class="stats">
+        <div class="stat"><strong>19</strong><span>Jami bo‘limlar</span></div>
+        <div class="stat"><strong>7</strong><span>Oddiy lesson</span></div>
+        <div class="stat"><strong>12</strong><span>Mentor lesson</span></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+      <div class="badge">1-dars</div>
+      <h2>1-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="1-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="1-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">2-dars</div>
+      <h2>2-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="2-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="2-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">3-dars</div>
+      <h2>3-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="3-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="3-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">4-dars</div>
+      <h2>4-dars</h2>
+      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+      <div class="actions"><a class="btn secondary" href="4-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">5-dars</div>
+      <h2>5-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="5-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="5-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">6-dars</div>
+      <h2>6-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="6-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="6-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">7-dars</div>
+      <h2>7-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="7-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="7-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">8-dars</div>
+      <h2>8-dars</h2>
+      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+      <div class="actions"><a class="btn primary" href="8-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="8-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">9-dars</div>
+      <h2>9-dars</h2>
+      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+      <div class="actions"><a class="btn secondary" href="9-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">10-dars</div>
+      <h2>10-dars</h2>
+      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+      <div class="actions"><a class="btn secondary" href="10-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">11-dars</div>
+      <h2>11-dars</h2>
+      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+      <div class="actions"><a class="btn secondary" href="11-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article><article class="card">
+      <div class="badge">12-dars</div>
+      <h2>12-dars</h2>
+      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+      <div class="actions"><a class="btn secondary" href="12-lesson-mentor/index.html">Mentor versiyasi</a></div>
+    </article>
+    </section>
+
+    <footer>
+      Eslatma: linklar 12-modul ichidagi real mavjud papkalarga moslab yangilandi.
+    </footer>
+  </div>
+</body>
+</html>

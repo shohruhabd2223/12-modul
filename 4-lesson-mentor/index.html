@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Guide - 4-dars | DRF Takrorlash va Mustaqil Loyiha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">4-dars · DRF takrorlash · Course loyiha</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#xarita" class="hover:text-white">Dars xaritasi</a>
+        <a href="#loyiha" class="hover:text-white">Loyiha</a>
+        <a href="#baholash" class="hover:text-white">Baholash</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            Mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">4-dars uchun teacher qo'llanma</span><br>
+            <span class="text-white/90">Takrorlash + chuqur tahlil + Course loyihasi</span>
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu dars <b class="text-white">takrorlash darsi</b>. 1-darsdagi <b class="text-white">Swagger</b>, 2-darsdagi <b class="text-white">CRUD yozish usullari</b>, 3-darsdagi <b class="text-white">searching, filtering, pagination</b> mavzulari bir joyga yig‘ilib, chuqur tahlil qilinadi va yakunda studentlar <b class="text-white">Course</b> modeli asosida mustaqil mini loyiha bajaradi.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-rotate"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Format</div>
+              <div class="text-white font-black mt-1">Takrorlash darsi</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-layer-group"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Qamrov</div>
+              <div class="text-white font-black mt-1">Swagger + CRUD + Querying</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-ai-violet text-xl mb-2"><i class="fas fa-laptop-code"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Mustaqil Course API</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+              <div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-lg">Dars oqimi</div>
+                    <div class="text-slate-400 text-sm">Mentor eslab qolishi uchun</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+                    <i class="fas fa-list-check"></i>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. 1–3 darslarni eslatish</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. Mavzular orasidagi bog‘liqlik</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. Course modelini ochish</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. CRUD + search/filter/pagination</div>
+                  <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">5. Topshiriq</span><span class="text-white font-black">mustaqil loyiha</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Muhim eslatma</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Bu darsda mentor yangi mavzu bermaydi, balki avvalgi bilimlarni tizimlab, studentni mustaqil ishlash bosqichiga olib kiradi.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">4-dars oxirida student nimani qila olishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Review → Analysis → Practice</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">DRF dagi endpointni to‘liq shakllantirish zanjiri</b>ni tushunishi kerak: model → serializer → view/viewset → url → swagger hujjati.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">Course</b> modeli uchun CRUD, search, filter va pagination ni bir loyihada birlashtirib, mustaqil API yozib bera olishi kerak.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Oldingi darslarni eslatish</div>
+            <h2 class="text-3xl font-black text-white">Mentor qanday bog‘lab kirishi kerak?</h2>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-django-light font-black mb-3">1-dars</div>
+            <div class="text-white font-bold mb-2">Swagger</div>
+            <p class="text-slate-300 text-sm leading-relaxed">Student API endpointlarni ko‘rish, test qilish va hujjatlashtirish muhimligini tushungan bo‘lishi kerak.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-front-blue font-black mb-3">2-dars</div>
+            <div class="text-white font-bold mb-2">CRUD yozish usullari</div>
+            <p class="text-slate-300 text-sm leading-relaxed">APIView, generic viewlar yoki viewset ishlatilishidan qat'i nazar, maqsad bir xil: ma'lumotni yaratish, o‘qish, yangilash va o‘chirish.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-ai-violet font-black mb-3">3-dars</div>
+            <div class="text-white font-bold mb-2">Searching, Filtering, Pagination</div>
+            <p class="text-slate-300 text-sm leading-relaxed">Student endpointni qulayroq, foydali va real loyiha talablariga yaqin qilish uchun query parametrlar bilan ishlashni bilishi kerak.</p>
+          </div>
+        </div>
+        <div class="tip rounded-r-2xl p-5 text-sm text-amber-100/90 leading-relaxed mt-6">Teacher iborasi: “Biz avval API ni yaratishni o‘rgandik, keyin uni turli usullarda yozishni o‘rgandik, endi esa uni foydalanuvchi uchun qulayroq qilishni o‘rgandik. Bugun shu uchalasini bitta loyiha ichida birlashtiramiz.”</div>
+      </div>
+    </section>
+
+    <section id="xarita" class="mb-12">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · kirish</span>
+            <span class="text-xs text-slate-400 font-bold">6–8 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">1–2–3-darslarni qisqa recap qiling</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Har bir darsdan faqat asosiy nuqtalarni qaytaring. Maqsad — studentning xotirasini faollashtirish. Juda uzoq nazariya emas, balki asosiy vazifalar va ularning o‘zaro bog‘liqligini eslatish kerak.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Savol bering: “Swagger nimaga kerak?”, “CRUD nima?”, “Search va filter o‘rtasida farq nima?”, “Pagination nega kerak?”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">2-qadam · chuqur tahlil</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Mavzularni alohida emas, tizim sifatida tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Student tushunishi kerak: oddiy CRUD endpoint hali tugallangan API emas. Real loyihada unga qidiruv, filter va sahifalash qo‘shiladi. Swagger esa shu tayyor API ni ko‘rsatish va tekshirishga yordam beradi.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Teacher iborasi: “Model yaratish — boshlanish. Yaxshi API qilish uchun unga boshqaruv va qulayliklar ham qo‘shiladi.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">3-qadam · model</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Course modelini studentlar bilan birga loyihalang</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Model fieldlarini shunchaki diktovka qilib bermang. Har bir field nima uchun kerakligini ayting. Shunda keyingi search, filter va ordering qayerga qo‘llanilishini ham student o‘zi ko‘ra boshlaydi.</p>
+          <div class="warn rounded-r-2xl p-4 text-sm text-red-100/90 leading-relaxed">Faqat CRUD bilan cheklanib qolmang. Field tanlashda keyinchalik qaysi maydonlarda qidiruv va filtr qilish mumkinligini ham ko‘rsatib boring.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#7C3AED"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-ai-violet/10 text-ai-violet font-black text-xs uppercase tracking-widest border border-ai-violet/20">4-qadam · amaliy yozish</span>
+            <span class="text-xs text-slate-400 font-bold">15–20 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Course uchun CRUD, search, filter va pagination ni yozdiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Bu qism darsning asosiy yadro qismi. Studentlardan serializer, view yoki viewset, url va swagger natijasini bittadan ko‘rsatishni talab qiling. Endpointlar ishlayotganini faqat kod bilan emas, response bilan ham tekshirtiring.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Amaliy natija: student bitta resurs uchun real ishlatiladigan API skeletonini mustaqil yozishga yaqinlashadi.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">5-qadam · topshiriq</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Dars oxirida mustaqil loyiha vazifasini bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Mentor oxirida tayyor kodni ko‘chirib olish emas, balki mantiqni qayta tiklashga undashi kerak. Shu sabab topshiriqda student Course API ni boshidan o‘zi yozadi.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Teacher iborasi: “Bugungi dars sizga yo‘l ko‘rsatdi. Endi shu yo‘l bo‘yicha Course API ni mustaqil yakunlaysiz.”</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="loyiha" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Mustaqil loyiha</div>
+            <h2 class="text-3xl font-black text-white">Course modeli uchun topshiriq</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Mini DRF project</div>
+        </div>
+
+        <p class="text-slate-300 leading-relaxed mb-6">
+          Studentlar <b class="text-white">Course</b> nomli model ochsin va shu paytgacha o‘tilgan barcha bilimlarni shu modelga qo‘llasin: CRUD endpointlar, searching, filtering, pagination va swagger orqali tekshirish.
+        </p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">title</div><div class="text-slate-400 text-sm">kurs nomi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">description</div><div class="text-slate-400 text-sm">kurs haqida izoh</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">price</div><div class="text-slate-400 text-sm">narxi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">duration</div><div class="text-slate-400 text-sm">davomiyligi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">level</div><div class="text-slate-400 text-sm">beginner/intermediate</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">teacher_name</div><div class="text-slate-400 text-sm">mentor nomi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">is_active</div><div class="text-slate-400 text-sm">aktiv holati</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">created_at</div><div class="text-slate-400 text-sm">yaratilgan sana</div></div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Student nima qilishi kerak?</div>
+            <ul class="space-y-3 text-sm text-slate-300 leading-relaxed">
+              <li>• Course modeli va serializer yozish</li>
+              <li>• CRUD endpointlar yaratish</li>
+              <li>• title va teacher_name bo‘yicha searching qilish</li>
+              <li>• level va is_active bo‘yicha filtering qilish</li>
+              <li>• list endpointga pagination qo‘shish</li>
+              <li>• Swagger orqali endpointlarni tekshirish</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Mentor nimaga urg‘u beradi?</div>
+            <ul class="space-y-3 text-sm text-slate-300 leading-relaxed">
+              <li>• Kod ishlashi kerak, faqat yozilgan bo‘lishi yetmaydi</li>
+              <li>• Query params amalda sinab ko‘rilishi kerak</li>
+              <li>• Search va filter farqini student og‘zaki tushuntirib bera olishi kerak</li>
+              <li>• Pagination response strukturasi ko‘rsatilishi kerak</li>
+              <li>• Swagger da endpointlar toza va tushunarli ko‘rinishi kerak</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Chuqur tahlil</div>
+            <h2 class="text-3xl font-black text-white">Mentor albatta aytib o‘tishi kerak bo‘lgan nuqtalar</h2>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="tip rounded-r-2xl p-5 text-sm text-amber-100/90 leading-relaxed">
+            <b class="text-white">Swagger</b> — bu faqat chiroyli sahifa emas. U API ni tekshirish, endpointlarni tushuntirish va studentga response ko‘rinishini ko‘rsatish uchun kerak.
+          </div>
+          <div class="ok rounded-r-2xl p-5 text-sm text-green-100/90 leading-relaxed">
+            <b class="text-white">CRUD</b> — bu asos. Lekin real backend ko‘pincha shu bilan tugamaydi. Query parametrlar qo‘shilmaguncha endpoint qulay bo‘lmaydi.
+          </div>
+          <div class="warn rounded-r-2xl p-5 text-sm text-red-100/90 leading-relaxed">
+            <b class="text-white">Searching</b> ko‘proq matnli maydonlarda ishlatiladi. <b class="text-white">Filtering</b> esa aniq qiymatlar bo‘yicha saralash yoki ajratish uchun ishlatiladi.
+          </div>
+          <div class="tip rounded-r-2xl p-5 text-sm text-amber-100/90 leading-relaxed">
+            <b class="text-white">Pagination</b> katta ma'lumotlarda response ni ixcham qiladi. Bu server va frontend uchun ham qulayroq ishlashni ta'minlaydi.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="baholash" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Baholash</div>
+            <h2 class="text-3xl font-black text-white">Tekshiruv mezonlari</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Mentor checklist</div>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">1. Model</div><div class="text-slate-400 text-sm">Course modeli mantiqan to‘g‘ri ochilganmi?</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">2. Serializer</div><div class="text-slate-400 text-sm">Serializer to‘liq va to‘g‘ri ishlayaptimi?</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">3. CRUD</div><div class="text-slate-400 text-sm">Create, list, detail, update, delete endpointlar ishlayaptimi?</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">4. Search</div><div class="text-slate-400 text-sm">title yoki teacher_name bo‘yicha qidiruv bo‘lyaptimi?</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">5. Filter</div><div class="text-slate-400 text-sm">level va is_active bo‘yicha filter ishlayaptimi?</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">6. Pagination</div><div class="text-slate-400 text-sm">List endpoint sahifalanganmi va response to‘g‘rimi?</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Boshlanishida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugungi dars yangi mavzu emas. Bu dars — oldingi 3 ta darsni birlashtirib, real ishlaydigan mini loyiha ko‘rinishiga olib kelish darsi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Tahlilda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Oddiy CRUD endpoint foydali, lekin foydalanuvchi uchun qulay bo‘lishi uchun search, filter va pagination ham kerak bo‘ladi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Amaliy qismda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Hozir Course modeli uchun API yozamiz. Siz avvalgi darslardagi barcha bilimni shu joyda ishlatasiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Yakunida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Endi shu Course API ni mustaqil tugatasiz. Kim search, filter va pagination ni to‘g‘ri qo‘sha olsa, mavzuni yaxshi tushungan bo‘ladi.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    Teacher Guide · 4-dars · DRF takrorlash va Course mustaqil loyiha
+  </footer>
+</body>
+</html>

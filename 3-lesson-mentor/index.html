@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3-Dars · Teacher Guide - DRF Filtering + Search + Pagination</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'accent-purple': '#8B5CF6',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444',
+            'soft-bg': '#F8FAFC'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background:#0F172A; color:#E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15,23,42,.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,.96), rgba(15,23,42,.97)); border:1px solid rgba(148,163,184,.14); transition:all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,#00D1D1,#44B78B,#38BDF8,#8B5CF6,#FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,.08); border-left:4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,.08); border-left:4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,.10); border-left:4px solid #44B78B; }
+    .copy-toast {
+      position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+      background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+      font-weight: 800; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+      pointer-events:none; transition: opacity .25s; z-index: 200;
+    }
+    .copy-toast.show { opacity: 1; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-accent-purple/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">3-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">DRF Filtering + Search + Pagination · mentor version</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#xarita" class="hover:text-white">Dars xaritasi</a>
+        <a href="#pagination" class="hover:text-white">Pagination</a>
+        <a href="#mustaqil" class="hover:text-white">Mustaqil ish</a>
+        <a href="#homework" class="hover:text-white">Homework</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#8B5CF6,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.08fr_0.92fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            3-dars · mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Filtering, Search va Pagination bo‘yicha <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-accent-purple">teacher qo‘llanma</span>
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sayt 3-dars uchun mentorga tayyor yo‘riqnoma bo‘lib xizmat qiladi. Fokus —
+            studentga <b class="text-white">oddiy filtering</b>, <b class="text-white">django-filter bilan professional filtering</b>,
+            <b class="text-white">SearchFilter</b>, <b class="text-white">filter + search birga ishlashi</b> va
+            <b class="text-white">pagination</b> ni ketma-ket va sodda qilib tushuntirish.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-filter"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+              <div class="text-white font-black mt-1">Filter mantig‘i</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-front-blue text-xl mb-2"><i class="fas fa-magnifying-glass"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+              <div class="text-white font-black mt-1">Search bilan ishlash</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-accent-purple text-xl mb-2"><i class="fas fa-layer-group"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Pagination + mustaqil ish</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-7">
+              <div class="w-full max-w-md rounded-[2rem] border border-white/10 bg-[#0B1635] p-6 shadow-2xl">
+                <div class="flex items-start justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-xl">Telefonlar do‘koni</div>
+                    <div class="text-slate-400 text-sm">Filter + Search + Pagination</div>
+                  </div>
+                  <div class="px-4 py-2 rounded-full bg-[#17306B] text-[#BFD2FF] font-black text-sm">Page 1</div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                  <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                    <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#49D2A3]"><i class="fas fa-mobile-screen-button text-2xl"></i></div>
+                    <div class="text-white font-black">iPhone 15</div>
+                    <div class="text-slate-400 text-sm">1 / 10</div>
+                  </div>
+                  <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                    <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#45C4FF]"><i class="fas fa-mobile-screen-button text-2xl"></i></div>
+                    <div class="text-white font-black">Samsung S24</div>
+                    <div class="text-slate-400 text-sm">2 / 10</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center gap-2">
+                  <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white flex items-center justify-center"><i class="fas fa-chevron-left"></i></div>
+                  <div class="w-10 h-10 rounded-2xl bg-[#45D3A6] text-white font-black flex items-center justify-center">1</div>
+                  <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white font-medium flex items-center justify-center">2</div>
+                  <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white font-medium flex items-center justify-center">3</div>
+                  <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white flex items-center justify-center"><i class="fas fa-chevron-right"></i></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Darsning markaziy oqimi</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Query params orqali querysetni toraytirish, so‘ng qidirish, oxirida esa sahifalarga bo‘lib qaytarish.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Filter → Search → Pagination</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">query params</b> nima ekanini tushunib olishi kerak:
+            URL orqali ma’lumot yuboriladi va backend shu qiymatlarga qarab querysetni o‘zgartiradi.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student dars oxirida quyidagi farqni bilishi kerak:
+            <b class="text-white">filtering</b> aniq shart bilan ishlaydi,
+            <b class="text-white">search</b> esa matn bo‘yicha qidiradi,
+            <b class="text-white">pagination</b> esa natijani bo‘lib qaytaradi.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Mentor urg‘usi</div>
+            <h2 class="text-3xl font-black text-white">3-darsdagi eng muhim gaplar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Tayyor iboralar</div>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-2">Filtering</div>
+            <div class="text-slate-400 text-sm">“Bu yerda biz aynan mos keladigan yozuvlarni qoldiryapmiz.”</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-2">Search</div>
+            <div class="text-slate-400 text-sm">“Bu yerda exact emas, matnning o‘zi bo‘yicha qidiryapmiz.”</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-2">Pagination</div>
+            <div class="text-slate-400 text-sm">“Ko‘p natijani bir yo‘la emas, sahifalarga bo‘lib qaytaryapmiz.”</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="xarita" class="mb-12">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · tayyorlov</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Avval model va serializer tayyorligini eslatib o‘ting</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">
+            Bu darsda asosiy e’tibor filtering va pagination bo‘lsa ham, studentga bular havoda ishlamasligini ayting.
+            Oldinda <span class="code-chip px-2 py-1 rounded-lg">Product</span> model va
+            <span class="code-chip px-2 py-1 rounded-lg">ProductSerializer</span> tayyor turadi.
+          </p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">
+            Teacher uchun gap: “Bugun yangi model o‘rganmaymiz, bugun mavjud ma’lumotni qanday boshqarishni o‘rganamiz.”
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">2-qadam · filtering nima?</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Telefonlar do‘koni misoli bilan filteringni ochib bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">
+            Studentga kategoriya, narx va mavjudlik tanlanishini ko‘rsating. So‘ng backend shu shartlarga mos bo‘lmagan
+            productlarni olib tashlashini ayting. Bu joyda <b class="text-white">“hammasini emas, keraklisini qoldirish”</b>
+            iborasi juda yaxshi ishlaydi.
+          </p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">
+            Studentlar ko‘pincha filtering bilan search’ni aralashtirib yuboradi. Shu bosqichdayoq: “Filtering aniq qiymat bilan ishlaydi” deb ajratib qo‘ying.
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">3-qadam · oddiy filtering kodi</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">get_queryset ichidagi filterlarni qatorma-qator tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">
+            Bu joyda student har bir query param bir qiymat ekanini ko‘rsin:
+            <b class="text-white">category</b>, <b class="text-white">is_available</b>,
+            <b class="text-white">min_price</b>, <b class="text-white">max_price</b>.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">category</div><div class="text-slate-400">Kategoriya bo‘yicha toraytiradi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">is_available</div><div class="text-slate-400">Faqat mavjudlarini qoldiradi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">min_price</div><div class="text-slate-400">Pastki narx chegarasi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">max_price</div><div class="text-slate-400">Yuqori narx chegarasi.</div></div>
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#8B5CF6"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-accent-purple/10 text-accent-purple font-black text-xs uppercase tracking-widest border border-accent-purple/20">4-qadam · professional filtering</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">django-filter ni “kodni tozalash usuli” sifatida tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">
+            Studentga ayting: oddiy filtering ishlaydi, lekin project kattalashsa filter logikasini
+            <span class="code-chip px-2 py-1 rounded-lg">filters.py</span> ga chiqarish qulayroq bo‘ladi.
+          </p>
+          <div class="warn rounded-r-2xl p-4 text-sm text-red-100/90 leading-relaxed">
+            Muhim eslatma: <span class="font-mono">pip install django-filter</span> ni aytib o‘ting va
+            <span class="font-mono">settings.py</span> ga <span class="font-mono">django_filters</span> ulanganini tekshirtiring.
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#22C55E"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-green-500/10 text-green-400 font-black text-xs uppercase tracking-widest border border-green-500/20">5-qadam · search</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">SearchFilter ni filteringdan alohida qilib ko‘rsating</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">
+            Bu yerda <b class="text-white">?search=iphone</b> yozilganda backend
+            <span class="code-chip px-2 py-1 rounded-lg">name</span> va
+            <span class="code-chip px-2 py-1 rounded-lg">category</span> ichidan qidirishini ayting.
+          </p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">
+            Teacher uchun gap: “Filtering exact shart bilan ishlaydi, search esa so‘zning o‘zini qidiradi.”
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">6-qadam · filter + search</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Bitta endpoint ichida ikkisi birga ishlashini ko‘rsating</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">
+            Real projectda avval category bo‘yicha torayadi, keyin shu toraygan ro‘yxat ichida search ishlaydi.
+            Student aynan shu ketma-ketlikni ko‘rishi kerak.
+          </p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">
+            Yaxshi misol: <span class="font-mono">/products/?category=phone&amp;search=samsung</span>
+          </div>
+        </article>
+
+        <article id="pagination" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#A855F7"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-purple-500/10 text-purple-300 font-black text-xs uppercase tracking-widest border border-purple-500/20">7-qadam · pagination</span>
+            <span class="text-xs text-slate-400 font-bold">12–14 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Paginationni siz yasatgan katalog vizuali bilan tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">
+            Studentlarga ko‘p natija birdan emas, sahifalarga bo‘linib qaytishini ko‘rsating.
+            Page 1, 2, 3 tugmalari va kartalar bilan tushuntirish bu darsda juda qulay.
+          </p>
+          <div class="grid lg:grid-cols-[1.06fr_0.94fr] gap-5 items-start">
+            <div class="rounded-[1.75rem] overflow-hidden border border-white/10 bg-[#0B1635] p-5">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <div class="text-[12px] uppercase tracking-[0.2em] text-[#6B8BFF] font-black">Vizual misol</div>
+                  <div class="text-white font-black text-2xl mt-1">Telefonlar katalogi</div>
+                  <div class="text-[#A9B7D9] text-sm mt-1">Jami 48 ta mahsulot</div>
+                </div>
+                <div class="px-4 py-2 rounded-full bg-[#17306B] text-[#BFD2FF] font-black text-sm">Page 1</div>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                  <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#49D2A3]"><i class="fas fa-mobile-screen-button text-2xl"></i></div>
+                  <div class="text-white font-black">iPhone 15</div>
+                  <div class="text-[#93A2C8] text-sm">1 / 10</div>
+                </div>
+                <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                  <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#45C4FF]"><i class="fas fa-mobile-screen-button text-2xl"></i></div>
+                  <div class="text-white font-black">Samsung S24</div>
+                  <div class="text-[#93A2C8] text-sm">2 / 10</div>
+                </div>
+                <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                  <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#FFD93D]"><i class="fas fa-mobile-screen text-2xl"></i></div>
+                  <div class="text-white font-black">Redmi Note</div>
+                  <div class="text-[#93A2C8] text-sm">3 / 10</div>
+                </div>
+                <div class="rounded-3xl bg-white/5 border border-white/10 p-4">
+                  <div class="h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-3 text-[#D8B4FE]"><i class="fas fa-mobile-screen-button text-2xl"></i></div>
+                  <div class="text-white font-black">Pixel 8</div>
+                  <div class="text-[#93A2C8] text-sm">4 / 10</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white flex items-center justify-center"><i class="fas fa-chevron-left"></i></div>
+                <div class="w-10 h-10 rounded-2xl bg-[#45D3A6] text-white font-black flex items-center justify-center">1</div>
+                <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white font-medium flex items-center justify-center">2</div>
+                <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white font-medium flex items-center justify-center">3</div>
+                <div class="w-10 h-10 rounded-2xl border border-white/10 bg-white/5 text-white flex items-center justify-center"><i class="fas fa-chevron-right"></i></div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2">Teacher urg‘usi</div>
+                <div class="text-slate-400 text-sm leading-relaxed">“Pagination backendning tartibli javob qaytarish usuli. Frontend esa page tugmalari bilan yuradi.”</div>
+              </div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2">URL misollar</div>
+                <div class="space-y-2 text-sm font-mono text-slate-300">
+                  <div>/products/?page=1</div>
+                  <div>/products/?page=2</div>
+                  <div>/products/?page=1&amp;page_size=5</div>
+                </div>
+              </div>
+              <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90">
+                Studentga <span class="font-mono">page_size</span> foydalanuvchi nechta natija ko‘rishini boshqarishini alohida ayting.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="mustaqil" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#F59E0B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-orange-500/10 text-orange-300 font-black text-xs uppercase tracking-widest border border-orange-500/20">8-qadam · mustaqil ish</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Phone modeli uchun pagination qo‘shishni mustaqil ish sifatida bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">
+            15-betdan keyin qo‘shilgan yangi betda student Phone modeli uchun pagination yozadi.
+            Bu yerda u alohida pagination class yozishni va uni view ichiga ulashni mustaqil takrorlaydi.
+          </p>
+          <div class="grid md:grid-cols-2 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+              <div class="text-white font-black mb-2">Yoziladigan class</div>
+              <div class="text-slate-400 text-sm">PhonePagination ichida <span class="font-mono">page_size</span>, <span class="font-mono">page_size_query_param</span>, <span class="font-mono">max_page_size</span>.</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+              <div class="text-white font-black mb-2">View ichida</div>
+              <div class="text-slate-400 text-sm"><span class="font-mono">pagination_class = PhonePagination</span> qilib ulaydi.</div>
+            </div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">
+            Misol URL lar: <span class="font-mono">/phones/?page=1</span> va <span class="font-mono">/phones/?page=2&amp;page_size=3</span>
+          </div>
+        </article>
+
+        <article id="homework" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#00D1D1"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">9-qadam · homework</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">StudentBook homework ni yakuniy mustahkamlash sifatida topshiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">
+            Uyga vazifada student bugungi hamma narsani bitta projectga yig‘adi:
+            model, professional filtering, search va pagination.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">level</div><div class="text-slate-400 text-sm">Filtering</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">is_active</div><div class="text-slate-400 text-sm">Filtering</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">title / author</div><div class="text-slate-400 text-sm">Search</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">page_size = 4</div><div class="text-slate-400 text-sm">Pagination</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">
+            Tekshiruv mezoni: filter ishlashi, search ishlashi, pagination class alohida yozilgani va endpointda to‘g‘ri ulangan bo‘lishi.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay qisqa matnlar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Filtering boshida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugun biz ma’lumotni yaratishdan ko‘ra, mavjud ma’lumotni tartibli boshqarishni o‘rganamiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Oddiy filteringda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Query param keldi, biz shu qiymatga qarab querysetni toraytirdik.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Searchda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bu joyda exact qiymat emas, so‘z bo‘yicha qidiryapmiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Paginationda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Backend javobni bo‘ldi, frontend esa page lar bilan navigatsiya qildi.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    3-Dars Teacher Guide · Mentor uchun tayyor qo‘llanma sahifasi
+  </footer>
+
+  <script>
+    function showCopyToast() {
+      const toast = document.getElementById('copyToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6-Dars · DRF Teacher Guide - Authentication Types va JWT Token</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+    @keyframes bob { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-8px);} }
+    @keyframes pulseRing { 0% { transform: scale(.95); opacity: .85; } 100% { transform: scale(1.08); opacity: 0; } }
+    @keyframes floatSoft { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+    .animate-bob { animation: bob 2.4s ease-in-out infinite; }
+    .animate-float { animation: floatSoft 3s ease-in-out infinite; }
+    .copy-toast {
+      position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+      background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+      font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+      pointer-events:none; transition: opacity .25s; z-index: 200;
+    }
+    .copy-toast.show { opacity: 1; }
+    .swagger-row { transition: all .28s ease; }
+    .swagger-row:hover { transform: translateY(-2px) scale(1.01); }
+    .ring-core { position: relative; }
+    .ring-core::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius: 28px; animation: pulseRing 2s infinite; }
+    .flow-chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">6-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Django REST Framework · Authentication Types va JWT Token</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#xarita" class="hover:text-white">Dars xaritasi</a>
+        <a href="#swagger" class="hover:text-white">Swagger</a>
+        <a href="#mustaqil" class="hover:text-white">Mustaqil ish</a>
+        <a href="#homework" class="hover:text-white">Homework</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            6-dars · Mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Authentication Types va <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">JWT Token</span><br>
+            bo‘yicha teacher qo‘llanma
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sahifa aynan 6-dars uchun mentor versiya qilib tayyorlandi. Fokus — studentga <b class="text-white">authentication nima</b>, <b class="text-white">Session / Basic / Token / JWT</b> farqi, <b class="text-white">JWT access + refresh oqimi</b>, <b class="text-white">Swagger’da token ishlatish</b> va dars oxiridagi mustaqil tahlilni to‘g‘ri tartibda tushuntirish.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-user-shield"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+              <div class="text-white font-black mt-1">Auth tushunchasi</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-key"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+              <div class="text-white font-black mt-1">JWT flow</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-ai-violet text-xl mb-2"><i class="fas fa-vial"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Swagger tahlili</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+              <div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl ring-core">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-lg">Auth oqimi</div>
+                    <div class="text-slate-400 text-sm">Darsning asosiy mantiqi</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+                    <i class="fas fa-diagram-project"></i>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Authentication</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. Permission</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. JWT access</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. JWT refresh</div>
+                  <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">Natija</span><span class="text-white font-black">Protected API</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Asosiy dars mantig‘i</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Auth nima, qolgan auth turlari, JWT structure, access/refresh flow, Swagger’da Bearer token ishlatish va yakuniy mustaqil tahlil.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Auth fundamentals → JWT amaliyot</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">authentication</b> ni “login qilish” degan bitta tushuncha sifatida emas, balki <b class="text-white">user kimligini aniqlash jarayoni</b> sifatida anglab olishi kerak.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student dars oxirida <b class="text-white">Session, Basic, Token, JWT</b> farqini ayta olishi va <b class="text-white">Swagger’da JWT access token</b> bilan protected endpointni test qila olishi kerak.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Eng muhim pedagogik nuqta</div>
+            <h2 class="text-3xl font-black text-white">Authentication va Permission farqini albatta ajrating</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars boshidagi urg‘u</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="ok rounded-r-[1.5rem] p-5">
+            <div class="text-white font-black mb-2">Authentication</div>
+            <div class="text-slate-300 text-sm leading-relaxed">“Bu user kim?” degan savolga javob beradi. Natija: <span class="code-chip px-2 py-1 rounded-lg">request.user</span>.</div>
+          </div>
+          <div class="warn rounded-r-[1.5rem] p-5">
+            <div class="text-white font-black mb-2">Permission</div>
+            <div class="text-slate-300 text-sm leading-relaxed">“Bu user nima qila oladi?” degan savolga javob beradi. Natija: GET/POST/DELETE ruxsat masalasi.</div>
+          </div>
+        </div>
+        <p class="text-slate-400 text-sm mt-4 leading-relaxed">Mentor studentlarga boshida aytsin: <b class="text-white">401</b> ko‘pincha auth muammo, <b class="text-white">403</b> esa ko‘pincha permission muammo.</p>
+      </div>
+    </section>
+
+    <section id="xarita" class="mb-12">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · kirish</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Authentication tushunchasini sodda misol bilan ochib bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Dars boshida studentga “auth = login” emasligini tushuntiring. Masalan: universitetga kirishda ID karta ko‘rsatish — bu authentication; auditoriyaga kirishga ruxsat bor-yo‘qligi — bu permission.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Bu bosqichda Session, Basic, Token, JWT nomlarini faqat sanab o‘ting. Farqlarini keyingi bosqichlarda batafsil ochasiz.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#EF4444"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-red-500/10 text-red-400 font-black text-xs uppercase tracking-widest border border-red-500/20">2-qadam · auth turlari</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Qolgan auth turlarini ketma-ketlik bo‘yicha tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Mentor Session → Basic → Token → JWT tartibida tushuntirsin. Har biri uchun “request bilan nima ketadi?”, “server nimani tekshiradi?”, “qayerda ishlatish qulay?” savollarini ishlating.</p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Session</div><div class="text-slate-400">Cookie + server session</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Basic</div><div class="text-slate-400">Har requestda credential</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Token</div><div class="text-slate-400">Bitta statik token</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">JWT</div><div class="text-slate-400">Access + refresh token</div></div>
+          </div>
+          <div class="warn rounded-r-2xl p-4 mt-5 text-sm text-red-100/90 leading-relaxed">Basic auth’ni production uchun yaxshi variant deb aytmang. Uni test va sodda tushuncha sifatida ko‘rsating.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">3-qadam · JWT core</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">JWT ning 3 qismi va access/refresh farqini aniq ajrating</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Student JWT ni faqat “uzun token” deb qabul qilmasligi kerak. Header, payload, signature qismlarini ko‘rsating. So‘ng access token va refresh token farqini alohida chizing.</p>
+          <div class="grid md:grid-cols-3 gap-4 text-sm mb-4">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Header</div><div class="text-slate-400">Algoritm va token turi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Payload</div><div class="text-slate-400">user_id, exp, token_type</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Signature</div><div class="text-slate-400">Token buzilmaganini tekshiradi</div></div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Teacher uchun gap: “Access bilan API ga kirasiz, refresh bilan yangi access olasiz.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">4-qadam · flow</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Login → access/refresh → protected request → refresh oqimini butun zanjir sifatida ko‘rsating</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Bu darsning yuragi JWT flow. Student token olish, ishlatish va yangilashni bir butun jarayon sifatida ko‘rishi kerak.</p>
+          <div class="flex flex-wrap gap-3 text-sm">
+            <div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">1. Login request</div>
+            <div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">2. Access + Refresh</div>
+            <div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">3. Bearer access bilan API</div>
+            <div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">4. Access expire</div>
+            <div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">5. Refresh orqali yangilash</div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 mt-5 text-sm text-amber-100/90">Studentlar ko‘pincha refresh token bilan protected endpointga kira olaman deb o‘ylashadi. Shu xatoni shu yerning o‘zida to‘xtating.</div>
+        </article>
+
+        <article id="swagger" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#22C55E"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-green-500/10 text-green-400 font-black text-xs uppercase tracking-widest border border-green-500/20">5-qadam · swagger amaliyoti</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Swagger’da JWT token ishlatishni amaliy ko‘rsatib bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Mentor bu joyda studentga aynan quyidagi tartibni ko‘rsatishi kerak: <b class="text-white">POST /api/token/</b> → access token olish → <b class="text-white">Authorize</b> → <b class="text-white">Bearer access_token</b> → protected endpointni test qilish.</p>
+          <div class="grid lg:grid-cols-[1.06fr_0.94fr] gap-5 items-start">
+            <div class="rounded-[1.75rem] overflow-hidden border border-white/10 bg-slate-900">
+              <div class="bg-[#1e1f22] px-5 py-3 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 text-white min-w-0">
+                  <div class="w-10 h-10 rounded-full bg-lime-400 text-slate-900 flex items-center justify-center font-black shadow-lg animate-pulse">J</div>
+                  <div>
+                    <div class="font-black text-lg leading-none">JWT Swagger Flow</div>
+                    <div class="text-[11px] text-slate-400">Authorize bilan protected request</div>
+                  </div>
+                </div>
+                <div class="hidden md:flex items-center bg-white rounded-lg overflow-hidden border border-lime-400/40 w-[54%]">
+                  <div class="px-4 py-2 text-sm text-slate-600 font-mono flex-1">/swagger/</div>
+                  <div class="bg-lime-400 text-slate-900 px-4 py-2 font-black text-sm">Open</div>
+                </div>
+              </div>
+              <div class="p-5 bg-[#f7f7f7]">
+                <div class="text-slate-700 text-3xl font-black mb-4">JWT API <span class="text-xs align-top bg-slate-300 px-2 py-1 rounded-full">v1</span></div>
+                <div class="space-y-3">
+                  <div class="swagger-row rounded-xl border-2 border-[#49cc90] bg-[#edf9f3] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#49cc90] text-white rounded-md px-3 py-1.5 font-black text-sm">POST</span>
+                      <div><div class="font-black text-slate-700 font-mono">/api/token/</div><div class="text-xs text-slate-500">Access + refresh olish</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">token_pair</div>
+                  </div>
+                  <div class="swagger-row rounded-xl border-2 border-[#61affe] bg-[#ecf5ff] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#61affe] text-white rounded-md px-3 py-1.5 font-black text-sm">AUTH</span>
+                      <div><div class="font-black text-slate-700 font-mono">Authorize</div><div class="text-xs text-slate-500">Bearer access_token</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">header</div>
+                  </div>
+                  <div class="swagger-row rounded-xl border-2 border-[#fca130] bg-[#fff8ef] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#fca130] text-white rounded-md px-3 py-1.5 font-black text-sm">GET</span>
+                      <div><div class="font-black text-slate-700 font-mono">/private-endpoint/</div><div class="text-xs text-slate-500">Protected API sinash</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">200 / 401 / 403</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2"><i class="fas fa-list-check text-front-blue mr-2"></i>Qisqa tartib</div>
+                <div class="text-slate-400 text-sm leading-relaxed">1) token endpoint  2) access olish  3) Authorize  4) protected request  5) 401/403 tahlil.</div>
+              </div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2"><i class="fas fa-bug text-soft-red mr-2"></i>Mentor urg‘usi</div>
+                <div class="text-slate-400 text-sm leading-relaxed">Studentga ayting: “401 bo‘lsa token muammo, 403 bo‘lsa permission muammo.”</div>
+              </div>
+              <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90">Bu joyda lesson sayt ichidagi Swagger slaydlaridan foydalanib, access tokenni qaysi joyga yozish va Bearer prefiksi qachon kerakligini alohida ko‘rsating.</div>
+            </div>
+          </div>
+        </article>
+
+        <article id="mustaqil" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">6-qadam · mustaqil ish</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Swagger yordamida JWT tokenni ishlatib tahlil qildiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Darsning mustaqil ish qismida student kod yozmaydi, balki tizimni tahlil qiladi. Vazifa — Swagger ichida token olib, Authorize qilib, protected endpointlarni sinab ko‘rish va 401/403/200 holatlarini farqlash.</p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">1. Token olish</div><div class="text-slate-400 text-sm">POST /api/token/ ni ishlatadi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">2. Authorize</div><div class="text-slate-400 text-sm">Bearer access_token kiritadi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">3. Protected API</div><div class="text-slate-400 text-sm">Try it out bilan request yuboradi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">4. Tahlil</div><div class="text-slate-400 text-sm">401, 403, 200 sababini aytadi</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Mentor uchun urg‘u: “Bu topshiriqda maqsad tokenni yodlash emas, ishlash mantiqini tushunish.”</div>
+        </article>
+
+        <article id="homework" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#00D1D1"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">7-qadam · homework</span>
+            <span class="text-xs text-slate-400 font-bold">5–7 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Uyga vazifada auth turlarini solishtirish va JWT flow ni chizdiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Homework da student ikki narsani topshiradi: 1) Session, Basic, Token, JWT solishtirish jadvali 2) Login → access/refresh → protected request → refresh oqimini o‘z qo‘li bilan yozilgan map ko‘rinishida topshirish.</p>
+          <div class="grid md:grid-cols-2 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+              <div class="text-white font-black mb-2">1-topshiriq</div>
+              <div class="text-slate-400 text-sm">4 ta auth turini jadval ko‘rinishida taqqoslash</div>
+            </div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+              <div class="text-white font-black mb-2">2-topshiriq</div>
+              <div class="text-slate-400 text-sm">JWT ishlash jarayonini ketma-ket map ko‘rinishida yozish</div>
+            </div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Tekshiruv mezoni: student 401 va 403 farqini ayta olishi, access va refresh rolini chalkashtirmasligi va Swagger’dagi ishlatish tartibini tushuntira olishi.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Lesson bilan moslashtirish</div>
+            <h2 class="text-3xl font-black text-white">Teacher guide’ga qo‘shilgan 6-darsga xos joylar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Current lesson update</div>
+        </div>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-red-300 text-xl mb-2"><i class="fas fa-sitemap"></i></div>
+            <div class="text-white font-black mb-2">Auth farqlari</div>
+            <div class="text-slate-400 text-sm">Session, Basic, Token va JWT pedagogik ketma-ketlik bilan joylandi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-green-300 text-xl mb-2"><i class="fas fa-book-open-reader"></i></div>
+            <div class="text-white font-black mb-2">Swagger amaliyoti</div>
+            <div class="text-slate-400 text-sm">JWT tokenni Swagger’da ishlatish uchun mentor bo‘lim qo‘shildi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-blue-300 text-xl mb-2"><i class="fas fa-arrows-rotate"></i></div>
+            <div class="text-white font-black mb-2">JWT flow</div>
+            <div class="text-slate-400 text-sm">Access/refresh oqimini tushuntirish uchun alohida mentor urg‘ular yozildi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-check-double"></i></div>
+            <div class="text-white font-black mb-2">Mustaqil tahlil</div>
+            <div class="text-slate-400 text-sm">Kod emas, token ishlatish va tahlil qilishga yo‘naltirilgan mustaqil ish qo‘shildi.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Boshlanishida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugun biz authentication nima ekanini to‘g‘ri tushunamiz. So‘ng qolgan auth turlarini va JWT’ni bir-biridan ajratib olamiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">JWT da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Access bilan API ga kirasiz, refresh bilan esa yangi access token olasiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Swagger da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Avval token olamiz, keyin Authorize qilamiz, keyin protected endpointni test qilamiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Mustaqil ishda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bu topshiriqda maqsad kod yozish emas, token ishlash mantiqini tahlil qilish.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    DRF Teacher Guide · 6-dars uchun mentor qo‘llanma sahifasi
+  </footer>
+
+  <script>
+    function showCopyToast() {
+      const toast = document.getElementById('copyToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+    function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+  </script>
+</body>
+</html>

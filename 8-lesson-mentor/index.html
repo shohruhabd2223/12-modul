@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8-Dars · DRF Teacher Guide - Products API va Frontend Endpointlar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444',
+            'orange-soft': '#F97316'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24, #F97316); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .info { background: rgba(56,189,248,0.09); border-left: 4px solid #38BDF8; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+    @keyframes bob { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-8px);} }
+    @keyframes pulseRing { 0% { transform: scale(.95); opacity: .85; } 100% { transform: scale(1.08); opacity: 0; } }
+    @keyframes floatSoft { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+    @keyframes dataFlow { 0%{ transform: translateX(-120%); opacity:0; } 50%{ opacity:1; } 100%{ transform: translateX(120%); opacity:0; } }
+    .animate-bob { animation: bob 2.4s ease-in-out infinite; }
+    .animate-float { animation: floatSoft 3s ease-in-out infinite; }
+    .copy-toast { position: fixed; top: 96px; left: 50%; transform: translateX(-50%); background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px; font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0; pointer-events:none; transition: opacity .25s; z-index: 200; }
+    .copy-toast.show { opacity: 1; }
+    .ring-core { position: relative; }
+    .ring-core::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius: 28px; animation: pulseRing 2s infinite; }
+    .flow-chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+    .api-browser{border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:#0b1220;box-shadow:0 24px 50px rgba(15,23,42,.25)}
+    .api-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#111827,#0b1220)}
+    .api-layout{display:grid;grid-template-columns:230px 1fr;min-height:430px}
+    .api-sidebar{background:#0f172a;border-right:1px solid rgba(255,255,255,.06);padding:18px}
+    .api-main{background:#f8fafc;padding:18px;color:#0f172a}
+    .api-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;color:#cbd5e1;font-weight:700;font-size:14px}
+    .api-nav-item.active{background:rgba(56,189,248,.12);color:#e2f3ff;border:1px solid rgba(56,189,248,.16)}
+    .endpoint-row{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 8px 18px rgba(15,23,42,.05)}
+    .method{display:inline-flex;align-items:center;justify-content:center;min-width:64px;padding:7px 10px;border-radius:999px;color:white;font-weight:900;font-size:12px;letter-spacing:.08em}
+    .method.get{background:#22c55e}.method.post{background:#3b82f6}.method.query{background:#7c3aed}
+    .mini-card{background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:14px;box-shadow:0 8px 18px rgba(15,23,42,.05)}
+    .flow-line{position:relative;overflow:hidden;border-radius:999px;height:8px;background:rgba(255,255,255,.1)}
+    .flow-line::before{content:'';position:absolute;left:-30%;top:0;bottom:0;width:35%;background:linear-gradient(90deg,transparent,#38BDF8,transparent);animation:dataFlow 2.2s linear infinite}
+    pre { white-space: pre-wrap; line-height: 1.6; }
+    .codebox { background:#0b1220; border:1px solid rgba(148,163,184,.18); border-radius:22px; padding:18px; position:relative; }
+    .copy-btn { position:absolute; top:12px; right:12px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); color:#e2e8f0; padding:8px 12px; border-radius:999px; font-size:12px; font-weight:800; }
+    @media (max-width: 1024px){ .api-layout { grid-template-columns: 1fr; } .api-sidebar{display:none} }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">8-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">DRF Products API · Frontend sayt uchun endpointlar</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a class="hover:text-white" href="#maqsad">Maqsad</a>
+        <a class="hover:text-white" href="#xarita">Dars xaritasi</a>
+        <a class="hover:text-white" href="#endpoint">Endpoint</a>
+        <a class="hover:text-white" href="#mustaqil">Mustaqil ish</a>
+        <a class="hover:text-white" href="#homework">Homework</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            8-dars · Mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Products API va <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">frontend endpointlar</span><br />
+            bo‘yicha teacher qo‘llanma
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sahifa 8-dars uchun mentor versiya qilib tayyorlandi. Fokus — studentga <b class="text-white">frontend dizaynni backend endpointga aylantirish</b>, <b class="text-white">Product modeli</b>, <b class="text-white">serializer</b>, <b class="text-white">list/detail API</b>, <b class="text-white">searching, filtering, ordering va pagination</b> mantiqlarini tartibli tushuntirish.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-store"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+              <div class="text-white font-black mt-1">Products API</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-code-branch"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+              <div class="text-white font-black mt-1">Endpointlar</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-ai-violet text-xl mb-2"><i class="fas fa-filter"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Search + Filter</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+              <div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl ring-core">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-lg">API oqimi</div>
+                    <div class="text-slate-400 text-sm">Front ekran → JSON → Endpoint</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+                    <i class="fas fa-network-wired"></i>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Front saytni tahlil qilish</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. Product modelini tuzish</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. Serializer yozish</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. List/detail endpoint</div>
+                  <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">Natija</span><span class="text-white font-black">API tayyor</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Asosiy dars mantig‘i</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Dizayndagi mahsulot kartasini backenddagi model, serializer va query parametrlariga bog‘lash.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12" id="maqsad">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Frontend → API → JSON</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">frontenddagi mahsulot kartalari</b> backenddan keladigan JSON ma’lumotga bog‘liqligini tushunishi kerak. Ya’ni rasm, nom, narx, kategoriya, rating va eski narx kabi fieldlar modeldan boshlanishini anglasin.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student dars oxirida <b class="text-white">Product model</b>, <b class="text-white">ProductSerializer</b>, <b class="text-white">ListAPIView</b>, <b class="text-white">RetrieveAPIView</b>, <b class="text-white">SearchFilter</b>, <b class="text-white">OrderingFilter</b> va <b class="text-white">pagination</b> ni bitta Products API ichida ishlata olishi kerak.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Eng muhim pedagogik nuqta</div>
+            <h2 class="text-3xl font-black text-white">“Endpoint”ni “frontend so‘raydigan manzil” deb tushuntiring</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars boshidagi urg‘u</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="ok rounded-r-[1.5rem] p-5">
+            <div class="text-white font-black mb-2">Frontend</div>
+            <div class="text-slate-300 text-sm leading-relaxed">“Menga mahsulotlar ro‘yxatini ber” deb API manzilga request yuboradi.</div>
+          </div>
+          <div class="info rounded-r-[1.5rem] p-5">
+            <div class="text-white font-black mb-2">Backend</div>
+            <div class="text-slate-300 text-sm leading-relaxed">Database’dan ma’lumot olib, serializer orqali JSON ko‘rinishida qaytaradi.</div>
+          </div>
+        </div>
+        <p class="text-slate-400 text-sm mt-4 leading-relaxed">Mentor studentlarga boshida aytsin: product card chiroyli ko‘rinishi frontend ishi, lekin undagi ma’lumotlar to‘g‘ri kelishi backend endpoint ishi.</p>
+      </div>
+    </section>
+
+    <section class="mb-12" id="xarita">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · front tahlil</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Avval frontend ekrandagi mahsulot kartasini fieldlarga ajrating</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Rasm, title, description, category, price, old_price, rating, badge va detail tugmasi kabi qismlarni ko‘rsating. Keyin “bular backendda qaysi field bo‘ladi?” deb savol bering.</p>
+          <div class="grid md:grid-cols-4 gap-3 text-sm">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><div class="text-white font-black">name</div><div class="text-slate-400">Mahsulot nomi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><div class="text-white font-black">price</div><div class="text-slate-400">Narx</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><div class="text-white font-black">category</div><div class="text-slate-400">Filter uchun</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><div class="text-white font-black">image</div><div class="text-slate-400">Kartadagi rasm</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed mt-5">Bu bosqichda kodga shoshilmang. Student endpoint nima uchun kerakligini front dizayn orqali his qilsin.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">2-qadam · model</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Product modelini front kartaga qarab tuzing</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Mentor model yozishda har bir field oldida to‘xtasin: “Bu field frontendda qayerda ko‘rinadi?” degan savol darsni jonlantiradi.</p>
+          <div class="codebox text-slate-200 text-sm">
+            <button class="copy-btn" onclick="copyById('modelCode')"><i class="fas fa-copy mr-1"></i>Copy</button>
+<pre id="modelCode"><code>class Product(models.Model):
+    name = models.CharField(max_length=120)
+    category = models.CharField(max_length=80)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    old_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rating = models.FloatField(default=0)
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
+    is_popular = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)</code></pre>
+          </div>
+          <div class="warn rounded-r-2xl p-4 mt-5 text-sm text-red-100/90 leading-relaxed">Studentga ayting: modeldagi field nomi tushunarli bo‘lsa, serializer va frontend ulash ham osonlashadi.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">3-qadam · serializer</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Serializerni “modelni JSONga aylantiruvchi tarjimon” deb tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Student serializer vazifasini yodlab emas, frontendga ketadigan JSON uchun kerakligini tushunsin. Model Python object, frontend esa JSON kutadi.</p>
+          <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-5 items-start">
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Model</div><div class="text-slate-400 text-sm">Database’dagi Product object</div></div>
+              <div class="flow-line"></div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Serializer</div><div class="text-slate-400 text-sm">Objectni JSON formatga o‘tkazadi</div></div>
+              <div class="flow-line"></div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Frontend</div><div class="text-slate-400 text-sm">JSONni card ko‘rinishida chiqaradi</div></div>
+            </div>
+            <div class="codebox text-slate-200 text-sm">
+              <button class="copy-btn" onclick="copyById('serializerCode')"><i class="fas fa-copy mr-1"></i>Copy</button>
+<pre id="serializerCode"><code>class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = [
+            'id', 'name', 'category', 'description',
+            'price', 'old_price', 'rating', 'image',
+            'is_popular', 'created_at'
+        ]</code></pre>
+            </div>
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8" id="endpoint">
+          <div class="dot" style="border-color:#7C3AED"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-ai-violet/10 text-violet-300 font-black text-xs uppercase tracking-widest border border-ai-violet/20">4-qadam · endpointlar</span>
+            <span class="text-xs text-slate-400 font-bold">15–18 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">List va detail endpointni vizual API dashboard orqali tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Bu bo‘limda student frontend sahifalar qaysi API manzildan ma’lumot olishini ko‘rsin: katalog uchun list endpoint, bitta mahsulot uchun detail endpoint.</p>
+          <div class="api-browser">
+            <div class="api-topbar">
+              <div class="flex items-center gap-3 text-white">
+                <div class="w-10 h-10 rounded-2xl bg-pdp-cyan/20 text-pdp-cyan flex items-center justify-center text-lg"><i class="fas fa-store"></i></div>
+                <div>
+                  <div class="font-black text-lg leading-none">Products API</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Frontend site → backend endpointlar</div>
+                </div>
+              </div>
+              <div class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-600 text-sm font-medium border border-slate-200">
+                <i class="fas fa-magnifying-glass text-slate-400"></i> /api/products/?search=iphone
+              </div>
+            </div>
+            <div class="api-layout">
+              <div class="api-sidebar">
+                <div class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-black mb-3">API menu</div>
+                <div class="space-y-2">
+                  <div class="api-nav-item active"><i class="fas fa-box"></i> Products</div>
+                  <div class="api-nav-item"><i class="fas fa-tags"></i> Categories</div>
+                  <div class="api-nav-item"><i class="fas fa-newspaper"></i> Blog</div>
+                  <div class="api-nav-item"><i class="fas fa-file-code"></i> Detail</div>
+                  <div class="api-nav-item"><i class="fas fa-sliders"></i> Query Params</div>
+                </div>
+              </div>
+              <div class="api-main">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div>
+                    <div class="text-sm uppercase tracking-[0.18em] text-slate-500 font-black mb-1">Endpoint map</div>
+                    <div class="text-3xl font-black text-slate-800">Frontend uchun API</div>
+                  </div>
+                  <div class="px-4 py-2 rounded-full bg-green-50 text-green-700 border border-green-100 font-black text-sm">JSON ready</div>
+                </div>
+                <div class="space-y-3 mb-4">
+                  <div class="endpoint-row flex flex-wrap items-center gap-3">
+                    <span class="method get">GET</span>
+                    <span class="font-mono font-bold text-slate-800">/api/products/</span>
+                    <span class="text-slate-500 text-sm">Katalog sahifasi uchun mahsulotlar ro‘yxati</span>
+                  </div>
+                  <div class="endpoint-row flex flex-wrap items-center gap-3">
+                    <span class="method get">GET</span>
+                    <span class="font-mono font-bold text-slate-800">/api/products/&lt;id&gt;/</span>
+                    <span class="text-slate-500 text-sm">Bitta mahsulot detail sahifasi</span>
+                  </div>
+                  <div class="endpoint-row flex flex-wrap items-center gap-3">
+                    <span class="method query">QUERY</span>
+                    <span class="font-mono font-bold text-slate-800">?search=&category=&ordering=&page=</span>
+                    <span class="text-slate-500 text-sm">Qidiruv, filter, sort va pagination</span>
+                  </div>
+                </div>
+                <div class="grid md:grid-cols-3 gap-3">
+                  <div class="mini-card"><div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Search</div><div class="font-mono text-sm font-black">?search=iphone</div></div>
+                  <div class="mini-card"><div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Filter</div><div class="font-mono text-sm font-black">?category=phone</div></div>
+                  <div class="mini-card"><div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Ordering</div><div class="font-mono text-sm font-black">?ordering=-price</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 mt-5 text-sm text-amber-100/90">Mentor uchun gap: “List endpoint ko‘p cardlar uchun, detail endpoint esa bitta card ustiga bosilganda ochiladigan sahifa uchun kerak.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#F97316"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-orange-soft/10 text-orange-300 font-black text-xs uppercase tracking-widest border border-orange-soft/20">5-qadam · search/filter/order/page</span>
+            <span class="text-xs text-slate-400 font-bold">15–18 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Search, filtering, ordering va paginationni frontend controls bilan bog‘lang</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Studentga bularni alohida-alohida texnik termin sifatida emas, katalogdagi input, select va sahifa raqamlari sifatida ko‘rsating.</p>
+          <div class="grid md:grid-cols-4 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-search text-pdp-cyan mr-2"></i>Searching</div><div class="text-slate-400 text-sm">Inputga yozilgan so‘z bo‘yicha izlash</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-filter text-django-light mr-2"></i>Filtering</div><div class="text-slate-400 text-sm">Kategoriya yoki holat bo‘yicha ajratish</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-arrow-down-wide-short text-ai-violet mr-2"></i>Ordering</div><div class="text-slate-400 text-sm">Narx, rating yoki sana bo‘yicha tartiblash</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-layer-group text-warm-yellow mr-2"></i>Pagination</div><div class="text-slate-400 text-sm">Mahsulotlarni betma-bet chiqarish</div></div>
+          </div>
+          <div class="codebox text-slate-200 text-sm">
+            <button class="copy-btn" onclick="copyById('viewCode')"><i class="fas fa-copy mr-1"></i>Copy</button>
+<pre id="viewCode"><code>class ProductListAPIView(ListAPIView):
+    queryset = Product.objects.all().order_by('-created_at')
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    search_fields = ['name', 'description', 'category']
+    filterset_fields = ['category', 'is_popular']
+    ordering_fields = ['price', 'rating', 'created_at']
+    pagination_class = ProductPagination</code></pre>
+          </div>
+          <div class="ok rounded-r-2xl p-4 mt-5 text-sm text-green-100/90 leading-relaxed">Teacher uchun urg‘u: query parameterlar frontend select/input o‘zgarganda URLga qo‘shiladi. Backend esa shu parametr bo‘yicha ma’lumotni qaytaradi.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8" id="mustaqil">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">6-qadam · mustaqil ish</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Bir Zumda mahsulotlar bo‘limi uchun endpointlarni mustaqil yozdiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Darsdagi koddan keyin student Bir Zumda saytining mahsulotlar bo‘limi uchun Product model, serializer, list/detail endpoint va query parametrlarni mustaqil takrorlaydi.</p>
+          <div class="grid md:grid-cols-4 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">1. Model</div><div class="text-slate-400 text-sm">Frontend card fieldlariga qarab Product tuzish</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">2. Serializer</div><div class="text-slate-400 text-sm">JSONga chiqadigan fieldlarni belgilash</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">3. Endpoint</div><div class="text-slate-400 text-sm">List va detail API chiqarish</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">4. Query</div><div class="text-slate-400 text-sm">Search, filter, order, pagination qo‘shish</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Mentor uchun urg‘u: “Koddan ko‘chirish emas, frontend ko‘rinishdan kerakli field va endpointni o‘zi chiqarish — asosiy maqsad.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8" id="homework">
+          <div class="dot" style="border-color:#00D1D1"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">7-qadam · homework</span>
+            <span class="text-xs text-slate-400 font-bold">5–7 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Index, blog va blog detail qismlarini API endpoint sifatida chiqarishni topshiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Homeworkda student Bir Zumda saytining asosiy sahifa, blog ro‘yxati va blog detail qismlari uchun endpoint chiqaradi. Maqsad — faqat products emas, boshqa frontend bo‘limlarni ham APIga aylantirishni mashq qilish.</p>
+          <div class="grid md:grid-cols-3 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-house text-pdp-cyan mr-2"></i>Index API</div><div class="text-slate-400 text-sm">Top sotuvlar, yangi mahsulotlar yoki tavsiya bloklari</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-newspaper text-django-light mr-2"></i>Blog API</div><div class="text-slate-400 text-sm">Blog maqolalar ro‘yxati, pagination bilan</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2"><i class="fas fa-file-lines text-ai-violet mr-2"></i>Blog Detail API</div><div class="text-slate-400 text-sm">Bitta maqola uchun detail endpoint</div></div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Tekshiruv mezoni: student har bir sahifa uchun kerakli model fieldlarini ajrata oladi, serializer yozadi, endpoint URLlarini to‘g‘ri beradi va natijani JSONda ko‘rsatadi.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Lesson bilan moslashtirish</div>
+            <h2 class="text-3xl font-black text-white">Teacher guide’ga qo‘shilgan 8-darsga xos joylar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Current lesson update</div>
+        </div>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-red-300 text-xl mb-2"><i class="fas fa-store"></i></div><div class="text-white font-black mb-2">Frontend tahlil</div><div class="text-slate-400 text-sm">Mahsulot kartasi fieldlarga ajratildi.</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-green-300 text-xl mb-2"><i class="fas fa-database"></i></div><div class="text-white font-black mb-2">Product model</div><div class="text-slate-400 text-sm">Narx, rasm, kategoriya, rating kabi maydonlar bilan.</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-blue-300 text-xl mb-2"><i class="fas fa-route"></i></div><div class="text-white font-black mb-2">Endpoint map</div><div class="text-slate-400 text-sm">List, detail va query parametrlar vizual ko‘rsatildi.</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-sliders"></i></div><div class="text-white font-black mb-2">Query amaliyoti</div><div class="text-slate-400 text-sm">Search, filter, order va pagination mentor izohi bilan berildi.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Boshlanishida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugun biz chiroyli frontend kartalar ortida qanday backend endpointlar turishini o‘rganamiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Modelda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Frontendda ko‘ringan har bir muhim ma’lumot backend modelida field sifatida saqlanadi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Endpointda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“List endpoint katalog uchun, detail endpoint esa bitta mahsulot sahifasi uchun ishlaydi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Mustaqil ishda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bu vazifada maqsad kodni ko‘chirish emas, Bir Zumda dizaynidan kerakli endpointlarni o‘zingiz chiqarish.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    DRF Teacher Guide · 8-dars uchun mentor qo‘llanma sahifasi
+  </footer>
+  <script>
+    function showCopyToast() {
+      const toast = document.getElementById('copyToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+    function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+  </script>
+</body>
+</html>

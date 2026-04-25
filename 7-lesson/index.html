@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDP Junior - DRF Deploy Lesson — Render, CORS, Production Settings</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&amp;family=Fira+Code:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'pdp-cyan': '#00D1D1',
+        'pdp-dark': '#0F172A',
+        'django-green': '#0C4B33',
+        'django-light': '#44B78B',
+        'front-blue': '#38BDF8',
+        'rose-soft': '#FB7185',
+        'amber-soft': '#F59E0B',
+        'violet-soft': '#8B5CF6'
+      }
+    }
+  }
+}
+</script>
+<style>
+body { font-family: 'Montserrat', sans-serif; background:#eef4f8; overflow:hidden; }
+.font-mono, pre, code { font-family:'Fira Code', monospace; }
+.slider-window { width:100%; height:calc(100vh - 80px); position:relative; overflow:hidden; }
+.slides-wrapper { display:flex; width:100%; height:100%; transition:transform .7s cubic-bezier(.65,0,.35,1); }
+.slide { min-width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 2rem 6rem; box-sizing:border-box; overflow-y:auto; overflow-x:hidden; }
+.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background:#677381; border-radius:999px; }
+.custom-scrollbar::-webkit-scrollbar-track { background:transparent; }
+.pdp-logo-fixed { position:fixed; top:15px; left:24px; z-index:100; display:flex; align-items:center; gap:12px; }
+.pdp-logo-circle { width:45px; height:45px; background:#00D1D1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+.pdp-logo-circle div { width:28px; height:14px; background:#0F172A; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+.copy-btn { position:absolute; top:14px; right:14px; z-index:5; }
+.copy-toast { position:fixed; top:96px; left:50%; transform:translateX(-50%); background:#44B78B; color:white; padding:10px 18px; border-radius:999px; font-weight:700; box-shadow:0 10px 25px rgba(68,183,139,.25); opacity:0; pointer-events:none; transition:opacity .25s; z-index:200; }
+.copy-toast.show { opacity:1; }
+.code-wrap { max-height:440px; overflow:auto; }
+.hljs { background:#111827 !important; border-radius:1rem; padding:1.1rem !important; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes pulseRing { 0% { transform:scale(.95); opacity:.9; } 100% { transform:scale(1.15); opacity:0; } }
+@keyframes dataFlow { 0% { transform:translateX(-110%); opacity:0; } 50%{opacity:1;} 100%{ transform:translateX(110%); opacity:0; } }
+@keyframes shineMove { 0%{left:-35%} 100%{left:120%} }
+@keyframes blinkSoft { 0%,100%{opacity:1} 50%{opacity:.45} }
+.animate-float { animation:float 3s ease-in-out infinite; }
+.animate-bob { animation:bob 2.5s ease-in-out infinite; }
+.pulse-ring { position:relative; }
+.pulse-ring::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius:28px; animation:pulseRing 2.2s infinite; }
+.status-shine { position:relative; overflow:hidden; }
+.status-shine::after { content:''; position:absolute; top:0; bottom:0; width:25%; transform:skewX(-18deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); animation:shineMove 3s linear infinite; }
+.flow-line { position:relative; overflow:hidden; }
+.flow-line::before { content:''; position:absolute; left:-20%; top:50%; transform:translateY(-50%); width:28%; height:6px; border-radius:999px; background:linear-gradient(90deg, transparent, rgba(56,189,248,.95), transparent); animation:dataFlow 2.6s linear infinite; }
+.blink-soft { animation:blinkSoft 1.3s ease-in-out infinite; }
+.hero-grid { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.12) 1px, transparent 0); background-size: 28px 28px; }
+.mini-card { border-radius:28px; border:1px solid #e5e7eb; box-shadow:0 12px 28px rgba(15,23,42,.06); background:#fff; }
+.dark-card { border-radius:28px; border:1px solid #1e293b; box-shadow:0 18px 34px rgba(15,23,42,.14); background:#111827; color:#fff; }
+.step-card { position:relative; border-radius:24px; border:1px solid #e5e7eb; background:#fff; box-shadow:0 10px 22px rgba(15,23,42,.05); padding:18px 18px 18px 76px; min-height:120px; }
+.step-card .n { position:absolute; left:18px; top:18px; width:42px; height:42px; border-radius:14px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; }
+.deploy-badge { display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:10px 16px; font-weight:900; font-size:12px; letter-spacing:.04em; }
+.big-icon { width:82px; height:82px; border-radius:24px; display:flex; align-items:center; justify-content:center; }
+.eq-card { border-radius:26px; padding:18px; border:1px solid #e5e7eb; background:#fff; box-shadow:0 10px 22px rgba(15,23,42,.05); }
+.terminal-card { border-radius:28px; border:1px solid #1e293b; background:#0f172a; color:#fff; box-shadow:0 18px 34px rgba(15,23,42,.14); overflow:hidden; }
+
+/* slide 3 balance */
+
+
+
+
+
+
+.homework-shell{background:linear-gradient(180deg,#0f172a 0%,#081121 100%);border:1px solid rgba(96,165,250,.18);border-radius:34px;padding:2rem;box-shadow:0 22px 50px rgba(15,23,42,.22)}
+.homework-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.homework-card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);border-radius:26px;padding:1.4rem 1.2rem;text-align:center;color:white;overflow:hidden}
+.homework-card:after{content:'';position:absolute;inset:auto -20% -70% auto;width:140px;height:140px;background:rgba(96,165,250,.18);filter:blur(20px);border-radius:999px}
+@media (max-width:1024px){.slide3-grid,.homework-grid{grid-template-columns:1fr}}
+
+.slide3-visual{border-radius:28px;border:1px solid #dbeafe;background:linear-gradient(180deg,#eff6ff,#ffffff);box-shadow:0 14px 28px rgba(15,23,42,.06);padding:1.25rem}
+.slide3-mini-flow{position:relative;overflow:hidden;border-radius:22px;background:#0f172a;color:#fff;padding:1rem 1.1rem;border:1px solid #1e293b}
+.slide3-mini-flow::after{content:'';position:absolute;top:0;bottom:0;left:-30%;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:shineMove 3.4s linear infinite}
+.slide3-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .8rem;border-radius:999px;font-weight:800;font-size:.8rem}
+
+.independent-top-pad{padding-top:4.4rem !important}
+.homework-top-pad{padding-top:4.8rem !important}
+.independent-shell{background:linear-gradient(180deg,#0f172a 0%,#081121 100%);border:1px solid rgba(96,165,250,.18);border-radius:34px;padding:2rem;box-shadow:0 22px 50px rgba(15,23,42,.22)}
+</style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+<div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+<div class="pdp-logo-fixed">
+<div class="pdp-logo-circle"><div><span class="text-[8px] text-[#00D1D1] font-bold mt-[-1px]">&gt;_</span></div></div>
+<div class="flex flex-col leading-none"><span class="text-pdp-dark font-black text-xl tracking-tighter">PDP</span><span class="text-pdp-cyan font-bold text-sm tracking-tight">Junior</span></div>
+</div>
+<header class="h-[80px] w-full flex items-center justify-end px-12 bg-white/80 backdrop-blur-md z-50 shrink-0 border-b border-gray-100 shadow-sm">
+<div class="flex gap-4 items-center">
+<button class="w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:border-django-light hover:text-django-light flex items-center justify-center transition-all" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+<span class="text-sm font-bold text-gray-500 font-mono" id="slide-counter">1 / 13</span>
+<button class="w-10 h-10 rounded-full bg-django-light text-white shadow-lg flex items-center justify-center hover:bg-[#3ca47d] transition-all" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+</div>
+</header>
+<main class="slider-window" id="touchArea">
+<div class="slides-wrapper" id="slidesWrapper">
+<section class="slide bg-slate-900 text-white relative hero-grid">
+<div class="max-w-5xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[30rem] h-[30rem] bg-django-light rounded-full"></div></div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">7-DARS · DRF DEPLOY LESSON</span>
+<div class="inline-block mb-6 relative z-10">
+<i class="fas fa-rocket text-8xl text-django-light animate-float mr-4"></i>
+<i class="fas fa-server text-7xl text-front-blue animate-float" style="animation-delay:1s"></i>
+<i class="fas fa-globe text-7xl text-violet-soft animate-float ml-4" style="animation-delay:.5s"></i>
+</div>
+<h1 class="text-5xl md:text-8xl font-black tracking-tighter mb-4 relative z-10">Deployment, Render <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-front-blue to-violet-soft">va Production Settings</span></h1>
+<p class="text-xl text-gray-300 font-medium mt-6 relative z-10 max-w-4xl mx-auto">Juda sodda, juda aniq va vizual usulda. Hozircha <b>database</b> va <b>.env</b> ni skip qilamiz. Static uchun esa <span class="font-mono">STATIC_ROOT = os.path.join(BASE_DIR, 'static')</span> usulidan foydalanamiz.</p>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark">Production nima?</h2>
+<p class="text-gray-500 text-center max-w-4xl mx-auto">Local ishlayotgan loyiha bilan internetga chiqqan loyiha bir xil emas. Production degani — loyiha serverda ochilib, boshqalar ham ishlata oladigan holat.</p>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-start">
+<div class="dark-card p-6 md:p-8">
+<div class="grid md:grid-cols-4 gap-4 items-stretch">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 text-center pulse-ring"><div class="w-20 h-20 mx-auto rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center"><i class="fas fa-laptop-code text-3xl text-blue-300"></i></div><div class="font-black text-xl mt-4">1. Local</div><div class="text-xs text-slate-400 mt-2">Kompyuteringizda ishlaydi</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 text-center status-shine"><div class="w-20 h-20 mx-auto rounded-full bg-django-light/15 border border-django-light/30 flex items-center justify-center"><i class="fas fa-gears text-3xl text-django-light"></i></div><div class="font-black text-xl mt-4">2. Settings</div><div class="text-xs text-slate-400 mt-2">Production sozlanadi</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 text-center"><div class="w-20 h-20 mx-auto rounded-full bg-amber-soft/15 border border-amber-300/30 flex items-center justify-center"><i class="fas fa-cloud-arrow-up text-3xl text-amber-300"></i></div><div class="font-black text-xl mt-4">3. Deploy</div><div class="text-xs text-slate-400 mt-2">Render ga chiqadi</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 text-center"><div class="w-20 h-20 mx-auto rounded-full bg-front-blue/15 border border-front-blue/30 flex items-center justify-center"><i class="fas fa-globe text-3xl text-front-blue"></i></div><div class="font-black text-xl mt-4">4. Live</div><div class="text-xs text-slate-400 mt-2">Internetda ochiladi</div></div>
+</div>
+<div class="relative h-20 mt-6 flow-line"><div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-slate-700"></div></div>
+<div class="grid md:grid-cols-3 gap-4 mt-2">
+<div class="bg-blue-500/10 border border-blue-400/20 rounded-3xl p-5"><div class="text-sm uppercase tracking-widest text-blue-300 font-black">DEBUG</div><div class="text-xl font-black mt-1">False</div><div class="text-sm text-slate-300 mt-2">Production’da odatda o‘chadi</div></div>
+<div class="bg-green-500/10 border border-green-400/20 rounded-3xl p-5"><div class="text-sm uppercase tracking-widest text-green-300 font-black">HOST</div><div class="text-xl font-black mt-1">ALLOWED_HOSTS</div><div class="text-sm text-slate-300 mt-2">Qaysi domenlar kirishini biladi</div></div>
+<div class="bg-violet-500/10 border border-violet-400/20 rounded-3xl p-5"><div class="text-sm uppercase tracking-widest text-violet-300 font-black">STATIC</div><div class="text-xl font-black mt-1">collectstatic</div><div class="text-sm text-slate-300 mt-2">CSS/JS fayllar yig‘iladi</div></div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">Bugungi soddalashtirish</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nimalarni skip qilamiz?</h3><p class="text-gray-600 text-sm leading-relaxed">Hozircha <b>database</b> default holatda qoladi. <b>.env</b> ishlatmaymiz. Maqsad — Render deploy mantiqini sodda usulda tushunish.</p></div>
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-green-600 font-black mb-2">Asosiy natija</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Dars oxirida</h3><p class="text-gray-600 text-sm leading-relaxed">Siz Django/DRF projectni Render’ga chiqarish uchun kerak bo‘ladigan asosiy settingslarni joyiga qo‘ya olasiz.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-id-card"></i> BASIC AUTH</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark">Basic Authentication ketma-ketligi</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Bu eng sodda usul. Har requestda username va password header orqali yuboriladi.</p>
+</div>
+<div class="grid lg:grid-cols-2 gap-8 items-stretch">
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<div class="px-5 py-4 border-b border-slate-800">
+<div class="text-sm uppercase tracking-widest text-front-blue font-black">Request header</div>
+<div class="text-2xl font-black mt-1">Har safar credential yuboriladi</div>
+</div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-http" id="basicHeader">GET /api/products/ HTTP/1.1
+Host: example.com
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=</code></pre></div>
+</div>
+<div class="space-y-5">
+<div class="slide3-visual">
+<div class="flex items-center justify-between gap-3 mb-4">
+<span class="slide3-badge bg-blue-100 text-blue-700"><i class="fas fa-paper-plane"></i> Request</span>
+<i class="fas fa-arrow-right text-slate-400"></i>
+<span class="slide3-badge bg-emerald-100 text-emerald-700"><i class="fas fa-user-check"></i> Auth tekshiruvi</span>
+</div>
+<div class="slide3-mini-flow text-sm font-medium">
+            Client har requestda login ma’lumotini yuboradi → server credential’ni ajratadi → to‘g‘ri bo‘lsa user taniladi.
+          </div>
+</div>
+<div class="bg-white rounded-[28px] border border-gray-200 shadow-xl p-7">
+<div class="space-y-4 text-sm text-gray-700 font-medium">
+<div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-black shrink-0">1</div><div>Client username va password’ni Base64 ko‘rinishda yuboradi.</div></div>
+<div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-black shrink-0">2</div><div>Server header ichidan credential’ni ajratadi.</div></div>
+<div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-black shrink-0">3</div><div>Django auth tizimi orqali login va parol tekshiriladi.</div></div>
+<div class="flex gap-4 items-start"><div class="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-black shrink-0">4</div><div>To‘g‘ri bo‘lsa user taniladi, noto‘g‘ri bo‘lsa 401 qaytadi.</div></div>
+</div>
+<div class="mt-6 grid md:grid-cols-2 gap-4">
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-5"><div class="font-black text-pdp-dark mb-2">Afzalligi</div><div class="text-sm text-gray-600">Test va tez prototip uchun juda sodda.</div></div>
+<div class="bg-red-50 border border-red-100 rounded-3xl p-5"><div class="font-black text-pdp-dark mb-2">Kamchiligi</div><div class="text-sm text-gray-600">Har requestda login-parol yuboriladi. Production uchun yaxshi odat emas.</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-green-100 text-green-700 shadow-sm"><i class="fas fa-sliders"></i> SETTINGS</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">Production uchun eng kerakli settings</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Eng birinchi kerak bo‘ladiganlar — <span class="font-mono">DEBUG</span>, <span class="font-mono">ALLOWED_HOSTS</span> va static sozlamalari.</p>
+</div>
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-start">
+<div class="dark-card relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('coreSettings')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-front-blue font-black">settings.py</div><div class="text-2xl font-black mt-1">Asosiy production start</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="coreSettings">DEBUG = False
+
+ALLOWED_HOSTS = ['your-app.onrender.com']
+
+INSTALLED_APPS = [
+    # ...
+    'django.contrib.staticfiles',
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # ...
+]</code></pre></div>
+</div>
+<div class="space-y-5">
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-red-500 font-black mb-2">DEBUG</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nega False bo‘ladi?</h3><p class="text-gray-600 text-sm">Production’da xatolarni foydalanuvchiga to‘liq ko‘rsatmaslik uchun.</p></div>
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">ALLOWED_HOSTS</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nega kerak?</h3><p class="text-gray-600 text-sm">Qaysi domenlardan loyiha ochilishini Django bilib oladi. Render domenini shu yerga yozasiz.</p></div>
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-green-600 font-black mb-2">MIDDLEWARE</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nega WhiteNoise va CORS bor?</h3><p class="text-gray-600 text-sm">WhiteNoise static beradi, CORS esa frontend bilan aloqa masalasini hal qiladi.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-violet-100 text-violet-700 shadow-sm"><i class="fas fa-arrows-left-right"></i> CORS</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">CORS nima?</h2>
+<p class="text-gray-500 text-center mb-8 max-w-4xl mx-auto">Agar frontend bir joyda, backend boshqa joyda bo‘lsa, browser “bu requestga ruxsat bormi?” deb tekshiradi. Shu joyda CORS kerak bo‘ladi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-8 items-start">
+<div class="dark-card p-6 md:p-8">
+<div class="grid md:grid-cols-3 gap-4 text-center">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="big-icon mx-auto bg-blue-500/15 text-blue-300 mb-4"><i class="fas fa-laptop text-4xl"></i></div><div class="font-black text-xl">Frontend</div><div class="text-sm text-slate-300 mt-2">Masalan Vercel</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 status-shine"><div class="big-icon mx-auto bg-amber-400/15 text-amber-300 mb-4"><i class="fas fa-shield text-4xl"></i></div><div class="font-black text-xl">Browser</div><div class="text-sm text-slate-300 mt-2">Ruxsat bormi deb tekshiradi</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="big-icon mx-auto bg-green-500/15 text-green-300 mb-4"><i class="fas fa-server text-4xl"></i></div><div class="font-black text-xl">Backend</div><div class="text-sm text-slate-300 mt-2">Masalan Render API</div></div>
+</div>
+<div class="relative h-20 mt-6 flow-line"><div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-slate-700"></div></div>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="bg-red-500/10 border border-red-400/20 rounded-3xl p-5"><div class="font-black text-xl text-red-300 mb-2">CORS yo‘q bo‘lsa</div><div class="text-sm text-slate-300">Browser requestni bloklab qo‘yishi mumkin.</div></div>
+<div class="bg-green-500/10 border border-green-400/20 rounded-3xl p-5"><div class="font-black text-xl text-green-300 mb-2">CORS to‘g‘ri bo‘lsa</div><div class="text-sm text-slate-300">Frontend API bilan bemalol gaplashadi.</div></div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">Qachon kerak?</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Frontend va backend ajralgan bo‘lsa</h3><p class="text-sm text-gray-600">Masalan frontend <span class="font-mono">localhost:3000</span>, backend esa <span class="font-mono">onrender.com</span> bo‘lsa.</p></div>
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-red-500 font-black mb-2">Qachon kerak emas?</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Hammasi bitta joyda bo‘lsa</h3><p class="text-sm text-gray-600">Agar frontend va backend bitta domen ostida ishlasa, CORS muammo bo‘lmasligi mumkin.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-rose-100 text-rose-700 shadow-sm"><i class="fas fa-link"></i> CORS SETTINGS</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark mt-4">CORS ni qanday yozamiz?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3">Juda sodda variant: <span class="font-mono">corsheaders</span> ni app va middleware ga qo‘shamiz, keyin allowed origin larni yozamiz.</p>
+</div>
+<div class="grid lg:grid-cols-[1fr_1fr] gap-8 items-start">
+<div class="dark-card relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('corsCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-rose-300 font-black">settings.py</div><div class="text-2xl font-black mt-1">CORS sozlamasi</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="corsCode">INSTALLED_APPS = [
+    # ...
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    # ...
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'https://your-frontend.vercel.app',
+]</code></pre></div>
+</div>
+<div class="space-y-4">
+<div class="step-card"><div class="n bg-blue-500">1</div><div class="text-sm uppercase tracking-widest text-blue-700 font-black mb-1">INSTALLED_APPS</div><h3 class="text-xl font-black text-pdp-dark mb-2">Paketni yoqasiz</h3><p class="text-sm text-gray-600">Django <span class="font-mono">corsheaders</span> paketini tanib oladi.</p></div>
+<div class="step-card"><div class="n bg-green-500">2</div><div class="text-sm uppercase tracking-widest text-green-700 font-black mb-1">MIDDLEWARE</div><h3 class="text-xl font-black text-pdp-dark mb-2">Request tekshiriladi</h3><p class="text-sm text-gray-600">CORS header lar browserga qaytishi uchun shu yerga qo‘shiladi.</p></div>
+<div class="step-card"><div class="n bg-violet-500">3</div><div class="text-sm uppercase tracking-widest text-violet-700 font-black mb-1">CORS_ALLOWED_ORIGINS</div><h3 class="text-xl font-black text-pdp-dark mb-2">Ruxsatli frontendlar yoziladi</h3><p class="text-sm text-gray-600">Faqat kerakli frontend domenlarni kiriting. Hammani ochib yubormang.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-violet-100 text-violet-700 shadow-sm"><i class="fas fa-boxes-stacked"></i> REQUIREMENTS</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">requirements.txt qanday bo‘ladi?</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Deploy paytida Render shu fayldan paketlarni o‘rnatadi.</p>
+</div>
+<div class="grid lg:grid-cols-[.95fr_1.05fr] gap-8 items-start">
+<div class="terminal-card relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('reqCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-violet-300 font-black">requirements.txt</div><div class="text-2xl font-black mt-1">Minimal deploy variant</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-text" id="reqCode">Django
+djangorestframework
+djangorestframework-simplejwt
+gunicorn
+whitenoise
+django-cors-headers</code></pre></div>
+</div>
+<div class="grid md:grid-cols-2 gap-5">
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">Django</div><p class="text-sm text-gray-600">Asosiy framework</p></div>
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">DRF</div><p class="text-sm text-gray-600">API yozish uchun</p></div>
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">Simple JWT</div><p class="text-sm text-gray-600">JWT authentication uchun</p></div>
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">Gunicorn</div><p class="text-sm text-gray-600">Production server</p></div>
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">WhiteNoise</div><p class="text-sm text-gray-600">Static file uchun</p></div>
+<div class="mini-card p-5"><div class="font-black text-pdp-dark text-xl mb-2">CORS headers</div><p class="text-sm text-gray-600">Frontend aloqa uchun</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-green-100 text-green-700 shadow-sm"><i class="fas fa-hammer"></i> BUILD + START</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">Render’da build va start command</h2>
+<p class="text-gray-500 text-center mb-8 max-w-4xl mx-auto">Deploy paytida Render avval build command’ni bajaradi, keyin start command bilan loyihani ishga tushiradi.</p>
+</div>
+<div class="grid lg:grid-cols-2 gap-8 items-stretch">
+<div class="terminal-card relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('buildCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-green-300 font-black">Build Command</div><div class="text-2xl font-black mt-1">Static yig‘iladi</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-bash" id="buildCode">pip install -r requirements.txt &amp;&amp; python manage.py collectstatic --noinput</code></pre></div>
+</div>
+<div class="terminal-card relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('startCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-front-blue font-black">Start Command</div><div class="text-2xl font-black mt-1">App ishga tushadi</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-bash" id="startCode">gunicorn root.wsgi:application</code></pre></div>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-5 mt-6">
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-green-600 font-black mb-2">Build</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nima qiladi?</h3><p class="text-sm text-gray-600">Paketlar o‘rnatiladi va static fayllar yig‘iladi.</p></div>
+<div class="mini-card p-6"><div class="text-sm uppercase tracking-widest text-blue-600 font-black mb-2">Start</div><h3 class="text-2xl font-black text-pdp-dark mb-2">Nima qiladi?</h3><p class="text-sm text-gray-600">Gunicorn orqali Django loyihani internetda ishga tushiradi.</p></div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-blue-100 text-blue-700 shadow-sm"><i class="fas fa-list-check"></i> RENDER QADAMLARI</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">Deploy qilish tartibi</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Mana shu ketma-ketlikni ushlasangiz, Render deploy ancha oson bo‘ladi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.08fr_.92fr] gap-8 items-start">
+<div class="dark-card p-6 md:p-8">
+<div class="grid md:grid-cols-5 gap-4 text-center">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="w-16 h-16 mx-auto rounded-full bg-blue-500/15 flex items-center justify-center mb-4"><i class="fab fa-github text-blue-300 text-2xl"></i></div><div class="font-black text-xl">1. GitHub</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5 status-shine"><div class="w-16 h-16 mx-auto rounded-full bg-green-500/15 flex items-center justify-center mb-4"><i class="fas fa-cloud text-green-300 text-2xl"></i></div><div class="font-black text-xl">2. Render</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="w-16 h-16 mx-auto rounded-full bg-violet-500/15 flex items-center justify-center mb-4"><i class="fas fa-code-branch text-violet-300 text-2xl"></i></div><div class="font-black text-xl">3. Connect</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="w-16 h-16 mx-auto rounded-full bg-amber-500/15 flex items-center justify-center mb-4"><i class="fas fa-terminal text-amber-300 text-2xl"></i></div><div class="font-black text-xl">4. Commands</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="w-16 h-16 mx-auto rounded-full bg-front-blue/15 flex items-center justify-center mb-4"><i class="fas fa-globe text-front-blue text-2xl"></i></div><div class="font-black text-xl">5. Live</div></div>
+</div>
+<div class="relative h-20 mt-6 flow-line"><div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-slate-700"></div></div>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Repo tayyor</div><div class="text-sm text-slate-300">Project GitHub’ga push bo‘lgan bo‘lishi kerak.</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Web Service</div><div class="text-sm text-slate-300">Render ichida Python Web Service ochiladi.</div></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="step-card"><div class="n bg-blue-500">1</div><h3 class="text-xl font-black text-pdp-dark mb-2">Repo’ni GitHub ga yuboring</h3><p class="text-sm text-gray-600">Render GitHub repo’dan kodni olib deploy qiladi.</p></div>
+<div class="step-card"><div class="n bg-green-500">2</div><h3 class="text-xl font-black text-pdp-dark mb-2">Render’da Web Service yarating</h3><p class="text-sm text-gray-600">Repo’ni tanlaysiz va projectni ulaysiz.</p></div>
+<div class="step-card"><div class="n bg-violet-500">3</div><h3 class="text-xl font-black text-pdp-dark mb-2">Build va Start command yozing</h3><p class="text-sm text-gray-600">Oldingi slayddagi commandlar shu yerga yoziladi.</p></div>
+<div class="step-card"><div class="n bg-amber-500">4</div><h3 class="text-xl font-black text-pdp-dark mb-2">Deploy tugmasini bosing</h3><p class="text-sm text-gray-600">Deploy tugagach Render sizga live link beradi.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-red-100 text-red-700 shadow-sm"><i class="fas fa-triangle-exclamation"></i> ENG KO‘P XATOLAR</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">Deploy paytidagi odatiy xatolar</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Ko‘p hollarda muammo aynan mana shu joylardan chiqadi.</p>
+</div>
+<div class="grid lg:grid-cols-3 gap-6">
+<div class="mini-card p-6 status-shine"><div class="inline-flex items-center gap-2 bg-red-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">1</div><h3 class="text-3xl font-black text-pdp-dark mb-3">ALLOWED_HOSTS yo‘q</h3><p class="text-sm text-gray-700 leading-relaxed">Render domenini yozmasangiz loyiha to‘g‘ri ochilmasligi mumkin.</p></div>
+<div class="mini-card p-6 status-shine"><div class="inline-flex items-center gap-2 bg-amber-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">2</div><h3 class="text-3xl font-black text-pdp-dark mb-3">Static chiqmayapti</h3><p class="text-sm text-gray-700 leading-relaxed"><span class="font-mono">collectstatic</span>, <span class="font-mono">STATIC_ROOT</span> yoki WhiteNoise noto‘g‘ri bo‘lishi mumkin.</p></div>
+<div class="mini-card p-6 status-shine"><div class="inline-flex items-center gap-2 bg-blue-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">3</div><h3 class="text-3xl font-black text-pdp-dark mb-3">CORS blok bo‘lyapti</h3><p class="text-sm text-gray-700 leading-relaxed">Frontend domeni <span class="font-mono">CORS_ALLOWED_ORIGINS</span> ichida yo‘q bo‘lishi mumkin.</p></div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="deploy-badge bg-amber-100 text-amber-700 shadow-sm"><i class="fas fa-laptop-code"></i> MINI CHECKLIST</div>
+<h2 class="text-4xl font-black mb-2 text-pdp-dark mt-4">Deploydan oldin tekshiruv</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Deploydan oldin mana shu ro‘yxatga qarab chiqing.</p>
+</div>
+<div class="grid md:grid-cols-2 xl:grid-cols-4 gap-5">
+<div class="mini-card p-6"><div class="text-xs uppercase tracking-widest text-slate-500 font-black mb-2">1</div><div class="text-2xl font-black text-pdp-dark mb-2">DEBUG</div><p class="text-sm text-gray-600">False bo‘ldimi?</p></div>
+<div class="mini-card p-6"><div class="text-xs uppercase tracking-widest text-blue-500 font-black mb-2">2</div><div class="text-2xl font-black text-pdp-dark mb-2">HOST</div><p class="text-sm text-gray-600">Render domeni yozildimi?</p></div>
+<div class="mini-card p-6"><div class="text-xs uppercase tracking-widest text-green-500 font-black mb-2">3</div><div class="text-2xl font-black text-pdp-dark mb-2">STATIC</div><p class="text-sm text-gray-600"><span class="font-mono">STATIC_ROOT</span> va <span class="font-mono">collectstatic</span> tayyormi?</p></div>
+<div class="mini-card p-6"><div class="text-xs uppercase tracking-widest text-violet-500 font-black mb-2">4</div><div class="text-2xl font-black text-pdp-dark mb-2">CORS</div><p class="text-sm text-gray-600">Frontend domeni ruxsatga kiritildimi?</p></div>
+</div>
+<div class="mt-8 dark-card p-6 md:p-8">
+<div class="grid md:grid-cols-4 gap-5 text-sm">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Install</div><div class="text-slate-300">Paketlar bor</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Settings</div><div class="text-slate-300">DEBUG, HOST, STATIC</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Commands</div><div class="text-slate-300">build + start tayyor</div></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><div class="font-black text-xl mb-2">Live</div><div class="text-slate-300">Render link ochiladi</div></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-slate-900 text-white relative hero-grid" style="justify-content:flex-start; padding-top:4.4rem; padding-bottom:2.6rem;">
+<div class="w-full max-w-6xl mx-auto relative z-10">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-blue-400/15 text-blue-300 border border-blue-300/20 px-5 py-2 rounded-full font-black mb-4 shadow-sm"><i class="fas fa-laptop-code"></i> MUSTAQIL ISH</div>
+<h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-3">Mustaqil ish</h2>
+<p class="text-gray-300 max-w-4xl mx-auto">DRF loyihangizni <b>kamida 1 marta</b> serverga deploy qiling va uni ochib, ishlash holatini tahlil qiling.</p>
+</div>
+<div class="independent-shell mb-7">
+<div class="grid md:grid-cols-3 gap-5">
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-green-500/15 border border-green-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-upload text-4xl text-green-300"></i></div>
+<div class="text-sm uppercase tracking-widest text-green-300 font-black mb-2">1-qadam</div>
+<div class="text-2xl font-black mb-2">Deploy qiling</div>
+<div class="text-sm text-slate-300">Loyihani Render yoki ishlatayotgan platformangizga 1 marta chiqaring.</div>
+</div>
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-globe text-4xl text-blue-300"></i></div>
+<div class="text-sm uppercase tracking-widest text-blue-300 font-black mb-2">2-qadam</div>
+<div class="text-2xl font-black mb-2">Ishlatib ko‘ring</div>
+<div class="text-sm text-slate-300">Sayt ochilyaptimi, static chiqyaptimi, endpoint ishlayaptimi — barchasini tekshiring.</div>
+</div>
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-amber-500/15 border border-amber-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-magnifying-glass-chart text-4xl text-amber-300"></i></div>
+<div class="text-sm uppercase tracking-widest text-amber-300 font-black mb-2">3-qadam</div>
+<div class="text-2xl font-black mb-2">Tahlil qiling</div>
+<div class="text-sm text-slate-300">Qaysi joyi ishladi, qaysi joyi xato berdi, nima sabab bo‘ldi — yozib chiqing.</div>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-5 mt-6">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Nima topshiriladi?</div>
+<div class="text-sm text-slate-300">Deploy link yoki screenshot va qisqa izoh.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Nima tahlil qilinadi?</div>
+<div class="text-sm text-slate-300">ALLOWED_HOSTS, static, CORS yoki boshqa muammo bo‘lganmi.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Asosiy maqsad</div>
+<div class="text-sm text-slate-300">Deploy jarayonini bir marta o‘zingiz bajarib ko‘rish.</div>
+</div>
+</div>
+</div>
+</div>
+</section><section class="slide bg-slate-900 text-white relative hero-grid" style="; padding-top:4.8rem;">
+<div class="w-full max-w-6xl mx-auto relative z-10">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-amber-400/15 text-amber-300 border border-amber-300/20 px-5 py-2 rounded-full font-black mb-4 shadow-sm"><i class="fas fa-house-laptop"></i> HOMEWORK</div>
+<h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-3">Uyga vazifa</h2>
+<p class="text-gray-300 max-w-4xl mx-auto">Kamida <b>3 marta</b> DRF loyihangizni serverga deploy qiling. Har bir urinishdan keyin natijani, linkni yoki screenshotni ustozga tashlab bering.</p>
+</div>
+<div class="homework-shell mb-7">
+<div class="homework-grid">
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-green-500/15 border border-green-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-1 text-4xl text-green-300 font-black"></i></div>
+<div class="text-sm uppercase tracking-widest text-green-300 font-black mb-2">1-urinish</div>
+<div class="text-2xl font-black mb-2">Deploy qiling</div>
+<div class="text-sm text-slate-300">Settings, static, build va start command bilan projectni Render ga chiqaring.</div>
+</div>
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-2 text-4xl text-blue-300 font-black"></i></div>
+<div class="text-sm uppercase tracking-widest text-blue-300 font-black mb-2">2-urinish</div>
+<div class="text-2xl font-black mb-2">Xatoni toping</div>
+<div class="text-sm text-slate-300">Agar ALLOWED_HOSTS, static yoki CORS’da muammo chiqsa, tuzatib yana deploy qiling.</div>
+</div>
+<div class="homework-card status-shine">
+<div class="w-20 h-20 rounded-full bg-amber-500/15 border border-amber-400/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-3 text-4xl text-amber-300 font-black"></i></div>
+<div class="text-sm uppercase tracking-widest text-amber-300 font-black mb-2">3-urinish</div>
+<div class="text-2xl font-black mb-2">Natijani yuboring</div>
+<div class="text-sm text-slate-300">Har safar chiqqan natijani ustozga yuboring: link, screenshot yoki log bo‘lishi mumkin.</div>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-5 mt-6">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Nima yuboriladi?</div>
+<div class="text-sm text-slate-300">Render link, deploy holati va ishlagan/ishlamagan natija.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Nima tekshiriladi?</div>
+<div class="text-sm text-slate-300">Project ochildimi, static chiqdimi, xatolarni tuzata oldingizmi.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="font-black text-xl mb-2">Asosiy maqsad</div>
+<div class="text-sm text-slate-300">Bir marta emas, qayta-qayta deploy qilib tajriba orttirish.</div>
+</div>
+</div>
+</div>
+</div>
+</section><section class="slide bg-slate-900 text-white relative hero-grid">
+<div class="max-w-5xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[28rem] h-[28rem] bg-django-light rounded-full"></div></div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">XULOSA</span>
+<div class="inline-block mb-6 relative z-10">
+<i class="fas fa-rocket text-8xl text-django-light animate-float mr-4"></i>
+<i class="fas fa-server text-7xl text-front-blue animate-float" style="animation-delay:1s"></i>
+<i class="fas fa-shield-halved text-7xl text-violet-soft animate-float ml-4" style="animation-delay:.5s"></i>
+</div>
+<h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 relative z-10">Render deploy uchun <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-front-blue to-violet-soft">eng kerakli joylar</span></h2>
+<p class="text-xl text-gray-300 font-medium mt-6 relative z-10 max-w-4xl mx-auto">DEBUG False, ALLOWED_HOSTS, WhiteNoise, STATIC_ROOT, collectstatic, gunicorn va CORS — hozircha sizga shu yetadi. Database va .env ni keyingi darsda qo‘shasiz.</p>
+</div>
+</section>
+</div>
+</main>
+<script>
+hljs.highlightAll();
+const slidesWrapper = document.getElementById('slidesWrapper');
+const slides = document.querySelectorAll('.slide');
+const prevBtn = document.getElementById('btn-prev');
+const nextBtn = document.getElementById('btn-next');
+const counter = document.getElementById('slide-counter');
+const touchArea = document.getElementById('touchArea');
+let currentSlide = 0;
+let startX = 0;
+let endX = 0;
+function updateSlider() {
+  slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+  counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide === slides.length - 1;
+  prevBtn.classList.toggle('opacity-40', currentSlide === 0);
+  nextBtn.classList.toggle('opacity-40', currentSlide === slides.length - 1);
+}
+prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; updateSlider(); } });
+nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; updateSlider(); } });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) { currentSlide++; updateSlider(); }
+  else if (e.key === 'ArrowLeft' && currentSlide > 0) { currentSlide--; updateSlider(); }
+});
+touchArea.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+touchArea.addEventListener('touchend', (e) => {
+  endX = e.changedTouches[0].clientX;
+  let diff = endX - startX;
+  if (diff < -50 && currentSlide < slides.length - 1) { currentSlide++; updateSlider(); }
+  else if (diff > 50 && currentSlide > 0) { currentSlide--; updateSlider(); }
+});
+function showCopyToast() {
+  const toast = document.getElementById('copyToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1200);
+}
+function copyById(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(showCopyToast);
+}
+updateSlider();
+</script>
+</body>
+</html>

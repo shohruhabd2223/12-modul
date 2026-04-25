@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1-Dars · DRF Teacher Guide - Django REST Framework</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+    @keyframes bob { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-8px);} }
+    @keyframes pulseRing { 0% { transform: scale(.95); opacity: .85; } 100% { transform: scale(1.08); opacity: 0; } }
+    .animate-bob { animation: bob 2.4s ease-in-out infinite; }
+    .copy-toast {
+      position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+      background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+      font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+      pointer-events:none; transition: opacity .25s; z-index: 200;
+    }
+    .copy-toast.show { opacity: 1; }
+    .swagger-row { transition: all .28s ease; }
+    .swagger-row:hover { transform: translateY(-2px) scale(1.01); }
+    .swagger-core::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius: 28px; animation: pulseRing 2s infinite; }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">1-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Django REST Framework · 1-dars uchun mentor version</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#xarita" class="hover:text-white">Dars xaritasi</a>
+        <a href="#swagger" class="hover:text-white">Swagger</a>
+        <a href="#mustaqil" class="hover:text-white">Mustaqil ish</a>
+        <a href="#homework" class="hover:text-white">Homework</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            1-dars · Mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Django REST Framework bo‘yicha <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">teacher qo‘llanma</span><br>
+            web sayti
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sahifa aynan siz yuborgan DRF dars slaydlari asosida mentor uchun tayyorlandi. Fokus — studentga <b class="text-white">API tushunchasi</b>, <b class="text-white">DRF muhiti</b>, <b class="text-white">Model → Serializer → ViewSet → Router</b> oqimi, yangi qo‘shilgan <b class="text-white">Swagger bo‘limi</b> va oxiridagi <b class="text-white">Person CRUD mustaqil ish</b> hamda <b class="text-white">Student CRUD homework</b> ni to‘g‘ri tartibda tushuntirish.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-bullseye"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+              <div class="text-white font-black mt-1">Konsept + CRUD + Swagger</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-laptop-code"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+              <div class="text-white font-black mt-1">DRF 1-dars</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-ai-violet text-xl mb-2"><i class="fas fa-layer-group"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Mustaqil + homework</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+              <div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-lg">DRF oqimi</div>
+                    <div class="text-slate-400 text-sm">API yozish ketma-ketligi</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+                    <i class="fas fa-diagram-project"></i>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Model</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. Serializer</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. ViewSet</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. Router</div>
+                  <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">Natija</span><span class="text-white font-black">CRUD endpoint</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Asosiy dars mantig‘i</div>
+              <div class="text-slate-400 text-sm leading-relaxed">API nima, DRF nima, environment setup, settings.py, CRUD yozish ketma-ketligi, endpointlar, Swagger, mustaqil ish va homework.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Intro → CRUD API</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">API</b> ni shunchaki yangi so‘z sifatida emas, balki <b class="text-white">ikki dastur orasidagi aloqa ko‘prigi</b> sifatida tushunib olishi kerak.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student dars oxirida CRUD oqimini ushlashi kerak: <b class="text-white">model yoziladi → serializer yoziladi → viewset yoziladi → router endpoint ochadi</b>.
+          </div>
+        </div>
+      </div>
+    
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Lesson yangiligi</div>
+            <h2 class="text-3xl font-black text-white">5-betdagi yangi ogohlantirishni teacher ham aytib o‘tsin</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Install komandasi</div>
+        </div>
+        <div class="warn rounded-r-[1.5rem] p-5 flex items-center justify-between gap-4">
+          <div class="min-w-0">
+            <div class="text-xs uppercase tracking-[0.2em] text-red-300 font-black mb-2">Warning</div>
+            <div class="font-mono text-white font-semibold break-all">pip install djangorestframework</div>
+          </div>
+          <button onclick="copyText('pip install djangorestframework')" class="shrink-0 w-11 h-11 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-400/20 transition-all" title="Copy command">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <p class="text-slate-400 text-sm mt-4 leading-relaxed">Mentor studentlarga aytsin: <b class="text-white">rest_framework</b> ni settings.py ga qo‘shishdan oldin kutubxona albatta install qilingan bo‘lishi kerak. Lesson saytda bu joy warning ko‘rinishida alohida ajratilgan.</p>
+      </div>
+    </section>
+
+    <section id="xarita" class="mb-12">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · kirish</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">DRF va API tushunchasini sodda analogiya bilan ochib bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Slide 2 va 3 da asosiy vazifa — kodga shoshmasdan oldin <b class="text-white">API nima</b> va <b class="text-white">DRF nimani osonlashtiradi</b> degan savollarga javob berish. Restoran/ofitsiant analogiyasini ishlating: client buyurtma beradi, API tashiydi, backend javob tayyorlaydi.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Bu bosqichda studentga HTTP, JSON, endpoint so‘zlari hali qiyin bo‘lishi mumkin. Avval ko‘prik, elchi, ofitsiant kabi o‘xshatishlar bilan mustahkamlang.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#EF4444"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-red-500/10 text-red-400 font-black text-xs uppercase tracking-widest border border-red-500/20">2-qadam · setup</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">PyCharm setup paytida xatolarni oldindan to‘xtating</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Slide 4 studentlar eng ko‘p adashadigan joy. Mentor har bir bolada <span class="code-chip px-2 py-1 rounded-lg">Django</span> tanlanganini, <span class="code-chip px-2 py-1 rounded-lg">app</span> va <span class="code-chip px-2 py-1 rounded-lg">root</span> to‘g‘ri yozilganini tekshirsin.</p>
+          <div class="warn rounded-r-2xl p-4 text-sm text-red-100/90 leading-relaxed">Biror student noto‘g‘ri project ochsa, keyingi kodlar bilan mos kelmay qoladi. Shu sabab bu qadamda sekinroq boring.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">3-qadam · settings.py</span>
+            <span class="text-xs text-slate-400 font-bold">6–8 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">rest_framework va app ni settings ga qo‘shish nega kerakligini ayting</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Slide 5 da student faqat kodni ko‘rmasin, ma’nosini ham tushunsin: <b class="text-white">rest_framework</b> — DRF imkoniyatlarini yoqadi, <b class="text-white">app</b> — o‘zimiz yozayotgan kod ishlashi uchun kerak.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Mentor iborasi: “Biz hozir Djangoga yangi imkoniyat qo‘shyapmiz. Ya’ni project ichiga DRF ni ulayapmiz.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">4-qadam · CRUD flow</span>
+            <span class="text-xs text-slate-400 font-bold">20–25 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Model → Serializer → ViewSet → Router zanjirini butun oqim sifatida ko‘rsating</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Slide 6 darsning yuragi. Bu yerda student alohida fayllarni emas, ularning o‘zaro ishlashini ko‘rishi kerak. Har birini ketma-ket tushuntiring:</p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Model</div><div class="text-slate-400">Ma’lumot bazada qanday saqlanishini belgilaydi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Serializer</div><div class="text-slate-400">Modelni JSON ga aylantiradi va kelgan datani tekshiradi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">ViewSet</div><div class="text-slate-400">CRUD logikasini bir joyga jamlaydi.</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Router</div><div class="text-slate-400">Endpointlarni avtomatik ochib beradi.</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 mt-5 text-sm text-amber-100/90">Teacher uchun gap: “Model datasini yaratadi, serializer uni tashqariga chiqaradi, viewset boshqaradi, router esa eshik ochadi.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#7C3AED"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-ai-violet/10 text-ai-violet font-black text-xs uppercase tracking-widest border border-ai-violet/20">5-qadam · endpointlar</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">GET, POST, PUT, DELETE ni real misol bilan gapirtiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Slide 7 da methodlarni yodlatmang, ishlatib ko‘rsating: <b class="text-white">GET</b> — ko‘rish, <b class="text-white">POST</b> — yaratish, <b class="text-white">PUT</b> — yangilash, <b class="text-white">DELETE</b> — o‘chirish.</p>
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-slate-300">GET /person/ → barcha ma’lumotlar</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-slate-300">POST /person/ → yangi ma’lumot qo‘shish</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-slate-300">GET /person/1/ → bitta object</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-slate-300">PUT / DELETE /person/1/ → o‘zgartirish yoki o‘chirish</div>
+          </div>
+        
+        <article id="swagger" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#22C55E"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-green-500/10 text-green-400 font-black text-xs uppercase tracking-widest border border-green-500/20">6-qadam · swagger nima?</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">8-betdagi yangi Swagger sahifasini “API boshqaruv paneli” sifatida tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Hozirgi lesson saytga yangi Swagger bo‘limi qo‘shilgan. Mentor bu joyda Swagger’ni <b class="text-white">API hujjati + test oynasi</b> deb izohlashi kerak. Ya’ni student endpointlarni bir joyda ko‘radi, methodlarni farqlaydi va API ni frontend yozmasdan turib brauzerning o‘zida sinab ko‘ra oladi.</p>
+          <div class="grid lg:grid-cols-[1.06fr_0.94fr] gap-5 items-start">
+            <div class="rounded-[1.75rem] overflow-hidden border border-white/10 bg-slate-900">
+              <div class="bg-[#1e1f22] px-5 py-3 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 text-white min-w-0">
+                  <div class="w-10 h-10 rounded-full bg-lime-400 text-slate-900 flex items-center justify-center font-black shadow-lg animate-pulse">S</div>
+                  <div>
+                    <div class="font-black text-lg leading-none">Swagger UI</div>
+                    <div class="text-[11px] text-slate-400">Interaktiv dokumentatsiya</div>
+                  </div>
+                </div>
+                <div class="hidden md:flex items-center bg-white rounded-lg overflow-hidden border border-lime-400/40 w-[54%]">
+                  <div class="px-4 py-2 text-sm text-slate-600 font-mono flex-1">/swagger/</div>
+                  <div class="bg-lime-400 text-slate-900 px-4 py-2 font-black text-sm">Open</div>
+                </div>
+              </div>
+              <div class="p-5 bg-[#f7f7f7]">
+                <div class="text-slate-700 text-3xl font-black mb-4">Student API <span class="text-xs align-top bg-slate-300 px-2 py-1 rounded-full">v1</span></div>
+                <div class="space-y-3">
+                  <div class="swagger-row rounded-xl border-2 border-[#61affe] bg-[#ecf5ff] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#61affe] text-white rounded-md px-3 py-1.5 font-black text-sm">GET</span>
+                      <div><div class="font-black text-slate-700 font-mono">/students</div><div class="text-xs text-slate-500">Barcha studentlarni olish</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">list_students</div>
+                  </div>
+                  <div class="swagger-row rounded-xl border-2 border-[#49cc90] bg-[#edf9f3] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#49cc90] text-white rounded-md px-3 py-1.5 font-black text-sm">POST</span>
+                      <div><div class="font-black text-slate-700 font-mono">/students</div><div class="text-xs text-slate-500">Yangi student qo‘shish</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">create_student</div>
+                  </div>
+                  <div class="swagger-row rounded-xl border-2 border-[#fca130] bg-[#fff8ef] px-4 py-3 flex items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <span class="w-16 text-center bg-[#fca130] text-white rounded-md px-3 py-1.5 font-black text-sm">PUT</span>
+                      <div><div class="font-black text-slate-700 font-mono">/students/{id}</div><div class="text-xs text-slate-500">Studentni yangilash</div></div>
+                    </div>
+                    <div class="hidden md:block text-xs text-slate-500 font-mono">update_student</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2"><i class="fas fa-map text-front-blue mr-2"></i>Swagger nimani beradi?</div>
+                <div class="text-slate-400 text-sm leading-relaxed">Endpointlar ro‘yxati, methodlar, request body, parametrlar, response va status kodlarni ko‘rsatadi.</div>
+              </div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+                <div class="text-white font-black mb-2"><i class="fas fa-vial text-django-light mr-2"></i>Mentor urg‘usi</div>
+                <div class="text-slate-400 text-sm leading-relaxed">Studentga ayting: “Swagger bu backend’ni ko‘rish va tekshirish uchun oynadir. API’ni shu joyda ishlatib ko‘ramiz.”</div>
+              </div>
+              <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90">Bu joyda lesson saytdagi yangi vizual bo‘limdan foydalanib, GET/POST/PUT/DELETE ranglarini ham birga tushuntirish foydali bo‘ladi.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#3B82F6"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-blue-500/10 text-blue-400 font-black text-xs uppercase tracking-widest border border-blue-500/20">7-qadam · drf-yasg</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">9-betdagi yangi Swagger ishlatish tartibini faqat drf-yasg bilan ko‘rsating</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Teacher guide ham endi lesson saytdagi yangilikka mos bo‘lishi kerak. Shu sabab mentor faqat <b class="text-white">drf-yasg</b> ni ishlatib ko‘rsatadi: install qilish, <b class="text-white">INSTALLED_APPS</b> ga qo‘shish, <b class="text-white">schema_view</b> yaratish va <b class="text-white">/swagger/</b> sahifani ochish.</p>
+          <div class="grid lg:grid-cols-[0.85fr_1.15fr] gap-5 items-start">
+            <div class="space-y-4">
+              <div class="rounded-2xl bg-emerald-500/10 border border-emerald-400/20 p-5">
+                <div class="flex items-center justify-between gap-3 mb-3">
+                  <div class="text-white font-black">Install komanda</div>
+                  <button onclick="copyText('pip install drf-yasg')" class="w-10 h-10 rounded-2xl bg-emerald-400/10 hover:bg-emerald-400/20 text-emerald-300 border border-emerald-300/20 transition-all" title="Copy command">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+                <div class="font-mono text-sm text-emerald-200 break-all">pip install drf-yasg</div>
+              </div>
+              <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-sm text-slate-300">
+                <div class="text-white font-black mb-3">Qisqa tartib</div>
+                <div class="space-y-2">
+                  <div>1. drf-yasg ni install qiling</div>
+                  <div>2. settings.py ga drf_yasg ni qo‘shing</div>
+                  <div>3. root/urls.py da schema_view yozing</div>
+                  <div>4. /swagger/ URL ni oching</div>
+                  <div>5. Try it out → Execute bilan sinang</div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-5">
+              <div class="rounded-[1.75rem] overflow-hidden border border-white/10 bg-slate-950">
+                <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-4">
+                  <div>
+                    <div class="text-django-light font-black text-xs uppercase tracking-[0.2em]">settings.py</div>
+                    <div class="text-white font-black text-xl mt-1">drf_yasg qo‘shilishi</div>
+                  </div>
+                  <button onclick="copyById('teacherSwaggerSettings')" class="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all" title="Copy code">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+                <pre id="teacherSwaggerSettings" class="p-5 text-sm text-slate-200 overflow-auto font-mono">INSTALLED_APPS = [
+    'rest_framework',
+    'drf_yasg',
+    'app',
+]</pre>
+              </div>
+              <div class="rounded-[1.75rem] overflow-hidden border border-white/10 bg-slate-950">
+                <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-4">
+                  <div>
+                    <div class="text-front-blue font-black text-xs uppercase tracking-[0.2em]">root/urls.py</div>
+                    <div class="text-white font-black text-xl mt-1">Minimal swagger sozlash</div>
+                  </div>
+                  <button onclick="copyById('teacherSwaggerUrls')" class="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all" title="Copy code">
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+                <pre id="teacherSwaggerUrls" class="p-5 text-sm text-slate-200 overflow-auto font-mono">from django.contrib import admin
+from django.urls import path, re_path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Student API",
+        default_version='v1',
+        description="Student CRUD API hujjati",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('app.urls')),
+    re_path(r'^swagger(?P&lt;format&gt;\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+]</pre>
+              </div>
+            </div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 mt-5 text-sm text-green-100/90 leading-relaxed">Mentor studentga aytsin: “Bizga bu dars uchun drf-yasg ning o‘zi yetadi. Swagger sahifani ochamiz va endpointlarni shu yerdan tekshiramiz.”</div>
+        </article>
+
+        <article id="mustaqil" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">8-qadam · mustaqil ish</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Person CRUD mustaqil ishini fieldlar bilan to‘liq tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Slide 8 da student endi o‘zi mustaqil takrorlashi kerak. Mentor bu yerda yangi model nomi <b class="text-white">Person</b> bo‘lsa ham, oqim o‘zgarmasligini alohida ta’kidlashi kerak.</p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">full_name</div><div class="text-slate-400 text-sm">shaxsning ism-familiyasi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">age</div><div class="text-slate-400 text-sm">yoshi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">phone_number</div><div class="text-slate-400 text-sm">telefon raqami</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">address</div><div class="text-slate-400 text-sm">manzili</div></div>
+          </div>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Mentor uchun urg‘u: “Model nomi o‘zgardi, lekin yozilish tartibi o‘zgarmaydi. Avval model, keyin serializer, keyin viewset, keyin router.”</div>
+        </article>
+
+        <article id="homework" class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#00D1D1"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">9-qadam · homework</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Uyga vazifada Student CRUD ni mustaqil qilib topshirishsin</h3>
+          <p class="text-slate-300 leading-relaxed mb-5">Homework da student <b class="text-white">Student</b> modeli bilan yana bir marta shu CRUD oqimini mustahkamlaydi. Bu yerda fieldlar oddiyroq: <b class="text-white">full_name</b>, <b class="text-white">age</b>, <b class="text-white">course</b>.</p>
+          <div class="grid md:grid-cols-3 gap-4 mb-5">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-center"><div class="text-white font-black">full_name</div><div class="text-slate-400 text-sm mt-1">ism-familiya</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-center"><div class="text-white font-black">age</div><div class="text-slate-400 text-sm mt-1">yoshi</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5 text-center"><div class="text-white font-black">course</div><div class="text-slate-400 text-sm mt-1">kursi</div></div>
+          </div>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Tekshiruv mezoni: endpoint ishlashi, GET/POST/PUT/DELETE borligi va student butun ketma-ketlikni o‘zi yozib bera olishi.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Lesson bilan moslashtirish</div>
+            <h2 class="text-3xl font-black text-white">Teacher guide’ga qo‘shilgan yangi joylar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Current lesson update</div>
+        </div>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-red-300 text-xl mb-2"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="text-white font-black mb-2">5-bet warning</div>
+            <div class="text-slate-400 text-sm">DRF install komandasi alohida warning ko‘rinishida teacher guide’ga ham qo‘shildi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-green-300 text-xl mb-2"><i class="fas fa-book-open-reader"></i></div>
+            <div class="text-white font-black mb-2">8-bet Swagger nima?</div>
+            <div class="text-slate-400 text-sm">Swagger’ni vizual va animatsion ko‘rinishda izohlash uchun alohida mentor bo‘lim qo‘shildi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-blue-300 text-xl mb-2"><i class="fas fa-gears"></i></div>
+            <div class="text-white font-black mb-2">9-bet drf-yasg</div>
+            <div class="text-slate-400 text-sm">Faqat drf-yasg bilan ishlatish tartibi, settings va urls kodlari bilan qo‘shildi.</div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-copy"></i></div>
+            <div class="text-white font-black mb-2">Copy tugmalar</div>
+            <div class="text-slate-400 text-sm">Muhim komandalar va kod bloklari copy qilish uchun tayyorlandi.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Boshlanishida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugun biz DRF ni noldan boshlaymiz. Avval API nima ekanini tushunamiz, keyin projectni tayyorlaymiz, keyin bitta model orqali butun CRUD oqimini yozamiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Serializer da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Model database uchun, serializer esa shu modelni JSON ko‘rinishga olib chiqish uchun kerak.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">ViewSet da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Endi biz CRUD logikasini bir class ichida yig‘amiz. DRF ning kuchi ham shunda — ko‘p narsani tayyor beradi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Mustaqil ishda</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Book misolini ko‘rdik, endi xuddi shu strukturani Person uchun o‘zingiz qayta yozasiz.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    DRF Teacher Guide · Mentor uchun tayyor qo‘llanma sahifasi
+  </footer>
+
+  <script>
+    function showCopyToast() {
+      const toast = document.getElementById('copyToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+
+    function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDP Junior - Django REST Framework (1-Dars)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&amp;family=Fira+Code:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pdp-cyan': '#00D1D1',
+                        'pdp-dark': '#0F172A',
+                        'django-green': '#0C4B33',
+                        'django-light': '#44B78B',
+                        'front-blue': '#38BDF8',
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #f0f4f8; overflow: hidden; }
+        .font-mono, pre, code { font-family: 'Fira Code', monospace; }
+        .slider-window { width: 100%; height: calc(100vh - 80px); position: relative; overflow: hidden; }
+        .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1); }
+        .slide { min-width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 2rem 6rem 2rem; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes dataFlow { 0% { transform: translateX(-100%); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(100%); opacity: 0; } }
+        @keyframes pulseRing { 0% { transform: scale(.95); opacity: .9; } 100% { transform: scale(1.2); opacity: 0; } }
+        @keyframes bob { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-8px);} }
+
+        .server-rack { width: 64px; height: 84px; background: #1e293b; border: 2px solid #44b78b; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; }
+        .server-light { width: 40px; height: 8px; background: #0f172a; border-radius: 4px; position: relative; overflow: hidden; }
+        .server-light::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: #44b78b; box-shadow: 0 0 10px #44b78b; animation: dataFlow 1.5s infinite linear; }
+        .server-light:nth-child(2)::after { animation-delay: .5s; background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+        .server-light:nth-child(3)::after { animation-delay: 1s; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #43454A; border-radius: 10px; border: 2px solid #2B2D30; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #5A5D63; }
+
+        .pdp-logo-fixed { position: fixed; top: 15px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 12px; }
+        .pdp-logo-circle { width: 45px; height: 45px; background: #00D1D1; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .pdp-logo-circle div { width: 28px; height: 14px; background: #0F172A; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+        .list-item-anim { opacity: 0; }
+        .copy-btn { position:absolute; top:14px; right:14px; z-index:5; }
+        .code-wrap { max-height: 420px; overflow:auto; }
+        .copy-toast {
+            position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+            background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+            font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+            pointer-events:none; transition: opacity .25s; z-index: 200;
+        }
+        .copy-toast.show { opacity: 1; }
+        .gradient-text { background: linear-gradient(90deg,#44B78B,#38BDF8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .api-card { position: relative; }
+        .api-card::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.25); border-radius: 28px; animation: pulseRing 2s infinite; }
+        .api-pill { animation: bob 2.4s ease-in-out infinite; }
+        .animate-bob { animation: bob 2.4s ease-in-out infinite; }
+        .hljs { background: #111827 !important; border-radius: 1rem; padding: 1.25rem !important; }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+<div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+<div class="pdp-logo-fixed">
+<div class="pdp-logo-circle"><div><span class="text-[8px] text-[#00D1D1] font-bold mt-[-1px]">&gt;_</span></div></div>
+<div class="flex flex-col line-none leading-none"><span class="text-pdp-dark font-black text-xl tracking-tighter leading-none">PDP</span><span class="text-pdp-cyan font-bold text-sm tracking-tight leading-none">Junior</span></div>
+</div>
+<header class="h-[80px] w-full flex items-center justify-end px-12 bg-white/80 backdrop-blur-md z-50 shrink-0 border-b border-gray-100 shadow-sm">
+<div class="flex gap-4 items-center">
+<button class="w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:border-django-light hover:text-django-light flex items-center justify-center transition-all" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+<span class="text-sm font-bold text-gray-500 font-mono" id="slide-counter">1 / 14</span>
+<button class="w-10 h-10 rounded-full bg-django-light text-white shadow-lg flex items-center justify-center hover:bg-[#3ca47d] transition-all" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+</div>
+</header>
+<main class="slider-window" id="touchArea">
+<div class="slides-wrapper" id="slidesWrapper">
+<!-- Slide 1 -->
+<div class="slide bg-slate-900 text-white relative">
+<div class="max-w-4xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-96 h-96 bg-django-light rounded-full"></div></div>
+<div class="inline-block mb-6 relative z-10">
+<i class="fab fa-python text-8xl text-django-light animate-float mr-4"></i>
+<i class="fas fa-server text-7xl text-front-blue animate-float" style="animation-delay: 1s;"></i>
+</div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">1-DARS</span>
+<h1 class="text-5xl md:text-8xl font-black text-white tracking-tighter mb-4 relative z-10">Django REST <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light to-front-blue">Framework</span></h1>
+<p class="text-xl text-gray-400 font-medium mt-6 relative z-10">DRF ga kirish, API tushunchasi va birinchi backend qadamlar</p>
+</div>
+</div>
+<!-- Slide 2 -->
+<div class="slide bg-[#F8FAFC]">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Django REST Framework nima?</h2>
+<p class="text-gray-500 text-center mb-10 max-w-3xl mx-auto">Django REST Framework yoki qisqacha <b class="text-pdp-dark">DRF</b> — Django ichida API yozishni ancha osonlashtiradigan kuchli kutubxona. U JSON response, serializer, authentication va tayyor CRUD yozish uchun juda qulay vositalar beradi.</p>
+<div class="bg-pdp-dark p-8 md:p-12 rounded-3xl border border-slate-700 flex flex-col md:flex-row items-center justify-between gap-8 max-w-6xl w-full shadow-2xl relative">
+<div class="flex-1 text-center bg-slate-800/50 p-6 rounded-2xl border border-slate-700 z-10">
+<div class="w-20 h-20 rounded-full bg-slate-800 border-2 border-front-blue flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+<i class="fas fa-laptop-code text-front-blue text-4xl"></i>
+</div>
+<h4 class="text-front-blue font-bold text-xl mb-2">Client</h4>
+<p class="text-sm text-gray-400">Frontend, mobil ilova yoki Postman API ga request yuboradi.</p>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center w-full relative h-20 z-0">
+<div class="w-full h-1 bg-slate-700 rounded absolute top-1/2 -translate-y-1/2"></div>
+<div class="absolute w-4 h-4 rounded-full bg-front-blue shadow-[0_0_15px_#38bdf8] top-1/2 -translate-y-1/2 left-0 animate-[dataFlow_2s_ease-in-out_infinite]"></div>
+<div class="absolute w-4 h-4 rounded-full bg-django-light shadow-[0_0_15px_#44b78b] top-1/2 -translate-y-1/2 right-0 animate-[dataFlow_2s_ease-in-out_infinite_reverse]"></div>
+<div class="bg-pdp-dark px-4 py-1 rounded-full border border-slate-700 absolute -top-4 shadow-lg">
+<span class="text-xs font-bold text-gray-300"><i class="fas fa-code-branch mr-1 text-green-400"></i> HTTP / JSON</span>
+</div>
+</div>
+<div class="flex-1 text-center bg-slate-800/50 p-6 rounded-2xl border border-slate-700 z-10">
+<div class="server-rack mx-auto mb-4 transform scale-110">
+<div class="server-light"></div>
+<div class="server-light"></div>
+<div class="server-light"></div>
+</div>
+<h4 class="text-django-light font-bold text-xl mb-2">DRF Backend</h4>
+<p class="text-sm text-gray-400">Requestni qabul qiladi, data bilan ishlaydi va JSON qaytaradi.</p>
+</div>
+</div>
+</div>
+<!-- Slide 3 -->
+<div class="slide bg-white">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">API nimaning qisqartmasi?</h2>
+<p class="text-gray-500 text-center mb-10 max-w-3xl mx-auto"><b class="text-pdp-dark">API</b> — <b>Application Programming Interface</b>. Oddiy qilib aytganda, ikki dastur bir-biri bilan "gaplashishi" uchun yaratilgan ko‘prik.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full items-center">
+<div class="bg-slate-900 rounded-[32px] p-8 text-white border border-slate-800 shadow-2xl">
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="api-pill bg-blue-500/10 border border-blue-400/20 rounded-3xl p-5 text-center" style="animation-delay:0s">
+<div class="text-4xl font-black text-blue-400">A</div>
+<div class="text-sm font-bold mt-2">Application</div>
+<div class="text-xs text-gray-400 mt-2">Dastur yoki ilova</div>
+</div>
+<div class="api-pill bg-purple-500/10 border border-purple-400/20 rounded-3xl p-5 text-center" style="animation-delay:.2s">
+<div class="text-4xl font-black text-purple-400">P</div>
+<div class="text-sm font-bold mt-2">Programming</div>
+<div class="text-xs text-gray-400 mt-2">Kod orqali ishlash</div>
+</div>
+<div class="api-pill bg-green-500/10 border border-green-400/20 rounded-3xl p-5 text-center" style="animation-delay:.4s">
+<div class="text-4xl font-black text-green-400">I</div>
+<div class="text-sm font-bold mt-2">Interface</div>
+<div class="text-xs text-gray-400 mt-2">Ulanish nuqtasi</div>
+</div>
+</div>
+<div class="relative flex items-center justify-between gap-4 bg-slate-800 rounded-3xl p-6 overflow-hidden">
+<div class="text-center z-10">
+<div class="w-20 h-20 rounded-full bg-blue-500/20 border border-blue-400/30 flex items-center justify-center mx-auto mb-3">
+<i class="fas fa-mobile-screen-button text-3xl text-blue-400"></i>
+</div>
+<div class="font-bold">Mobil ilova</div>
+<div class="text-xs text-gray-400 mt-1">So‘rov yuboradi</div>
+</div>
+<div class="flex-1 relative h-24">
+<div class="absolute w-full h-1 bg-slate-700 top-1/2 -translate-y-1/2 rounded"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-blue-400 shadow-[0_0_15px_#38bdf8] animate-[dataFlow_2s_ease-in-out_infinite]"></div>
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-django-light shadow-[0_0_15px_#44b78b] animate-[dataFlow_2s_ease-in-out_infinite_reverse]"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="api-card bg-django-light text-white px-5 py-3 rounded-2xl font-black">API</div>
+</div>
+</div>
+<div class="text-center z-10">
+<div class="server-rack mx-auto mb-3">
+<div class="server-light"></div><div class="server-light"></div><div class="server-light"></div>
+</div>
+<div class="font-bold text-django-light">Backend</div>
+<div class="text-xs text-gray-400 mt-1">Javob qaytaradi</div>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">Misol</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-2">Restoran ofitsianti kabi</h3>
+<p class="text-gray-600 text-sm leading-relaxed">Siz menyudan taom buyurtma qilasiz. Ofitsiant oshxonaga borib buyurtmani yetkazadi va tayyor bo‘lgach sizga olib keladi. API ham aynan shu ko‘prik vazifasini bajaradi.</p>
+</div>
+<div class="bg-green-50 p-6 rounded-3xl border border-green-100 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-green-500 font-black mb-2">Qisqasi</div>
+<ul class="text-sm text-gray-700 space-y-3 font-medium">
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Client so‘rov yuboradi</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> API backend bilan bog‘laydi</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Natija ko‘pincha JSON ko‘rinishida qaytadi</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Slide 4 -->
+<div class="slide bg-[#1E1F22] custom-scrollbar" style="justify-content: flex-start; padding-top: 5rem; padding-bottom: 5rem;">
+<div class="w-full flex flex-col items-center max-w-5xl mx-auto my-8">
+<div class="w-full flex flex-col items-center">
+<h2 class="text-4xl font-black mb-2 text-white text-center"><i class="fas fa-wand-magic-sparkles text-blue-500 mr-3"></i>PyCharm'da DRF Muhiti Tayyorlash</h2>
+<p class="text-gray-400 text-center mb-10 max-w-3xl mx-auto">Dastlab PyCharm menyusidan <b class="text-white">New Project...</b> ni tanlaymiz. Keyin Django tanlanadi va loyiha yaratish oynasida kerakli joylar to‘ldiriladi.</p>
+<div class="bg-[#2B2D30] rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden border border-[#43454A] relative z-10 font-sans text-[13px] text-[#DFE1E5] select-none mx-auto transform hover:scale-[1.02] transition-transform duration-500">
+<div class="h-10 bg-[#2B2D30] border-b border-[#1E1F22] flex items-center px-4 gap-3">
+<div class="w-4 h-4 bg-red-500 rounded-full"></div>
+<div class="w-4 h-4 bg-yellow-500 rounded-full"></div>
+<div class="w-4 h-4 bg-green-500 rounded-full"></div>
+<span class="text-[#87939A] ml-2 font-semibold">PyCharm</span>
+</div>
+<div class="flex items-center bg-[#2B2D30] px-2 py-1 text-[#DFE1E5] relative pb-32">
+<div class="px-3 py-1.5 bg-[#2F65CA] text-white rounded cursor-default relative">
+                                    File
+                                    <div class="absolute left-0 top-full mt-1 w-72 bg-[#2B2D30] border border-[#43454A] shadow-2xl rounded py-2 z-50">
+<div class="px-4 py-2 bg-[#2F65CA] flex justify-between items-center group relative">
+<span>New Project...</span>
+<div class="absolute right-4 top-2 text-2xl text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)] z-[60] animate-bounce"><i class="fas fa-mouse-pointer"></i></div>
+</div>
+<div class="px-4 py-2 hover:bg-[#2E436E] flex justify-between items-center text-[#DFE1E5]"><span>Project from Version Control...</span></div>
+<div class="h-[1px] bg-[#43454A] my-1.5"></div>
+<div class="px-4 py-2 hover:bg-[#2E436E] flex items-center text-[#DFE1E5]"><i class="fas fa-folder-open mr-3 text-[#87939A]"></i> Open...</div>
+<div class="px-4 py-2 hover:bg-[#2E436E] flex items-center text-[#DFE1E5]"><i class="fas fa-save mr-3 text-[#87939A]"></i> Save As...</div>
+</div>
+</div>
+<div class="px-3 py-1.5 opacity-70">Edit</div>
+<div class="px-3 py-1.5 opacity-70">View</div>
+<div class="px-3 py-1.5 opacity-70">Navigate</div>
+<div class="px-3 py-1.5 opacity-70">Code</div>
+</div>
+<div class="h-48 bg-[#1E1F22] flex items-center justify-center flex-col text-[#87939A] opacity-50">
+<span class="text-xl mb-2">Search Everywhere <span class="text-[#43454A]">Double Shift</span></span>
+</div>
+</div>
+</div>
+<div class="w-full flex justify-center my-16">
+<div class="text-django-light text-5xl animate-bounce flex flex-col items-center">
+<span class="text-sm font-bold tracking-widest uppercase mb-2 text-gray-400">Pastga suring</span>
+<i class="fas fa-chevron-down"></i>
+</div>
+</div>
+<div class="w-full flex flex-col items-center">
+<h2 class="text-4xl font-black mb-2 text-white text-center"><i class="fas fa-laptop-code text-blue-500 mr-3"></i>Django loyiha oynasi</h2>
+<p class="text-gray-400 text-center mb-6 max-w-3xl mx-auto">Quyidagi ko‘rinish rasmdagidek moslashtirildi: <b class="text-white">Django</b> tanlangan, <b class="text-django-light">app</b> va <b class="text-front-blue">root</b> qiymatlari saqlangan. <b class="text-yellow-300">Template folder</b> va terminal komandalar olib tashlandi.</p>
+<div class="bg-[#2B2D30] rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-[1050px] flex flex-col overflow-hidden border border-[#43454A] relative z-10 font-sans text-[13px] text-[#DFE1E5] select-none mx-auto">
+<div class="h-10 bg-[#2B2D30] flex items-center justify-between px-4 border-b border-[#1E1F22]">
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 bg-gradient-to-br from-green-400 via-yellow-400 to-blue-500 rounded-sm p-[2px] flex items-center justify-center">
+<div class="bg-[#2B2D30] w-full h-full rounded-[1px] flex items-center justify-center"><span class="text-[8px] font-bold text-white">PC</span></div>
+</div>
+<span class="font-semibold text-[13px] text-[#DFE1E5]">New Project</span>
+</div>
+<div class="flex items-center gap-5 text-[#87939A]">
+<i class="fas fa-minus hover:text-white cursor-pointer text-xs"></i>
+<i class="far fa-window-maximize hover:text-white cursor-pointer text-xs"></i>
+<i class="fas fa-times hover:text-white cursor-pointer text-sm"></i>
+</div>
+</div>
+<div class="flex flex-1 h-[640px]">
+<div class="w-[230px] bg-[#2B2D30] border-r border-[#1E1F22] py-2 overflow-y-auto custom-scrollbar flex flex-col shrink-0">
+<div class="px-6 py-1.5 text-[#87939A] text-[11px] mb-1 flex items-center before:content-[''] before:flex-1 before:h-[1px] before:bg-[#43454A] before:mr-2 after:content-[''] after:flex-1 after:h-[1px] after:bg-[#43454A] after:ml-2">New Project</div>
+<div class="flex items-center gap-3 px-6 py-2 hover:bg-[#2E436E] cursor-pointer"><i class="fab fa-python text-yellow-400 w-4 text-center text-sm"></i> Pure Python</div>
+<div class="px-6 py-1.5 text-[#87939A] text-[11px] mt-2 mb-1 flex items-center before:content-[''] before:flex-1 before:h-[1px] before:bg-[#43454A] before:mr-2 after:content-[''] after:flex-1 after:h-[1px] after:bg-[#43454A] after:ml-2">Python</div>
+<div class="flex items-center gap-3 px-6 py-2 bg-[#2F65CA] text-white cursor-pointer"><div class="w-4 h-4 bg-white text-[#2F65CA] rounded-[3px] flex items-center justify-center font-black tracking-tighter text-[10px]">dj</div> Django</div>
+<div class="flex items-center gap-3 px-6 py-2 hover:bg-[#2E436E] cursor-pointer text-[#DFE1E5]"><i class="fas fa-bolt text-teal-400 w-4 text-center text-sm"></i> FastAPI</div>
+<div class="flex items-center gap-3 px-6 py-2 hover:bg-[#2E436E] cursor-pointer text-[#DFE1E5]"><i class="fas fa-pepper-hot text-gray-400 w-4 text-center text-sm"></i> Flask</div>
+<div class="flex items-center gap-3 px-6 py-2 hover:bg-[#2E436E] cursor-pointer text-[#DFE1E5]"><i class="fas fa-moon text-orange-400 w-4 text-center text-sm"></i> Jupyter</div>
+<div class="flex items-center gap-3 px-6 py-2 hover:bg-[#2E436E] cursor-pointer text-[#DFE1E5]"><i class="fas fa-xmark text-orange-400 w-4 text-center text-sm"></i> dbt</div>
+<div class="px-6 py-1.5 text-[#87939A] text-[11px] mt-3 mb-1 flex items-center before:content-[''] before:flex-1 before:h-[1px] before:bg-[#43454A] before:mr-2 after:content-[''] after:flex-1 after:h-[1px] after:bg-[#43454A] after:ml-2">Other</div>
+<div class="flex items-center gap-3 px-6 py-2 text-[#DFE1E5]"><i class="fab fa-html5 text-orange-500 w-4 text-center text-sm"></i> HTML5 Boilerplate</div>
+<div class="flex items-center gap-3 px-6 py-2 text-[#DFE1E5]"><i class="fab fa-bootstrap text-purple-500 w-4 text-center text-sm"></i> Bootstrap</div>
+<div class="flex items-center gap-3 px-6 py-2 text-[#DFE1E5]"><i class="fab fa-react text-cyan-400 w-4 text-center text-sm"></i> React Native</div>
+<div class="flex items-center gap-3 px-6 py-2 text-[#DFE1E5]"><i class="fab fa-react text-cyan-400 w-4 text-center text-sm"></i> React</div>
+<div class="flex items-center gap-3 px-6 py-2 text-[#DFE1E5]"><i class="fas fa-bolt text-purple-400 w-4 text-center text-sm"></i> Vite</div>
+</div>
+<div class="flex-1 bg-[#2B2D30] flex flex-col relative">
+<div class="flex-1 p-6 px-8 overflow-y-auto custom-scrollbar">
+<div class="flex flex-col gap-5">
+<div class="flex items-center">
+<label class="w-[160px] text-[#DFE1E5]">Location:</label>
+<div class="flex-1 flex bg-[#1E1F22] border border-[#43454A] rounded items-center px-3 py-2"><span class="flex-1 text-[13px] font-mono tracking-wide">C:\python\DjangoProject</span><i class="far fa-folder text-[#87939A] ml-2"></i></div>
+</div>
+<div class="flex items-center gap-3 pl-[160px] mt-1 text-[#DFE1E5]">
+<div class="w-4 h-4 border border-[#6B7280] rounded-[3px]"></div>
+<span>Create Git repository</span>
+</div>
+<div class="flex items-start mt-4">
+<label class="w-[160px] mt-2 text-[#DFE1E5]">Interpreter type:</label>
+<div class="flex-1 flex gap-0 border border-[#43454A] rounded overflow-hidden w-fit">
+<div class="bg-[#3574F0] text-white px-4 py-2">Project venv</div>
+<div class="bg-[#1E1F22] text-[#DFE1E5] px-4 py-2 border-l border-[#43454A]">Base conda</div>
+<div class="bg-[#1E1F22] text-[#DFE1E5] px-4 py-2 border-l border-[#43454A]">Custom environment</div>
+</div>
+</div>
+<div class="flex items-start mt-1">
+<label class="w-[160px] mt-2 text-[#DFE1E5]">Python version:</label>
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex bg-[#1E1F22] border border-[#43454A] rounded items-center px-3 py-2 cursor-pointer">
+<i class="fab fa-python text-yellow-400 mr-2 text-sm"></i>
+<span class="flex-1 text-[13px]"><span class="text-white font-medium">Python 3.11.9</span> <span class="text-[#87939A] ml-1">~\AppData\Local\Programs\Python\Python311\python.exe</span></span>
+<i class="far fa-folder text-[#87939A] ml-4 mr-3"></i>
+<i class="fas fa-chevron-down text-[#87939A] text-[10px]"></i>
+</div>
+<span class="text-[#87939A] text-[12px] pl-1">Python virtual environment will be created in the project root: C:\python\DjangoProject\.venv</span>
+</div>
+</div>
+<div class="mt-6 flex flex-col">
+<div class="flex items-center gap-2 text-[#DFE1E5] mb-4 font-medium"><i class="fas fa-chevron-down text-[10px] text-[#87939A]"></i> Advanced settings</div>
+<div class="flex flex-col gap-4 pl-[18px]">
+<div class="flex items-center">
+<label class="w-[142px] text-[#DFE1E5]">Template Language</label>
+<div class="w-[170px] bg-[#1E1F22] border border-[#43454A] rounded px-3 py-2 flex items-center justify-between">Django <i class="fas fa-chevron-down text-[#87939A] text-[10px]"></i></div>
+</div>
+<div class="flex items-center">
+<label class="w-[142px] text-[#DFE1E5]">Application name:</label>
+<div class="w-[250px] bg-[#1E1F22] border-[1.5px] border-[#3574F0] rounded-[4px] px-3 py-2 shadow-[0_0_0_2px_rgba(53,116,240,0.15)] flex text-[13px] items-center">app<span class="w-[1px] h-[14px] bg-white animate-pulse ml-[1px]"></span></div>
+</div>
+<div class="flex items-center">
+<label class="w-[142px] text-[#DFE1E5]">Project name:</label>
+<div class="w-[250px] bg-[#1E1F22] border border-[#43454A] rounded px-3 py-2 text-[13px]">root</div>
+</div>
+<div class="flex items-center mt-1">
+<label class="flex items-center gap-2.5 cursor-pointer ml-[142px]"><div class="w-4 h-4 bg-[#3574F0] rounded-[3px] flex items-center justify-center shadow-sm"><i class="fas fa-check text-white text-[11px]"></i></div><span class="text-[#DFE1E5]">Enable Django admin</span></label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-6 py-4 bg-[#2B2D30] border-t border-[#1E1F22] flex justify-end shrink-0 relative">
+<button class="bg-[#3574F0] hover:bg-[#2F65CA] text-white px-8 py-2 rounded-[6px] text-[13px] font-semibold transition-colors shadow-sm">Create</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Slide 5 -->
+<div class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top: 1.2rem; padding-bottom:2.2rem;">
+<div class="w-full max-w-6xl mx-auto">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">settings.py sozlamasi</h2>
+<p class="text-gray-500 text-center mb-2 max-w-2xl mx-auto">DRF ishlashi uchun <b>rest_framework</b> ni, app ishlashi uchun esa <b>app</b> ni <b>INSTALLED_APPS</b> ga qo‘shamiz.</p>
+<div class="max-w-3xl mx-auto mb-4">
+<div class="bg-amber-50 border-l-4 border-amber-400 text-amber-900 rounded-r-2xl px-5 py-4 shadow-sm flex items-center justify-between gap-4">
+<div class="flex items-start gap-3 min-w-0">
+<i class="fas fa-triangle-exclamation text-amber-500 text-lg mt-0.5"></i>
+<div class="min-w-0">
+<div class="text-xs font-black uppercase tracking-wider text-amber-600 mb-1">Warning</div>
+<div class="font-mono font-semibold text-sm md:text-base break-all">pip install djangorestframework</div>
+</div>
+</div>
+<button class="shrink-0 w-10 h-10 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-700 transition-colors" onclick="copyText('pip install djangorestframework')" title="Copy command">
+<i class="fas fa-copy"></i>
+</button>
+</div>
+</div>
+<div class="text-center mb-2 text-sm text-emerald-600 font-semibold">PyCharm orqali Django loyiha yaratilganda <b>app</b> odatda avtomatik qo‘shib beriladi.</div>
+<div class="bg-[#1E1F22] rounded-2xl border border-[#43454A] shadow-lg overflow-hidden relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('settingsCode')"><i class="fas fa-copy"></i></button>
+<div class="bg-[#2B2D30] px-4 py-2 border-b border-[#242527] text-[#A9B7C6] text-xs font-mono">root/settings.py</div>
+<div class="p-2 md:p-3 code-wrap">
+<pre><code class="language-python" id="settingsCode">INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'rest_framework',
+    'app',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Slide 6 -->
+<div class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top: 2.5rem; padding-bottom: 3.5rem;">
+    <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md">
+                <i class="fas fa-layer-group"></i> Asosiy yozilish ketma-ketligi
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Model → Serializer → ViewSet → Router</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">
+                Bu bet 4-betdagi kabi pastga scroll bo‘ladi. Har bir qadam ketma-ket, vizual va sodda tushuntirilgan.
+            </p>
+        </div>
+
+        <div class="relative mb-8 hidden md:block">
+            <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-[#0F172A] via-[#44B78B] to-[#38BDF8] rounded-full opacity-20"></div>
+            <div class="grid grid-cols-4 gap-4 relative z-10">
+                <div class="text-center">
+                    <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center mx-auto font-black shadow-lg">1</div>
+                    <div class="mt-2 text-sm font-black text-slate-700">Model</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-14 h-14 rounded-full bg-django-light text-white flex items-center justify-center mx-auto font-black shadow-lg">2</div>
+                    <div class="mt-2 text-sm font-black text-slate-700">Serializer</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-14 h-14 rounded-full bg-front-blue text-white flex items-center justify-center mx-auto font-black shadow-lg">3</div>
+                    <div class="mt-2 text-sm font-black text-slate-700">ViewSet</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-14 h-14 rounded-full bg-purple-600 text-white flex items-center justify-center mx-auto font-black shadow-lg">4</div>
+                    <div class="mt-2 text-sm font-black text-slate-700">Router</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <div class="bg-white rounded-[28px] border border-gray-200 shadow-xl overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-[#0F172A] to-[#1E293B] text-white">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-2xl animate-pulse">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm uppercase tracking-widest text-white/70 font-bold">1-qadam</div>
+                            <h3 class="text-2xl font-black">Model yoziladi</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 grid lg:grid-cols-[.88fr_1.12fr] gap-6 items-start">
+                    <div class="bg-blue-50 border border-blue-100 rounded-3xl p-6">
+                        <div class="font-black text-pdp-dark text-xl mb-3">Model nima qiladi?</div>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Model bazadagi jadvalni ifodalaydi. Bu yerda <b>Book</b> modeli yaratiladi va unda
+                            <b>title</b>, <b>author</b>, <b>published_year</b> maydonlari saqlanadi.
+                        </p>
+                        <div class="mt-4 bg-white border border-blue-100 rounded-2xl px-4 py-3 text-sm text-slate-700 font-semibold">
+                            Bu qadamda biz ma’lumot qanday saqlanishini belgilaymiz.
+                        </div>
+                    </div>
+                    <div class="bg-[#0F172A] rounded-3xl border border-[#1E293B] shadow-xl overflow-hidden relative">
+                        <div class="px-5 py-3 border-b border-[#1E293B] flex items-center justify-between bg-[#111827]">
+                            <div>
+                                <div class="text-sm font-black text-white">models.py</div>
+                                <div class="text-xs text-slate-400 mt-1">Book modeli</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-[#111827]">
+<pre><code class="language-python" id="modelCode">from django.db import models
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=120)
+    published_year = models.IntegerField()
+
+    def __str__(self):
+        return self.title</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[28px] border border-gray-200 shadow-xl overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-django-light to-front-blue text-white">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-2xl animate-bounce">
+                            <i class="fas fa-shuffle"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm uppercase tracking-widest text-white/80 font-bold">2-qadam</div>
+                            <h3 class="text-2xl font-black">Serializer yoziladi</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 grid lg:grid-cols-[.88fr_1.12fr] gap-6 items-start">
+                    <div class="bg-green-50 border border-green-100 rounded-3xl p-6">
+                        <div class="font-black text-pdp-dark text-xl mb-3">Serializer nima qiladi?</div>
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Serializer modelni JSON ko‘rinishga o‘tkazadi va tashqaridan kelgan ma’lumotni tekshiradi.
+                            API yozishda bu eng muhim ko‘priklardan biri.
+                        </p>
+                        <div class="mt-4 bg-white border border-green-100 rounded-2xl px-4 py-3 text-sm text-slate-700 font-semibold">
+                            Ya’ni model bilan client orasida tartibli almashinuvni yaratadi.
+                        </div>
+                    </div>
+                    <div class="bg-[#1E1B4B] rounded-3xl border border-[#312E81] shadow-xl overflow-hidden relative">
+                        <div class="px-5 py-3 border-b border-[#312E81] flex items-center justify-between bg-[#221F5A]">
+                            <div>
+                                <div class="text-sm font-black text-white">serializers.py</div>
+                                <div class="text-xs text-indigo-200/70 mt-1">BookSerializer</div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-[#111827]">
+<pre><code class="language-python" id="serializerCode">from rest_framework import serializers
+from .models import Book
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white">
+                <div class="px-6 py-5 border-b border-slate-800">
+                    <div class="text-sm uppercase tracking-widest text-django-light font-black mb-2">3-qadam va 4-qadam</div>
+                    <h3 class="text-3xl font-black">ViewSet va Router</h3>
+                    <p class="text-gray-400 text-sm mt-3 max-w-3xl">
+                        Endi API logikasi yoziladi. <b class="text-django-light">ModelViewSet</b> CRUD amallarini tez beradi,
+                        <b class="text-front-blue">DefaultRouter</b> esa URL’larni avtomatik ochadi.
+                    </p>
+                </div>
+
+                <div class="p-6 grid md:grid-cols-2 gap-8">
+                    <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-xl">
+                        <h4 class="text-2xl font-black mb-4 text-django-light flex items-center gap-3">
+                            <i class="fas fa-gears"></i> views.py
+                        </h4>
+                        <div class="relative code-wrap">
+<pre><code class="language-python" id="viewsetCode">from rest_framework import viewsets
+from .models import Book
+from .serializers import BookSerializer
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer</code></pre>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-xl">
+                        <h4 class="text-2xl font-black mb-4 text-front-blue flex items-center gap-3">
+                            <i class="fas fa-route"></i> urls.py
+                        </h4>
+                        <div class="relative code-wrap">
+<pre><code class="language-python" id="routerCode">from rest_framework.routers import DefaultRouter
+from .views import BookViewSet
+
+router = DefaultRouter()
+router.register(r'', BookViewSet, basename='book')
+
+urlpatterns = router.urls</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 pb-6">
+                    <div class="bg-white/5 border border-white/10 rounded-3xl p-5 text-sm text-gray-300">
+                        Natija: endpoint ochilganda siz unga to‘g‘ridan-to‘g‘ri <b class="text-white">http://localhost:8000/</b> orqali murojaat qilasiz.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7 -->
+<div class="slide bg-white">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">API qanday endpointlar beradi?</h2>
+<p class="text-gray-500 text-center mb-10 max-w-2xl mx-auto">Router va ViewSet birga ishlaganda quyidagi tayyor yo‘llar paydo bo‘ladi.</p>
+<div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-green-50 border border-green-100 rounded-3xl p-7">
+<div class="inline-block bg-green-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">GET</div>
+<h3 class="text-2xl font-black text-pdp-dark">localhost:8000/</h3>
+<p class="text-gray-600 text-sm mt-3">Barcha kitoblar ro‘yxatini oladi.</p>
+</div>
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-7">
+<div class="inline-block bg-blue-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">POST</div>
+<h3 class="text-2xl font-black text-pdp-dark">localhost:8000/</h3>
+<p class="text-gray-600 text-sm mt-3">Yangi kitob yaratadi.</p>
+</div>
+<div class="bg-purple-50 border border-purple-100 rounded-3xl p-7">
+<div class="inline-block bg-purple-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">GET</div>
+<h3 class="text-2xl font-black text-pdp-dark">localhost:8000/1/</h3>
+<p class="text-gray-600 text-sm mt-3">Bitta kitob ma’lumotini qaytaradi.</p>
+</div>
+<div class="bg-red-50 border border-red-100 rounded-3xl p-7">
+<div class="inline-block bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">PUT / DELETE</div>
+<h3 class="text-2xl font-black text-pdp-dark">localhost:8000/1/</h3>
+<p class="text-gray-600 text-sm mt-3">Ma’lumotni yangilaydi yoki o‘chiradi.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- Slide 8 -->
+<div class="slide bg-[#F4F7FB] custom-scrollbar" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 3rem;">
+    <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md">
+                <i class="fas fa-compass-drafting text-django-light"></i> SWAGGER NIMA?
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Swagger — API’ni ko‘rish, tushunish va sinash uchun qulay interfeys</h2>
+            <p class="text-gray-500 max-w-4xl mx-auto mt-4">Swagger API endpointlarni bitta sahifada ko‘rsatadi, request va response’larni tushuntiradi hamda brauzerning o‘zidan test qilish imkonini beradi. Quyidagi maket Swagger UI ko‘rinishini vizual va animatsion tarzda ifodalaydi.</p>
+        </div>
+
+        <div class="grid xl:grid-cols-[1.12fr_0.88fr] gap-8 items-start">
+            <div class="bg-white rounded-[30px] border border-slate-200 shadow-2xl overflow-hidden">
+                <div class="bg-[#1e1f22] px-5 py-3 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-white min-w-0">
+                        <div class="w-11 h-11 rounded-full bg-[#85ea2d] text-[#1e1f22] flex items-center justify-center font-black shadow-lg animate-pulse">S</div>
+                        <div class="min-w-0">
+                            <div class="font-black text-xl leading-none">Swagger UI</div>
+                            <div class="text-[11px] text-slate-400">Interaktiv API dokumentatsiya oynasi</div>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex items-center bg-white rounded-lg overflow-hidden border border-[#85ea2d]/40 w-[56%]">
+                        <div class="px-4 py-2 text-sm text-slate-600 font-mono flex-1">/swagger/</div>
+                        <div class="bg-[#85ea2d] text-[#1e1f22] px-4 py-2 font-black text-sm">Open</div>
+                    </div>
+                </div>
+
+                <div class="p-5 md:p-6 bg-[#f7f7f7]">
+                    <div class="mb-5">
+                        <h3 class="text-4xl font-black text-slate-700 tracking-tight">Student API <span class="text-xs align-top bg-slate-300 px-2 py-1 rounded-full">v1</span></h3>
+                        <p class="text-sm text-blue-500 mt-2 underline decoration-dotted">/swagger/</p>
+                        <p class="text-sm text-slate-500 mt-1">Endpointlar, methodlar va test qilish oynasi</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-slate-700 mb-1">
+                            <div class="text-3xl font-black">students</div>
+                            <i class="fas fa-chevron-down text-slate-500 animate-bounce"></i>
+                        </div>
+
+                        <div class="rounded-xl border-2 border-[#61affe] bg-[#ecf5ff] px-4 py-3 flex items-center justify-between gap-4 hover:scale-[1.01] transition-transform duration-300 shadow-sm">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-16 text-center shrink-0 bg-[#61affe] text-white rounded-md px-3 py-1.5 font-black text-sm shadow">GET</span>
+                                <div class="min-w-0"><div class="font-black text-slate-700 font-mono">/students</div><div class="text-xs text-slate-500">Barcha studentlarni olish</div></div>
+                            </div>
+                            <div class="hidden md:block text-xs text-slate-500 font-mono">list_students</div>
+                        </div>
+
+                        <div class="rounded-xl border-2 border-[#49cc90] bg-[#edf9f3] px-4 py-3 flex items-center justify-between gap-4 hover:scale-[1.01] transition-transform duration-300 shadow-sm">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-16 text-center shrink-0 bg-[#49cc90] text-white rounded-md px-3 py-1.5 font-black text-sm shadow">POST</span>
+                                <div class="min-w-0"><div class="font-black text-slate-700 font-mono">/students</div><div class="text-xs text-slate-500">Yangi student qo‘shish</div></div>
+                            </div>
+                            <div class="hidden md:block text-xs text-slate-500 font-mono">create_student</div>
+                        </div>
+
+                        <div class="rounded-xl border-2 border-[#fca130] bg-[#fff8ef] px-4 py-3 flex items-center justify-between gap-4 hover:scale-[1.01] transition-transform duration-300 shadow-sm">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-16 text-center shrink-0 bg-[#fca130] text-white rounded-md px-3 py-1.5 font-black text-sm shadow">PUT</span>
+                                <div class="min-w-0"><div class="font-black text-slate-700 font-mono">/students/{id}</div><div class="text-xs text-slate-500">Studentni yangilash</div></div>
+                            </div>
+                            <div class="hidden md:block text-xs text-slate-500 font-mono">update_student</div>
+                        </div>
+
+                        <div class="rounded-xl border-2 border-[#f93e3e] bg-[#fff0f0] px-4 py-3 flex items-center justify-between gap-4 hover:scale-[1.01] transition-transform duration-300 shadow-sm">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-16 text-center shrink-0 bg-[#f93e3e] text-white rounded-md px-3 py-1.5 font-black text-sm shadow">DELETE</span>
+                                <div class="min-w-0"><div class="font-black text-slate-700 font-mono">/students/{id}</div><div class="text-xs text-slate-500">Studentni o‘chirish</div></div>
+                            </div>
+                            <div class="hidden md:block text-xs text-slate-500 font-mono">delete_student</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-slate-900 text-white rounded-[28px] p-6 shadow-2xl border border-slate-800">
+                    <div class="text-sm uppercase tracking-widest text-django-light font-black mb-3">Swagger nimani beradi?</div>
+                    <div class="grid gap-4">
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 hover:-translate-y-1 transition-transform duration-300">
+                            <div class="font-black text-lg text-white mb-1"><i class="fas fa-map text-front-blue mr-2"></i>API xaritasi</div>
+                            <p class="text-sm text-slate-300">Barcha endpointlar, methodlar va URL’lar bitta joyda ko‘rinadi.</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 hover:-translate-y-1 transition-transform duration-300">
+                            <div class="font-black text-lg text-white mb-1"><i class="fas fa-file-circle-check text-django-light mr-2"></i>Hujjatlash</div>
+                            <p class="text-sm text-slate-300">Request body, parametrlar, response va status kodlarni tushuntirib beradi.</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4 hover:-translate-y-1 transition-transform duration-300">
+                            <div class="font-black text-lg text-white mb-1"><i class="fas fa-vial-circle-check text-yellow-300 mr-2"></i>Test qilish</div>
+                            <p class="text-sm text-slate-300">Frontend yozmasdan turib API ni shu yerning o‘zida sinab ko‘rasiz.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-gray-200 shadow-xl p-6">
+                    <div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-3">Oddiy tushuncha</div>
+                    <h3 class="text-2xl font-black text-pdp-dark mb-4">Swagger — API uchun “boshqaruv paneli”ga o‘xshaydi</h3>
+                    <div class="flex items-center justify-between gap-3 text-center">
+                        <div class="flex-1 bg-blue-50 border border-blue-100 rounded-3xl p-4">
+                            <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-3 animate-bob"><i class="fas fa-user text-blue-500 text-2xl"></i></div>
+                            <div class="font-black text-pdp-dark">Dasturchi</div>
+                            <div class="text-xs text-gray-500 mt-1">API’ni ochadi</div>
+                        </div>
+                        <div class="text-django-light text-2xl font-black animate-pulse">→</div>
+                        <div class="flex-1 bg-green-50 border border-green-100 rounded-3xl p-4">
+                            <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3 animate-bob" style="animation-delay:.2s"><i class="fas fa-book text-django-light text-2xl"></i></div>
+                            <div class="font-black text-pdp-dark">Swagger</div>
+                            <div class="text-xs text-gray-500 mt-1">Ko‘rsatadi va tushuntiradi</div>
+                        </div>
+                        <div class="text-front-blue text-2xl font-black animate-pulse">→</div>
+                        <div class="flex-1 bg-purple-50 border border-purple-100 rounded-3xl p-4">
+                            <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-3 animate-bob" style="animation-delay:.4s"><i class="fas fa-server text-purple-500 text-2xl"></i></div>
+                            <div class="font-black text-pdp-dark">Backend</div>
+                            <div class="text-xs text-gray-500 mt-1">Javob qaytaradi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9 -->
+<div class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 3rem;">
+    <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-3 bg-emerald-100 text-emerald-800 px-5 py-2 rounded-full font-black mb-4 shadow-sm">
+                <i class="fas fa-gears"></i> DRF-YASG BILAN ISHLATISH TARTIBI
+            </div>
+            <h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Swagger’ni DRF loyihaga ulash bosqichlari</h2>
+            <p class="text-gray-500 max-w-4xl mx-auto mt-4">Bu dars uchun faqat <b>drf-yasg</b> yetarli. Quyida o‘rnatish, sozlash va ishlatish tartibi ketma-ket ko‘rsatilgan.</p>
+        </div>
+
+        <div class="grid xl:grid-cols-[0.9fr_1.1fr] gap-8 items-start mb-8">
+            <div class="space-y-4">
+                <div class="bg-white rounded-[28px] border border-gray-200 shadow-xl p-5">
+                    <div class="text-sm uppercase tracking-widest text-emerald-600 font-black mb-3">1-qadam</div>
+                    <div class="flex items-center justify-between gap-3 mb-3">
+                        <h3 class="text-2xl font-black text-pdp-dark">Kutubxonani o‘rnatish</h3>
+                        <button class="w-10 h-10 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-700 transition-colors" onclick="copyText('pip install drf-yasg')" title="Copy command"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 font-mono text-emerald-800 text-sm break-all">pip install drf-yasg</div>
+                    <p class="text-sm text-gray-600 mt-3">Avval loyiha virtual environment ichida shu komandani ishga tushirasiz.</p>
+                </div>
+
+                <div class="bg-slate-900 text-white rounded-[28px] p-5 shadow-2xl border border-slate-800">
+                    <div class="text-sm uppercase tracking-widest text-django-light font-black mb-3">Qisqa tartib</div>
+                    <div class="space-y-3 text-sm text-slate-300">
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><b class="text-white">1.</b> <span class="font-mono text-django-light">drf-yasg</span> ni install qiling.</div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><b class="text-white">2.</b> Uni <span class="font-mono text-front-blue">INSTALLED_APPS</span> ga qo‘shing.</div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><b class="text-white">3.</b> <span class="font-mono text-yellow-300">schema_view</span> yarating.</div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><b class="text-white">4.</b> <span class="font-mono text-white">/swagger/</span> url oching.</div>
+                        <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><b class="text-white">5.</b> Brauzerda endpointlarni test qiling.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white">
+                    <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-4">
+                        <div>
+                            <div class="text-sm uppercase tracking-widest text-django-light font-black">2-qadam</div>
+                            <div class="text-2xl font-black mt-1">settings.py</div>
+                        </div>
+                        <button class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('swaggerSettingsCode')" title="Copy code"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="p-4 bg-[#111827]">
+<pre><code class="language-python" id="swaggerSettingsCode">INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'rest_framework',
+    'drf_yasg',
+    'app',
+]</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white">
+                    <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-4">
+                        <div>
+                            <div class="text-sm uppercase tracking-widest text-front-blue font-black">3-qadam</div>
+                            <div class="text-2xl font-black mt-1">root/urls.py</div>
+                        </div>
+                        <button class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('swaggerUrlsCode')" title="Copy code"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="p-4 bg-[#111827]">
+<pre><code class="language-python" id="swaggerUrlsCode">from django.contrib import admin
+from django.urls import path, re_path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Student API",
+        default_version='v1',
+        description="Student CRUD API hujjati",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('app.urls')),
+    re_path(r'^swagger(?P&lt;format&gt;\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+]</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[28px] border border-gray-200 shadow-xl p-6">
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-blue-50 border border-blue-100 rounded-3xl p-5">
+                    <div class="font-black text-pdp-dark text-lg mb-2"><i class="fas fa-play-circle text-blue-500 mr-2"></i>Qanday ochiladi?</div>
+                    <p class="text-sm text-gray-600">Serverni ishga tushiring va brauzerda <b class="font-mono">http://localhost:8000/swagger/</b> manzilini oching.</p>
+                </div>
+                <div class="bg-green-50 border border-green-100 rounded-3xl p-5">
+                    <div class="font-black text-pdp-dark text-lg mb-2"><i class="fas fa-hand-pointer text-django-light mr-2"></i>Qanday ishlatiladi?</div>
+                    <p class="text-sm text-gray-600">Endpointni bosasiz, <b>Try it out</b> ni tanlaysiz, ma’lumot kiritib <b>Execute</b> qilasiz.</p>
+                </div>
+                <div class="bg-orange-50 border border-orange-100 rounded-3xl p-5">
+                    <div class="font-black text-pdp-dark text-lg mb-2"><i class="fas fa-reply text-orange-500 mr-2"></i>Natija qayerda?</div>
+                    <p class="text-sm text-gray-600">Pastki qismda response body, status code va serverdan qaytgan javob chiqadi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Slide 8 -->
+<div class="slide bg-[#F8FAFC]" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 2.5rem;">
+    <div class="max-w-3xl w-full">
+        <div class="text-center mb-5">
+            <div class="inline-flex items-center gap-3 bg-orange-100 text-orange-800 px-4 py-2 rounded-full font-black mb-3 shadow-sm text-sm">
+                <i class="fas fa-clipboard-list"></i> MUSTAQIL ISH
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-pdp-dark">Mustaqil ish</h2>
+            <p class="text-gray-500 max-w-xl mx-auto mt-2 text-sm">
+                Person modeli yarating va unga CRUD endpoint chiqaring. Quyida fieldlar alohida ko‘rsatilgan.
+            </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white rounded-[24px] border border-gray-200 shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-[#0F172A] to-[#38BDF8] text-white px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest font-bold text-white/80">Topshiriq</div>
+                        <h3 class="text-xl font-black">Person CRUD API</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5">
+                <div class="grid md:grid-cols-2 gap-3 mb-4">
+                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-center">
+                        <div class="font-black text-pdp-dark text-sm">full_name</div>
+                        <div class="text-[11px] text-gray-500 mt-1">shaxsning ism-familiyasi</div>
+                    </div>
+                    <div class="bg-green-50 border border-green-100 rounded-2xl p-4 text-center">
+                        <div class="font-black text-pdp-dark text-sm">age</div>
+                        <div class="text-[11px] text-gray-500 mt-1">yoshi</div>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 text-center">
+                        <div class="font-black text-pdp-dark text-sm">phone_number</div>
+                        <div class="text-[11px] text-gray-500 mt-1">telefon raqami</div>
+                    </div>
+                    <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 text-center">
+                        <div class="font-black text-pdp-dark text-sm">address</div>
+                        <div class="text-[11px] text-gray-500 mt-1">manzili</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">1. Person model yarating</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">2. Serializer yozing</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">3. ViewSet yozing</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">4. Router orqali endpoint oching</div>
+                </div>
+
+                <div class="mt-4 bg-[#0F172A] text-white rounded-2xl p-4 text-center">
+                    <div class="text-xs uppercase tracking-widest text-django-light font-black mb-2">Natija</div>
+                    <div class="text-lg md:text-xl font-black">http://localhost:8000/person/</div>
+                    <div class="text-xs text-gray-300 mt-2">
+                        Shu endpointda GET, POST, PUT va DELETE ishlashi kerak.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 10 -->
+<div class="slide bg-[#F8FAFC]" style="justify-content:flex-start; padding-top: 2rem; padding-bottom: 2.5rem;">
+    <div class="max-w-3xl w-full">
+        <div class="text-center mb-5">
+            <div class="inline-flex items-center gap-3 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full font-black mb-3 shadow-sm text-sm">
+                <i class="fas fa-book-open"></i> HOMEWORK
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-pdp-dark">Uyga vazifa</h2>
+            <p class="text-gray-500 max-w-xl mx-auto mt-2 text-sm">
+                Student modeli yarating va unga CRUD endpoint chiqaring.
+            </p>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white rounded-[24px] border border-gray-200 shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-django-light to-front-blue text-white px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest font-bold text-white/80">Topshiriq</div>
+                        <h3 class="text-xl font-black">Student CRUD API</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5">
+                <div class="grid md:grid-cols-3 gap-3 mb-4">
+                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-center">
+                        <div class="font-black text-pdp-dark text-sm">full_name</div>
+                        <div class="text-[11px] text-gray-500 mt-1">ism-familiya</div>
+                    </div>
+                    <div class="bg-green-50 border border-green-100 rounded-2xl p-3 text-center">
+                        <div class="font-black text-pdp-dark text-sm">age</div>
+                        <div class="text-[11px] text-gray-500 mt-1">yoshi</div>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-100 rounded-2xl p-3 text-center">
+                        <div class="font-black text-pdp-dark text-sm">course</div>
+                        <div class="text-[11px] text-gray-500 mt-1">kursi</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">1. Student model yarating</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">2. Serializer yozing</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">3. ViewSet yozing</div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm text-gray-700 font-medium">4. Router orqali endpoint oching</div>
+                </div>
+
+                <div class="mt-4 bg-[#0F172A] text-white rounded-2xl p-4 text-center">
+                    <div class="text-xs uppercase tracking-widest text-django-light font-black mb-2">Natija</div>
+                    <div class="text-lg md:text-xl font-black">http://localhost:8000/</div>
+                    <div class="text-xs text-gray-300 mt-2">
+                        Shu endpointda GET, POST, PUT va DELETE ishlashi kerak.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 11 -->
+<div class="slide bg-slate-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(68,183,139,0.10),transparent_22%),radial-gradient(circle_at_top,rgba(56,189,248,0.08),transparent_35%)]"></div>
+
+    <div class="max-w-4xl w-full text-center relative z-10">
+        <div class="mx-auto mb-8 relative w-28 h-28 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border border-django-light/10 scale-[1.25]"></div>
+            <div class="w-24 h-24 rounded-full bg-django-light flex items-center justify-center shadow-[0_0_40px_rgba(68,183,139,0.2)]">
+                <i class="fab fa-python text-5xl text-pdp-dark"></i>
+            </div>
+        </div>
+
+        <h1 class="text-5xl md:text-6xl font-black tracking-tighter mb-6 uppercase leading-none">
+            Tabriklaymiz!
+        </h1>
+
+        <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Siz rasman <span class="text-django-light">Backend Dasturchisi</span> bo‘lish sari
+            ilk va eng muhim qadamni tashladingiz.
+        </p>
+
+        <button id="btn-restart" class="mt-10 bg-white text-pdp-dark px-10 py-4 rounded-full font-black uppercase tracking-widest hover:bg-django-light hover:text-white hover:scale-105 transition-all shadow-2xl group">
+            <i class="fas fa-rotate-right mr-3 group-hover:-rotate-180 transition-transform duration-500"></i>
+            Boshiga qaytish
+        </button>
+    </div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 1200);
+            });
+        }
+
+        function copyById(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const text = el.innerText || el.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 1200);
+            });
+        }
+
+        (function() {
+            let currentSlide = 0;
+            const wrapper = document.getElementById('slidesWrapper');
+            const counter = document.getElementById('slide-counter');
+            const slides = document.querySelectorAll('.slide');
+            const total = slides.length;
+
+            function update() {
+                wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+                counter.innerText = `${currentSlide + 1} / ${total}`;
+
+                const currentSlideEl = slides[currentSlide];
+                currentSlideEl.querySelectorAll('h1, h2, h3, p:not(.font-mono), .feature-card, .grid > div, .max-w-5xl > div, .max-w-6xl > div').forEach((el, i) => {
+                    el.style.opacity = '0';
+                    el.style.animation = 'none';
+                    setTimeout(() => { el.style.animation = `slideInUp 0.5s ease-out ${i * 0.06}s forwards`; }, 40);
+                });
+            }
+
+            function nextSlide() { if(currentSlide < total - 1) { currentSlide++; update(); } }
+            function prevSlide() { if(currentSlide > 0) { currentSlide--; update(); } }
+
+            document.getElementById('btn-next').addEventListener('click', nextSlide);
+            document.getElementById('btn-prev').addEventListener('click', prevSlide);
+            document.getElementById('btn-restart').addEventListener('click', () => { currentSlide = 0; update(); });
+
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+                if(e.key === 'ArrowLeft') prevSlide();
+            });
+
+            let touchStartX = 0;
+            const touchArea = document.getElementById('touchArea');
+            touchArea.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+            touchArea.addEventListener('touchend', e => {
+                let touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) nextSlide();
+                if (touchEndX - touchStartX > 50) prevSlide();
+            }, {passive: true});
+
+            if (window.hljs) hljs.highlightAll();
+            update();
+        })();
+    </script>
+</body>
+</html>

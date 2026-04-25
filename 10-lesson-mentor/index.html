@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10-Dars · DRF Takrorlash Teacher Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'pdp-cyan':'#00D1D1','pdp-dark':'#0F172A','django-light':'#44B78B','front-blue':'#38BDF8','ai-violet':'#7C3AED','warm-yellow':'#FBBF24','soft-red':'#EF4444','orange-soft':'#F97316'
+    }}}}
+  </script>
+  <style>
+    body{font-family:'Montserrat',sans-serif;background:#0F172A;color:#E2E8F0}
+    .font-mono,code,pre{font-family:'Fira Code',monospace}
+    .glass{background:rgba(15,23,42,.84);backdrop-filter:blur(14px)}
+    .card{background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.97));border:1px solid rgba(148,163,184,.14);transition:.25s}
+    .card:hover{transform:translateY(-2px);border-color:rgba(0,209,209,.28)}
+    .hero-glow{box-shadow:0 0 80px rgba(0,209,209,.12)}
+    .tip{background:rgba(251,191,36,.08);border-left:4px solid #FBBF24}
+    .ok{background:rgba(68,183,139,.10);border-left:4px solid #44B78B}
+    .info{background:rgba(56,189,248,.09);border-left:4px solid #38BDF8}
+    .warn{background:rgba(239,68,68,.08);border-left:4px solid #EF4444}
+    .mini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:18px}
+    .topic{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:20px;transition:.25s}
+    .topic:hover{transform:translateY(-3px);border-color:rgba(0,209,209,.22)}
+    .method{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:7px 10px;border-radius:999px;color:white;font-weight:900;font-size:11px;letter-spacing:.08em;background:#22c55e}
+    .post{background:#3b82f6}.put{background:#f97316}.del{background:#ef4444}.query{background:#7c3aed}
+    .endpoint{background:white;color:#0f172a;border:1px solid #e5e7eb;border-radius:20px;padding:16px;box-shadow:0 8px 18px rgba(15,23,42,.06)}
+    .codebox{background:#0b1220;border:1px solid rgba(148,163,184,.18);border-radius:22px;padding:18px}
+    pre{white-space:pre-wrap;line-height:1.6}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes flow{0%{transform:translateX(-120%);opacity:0}50%{opacity:1}100%{transform:translateX(120%);opacity:0}}
+    .animate-bob{animation:bob 2.4s ease-in-out infinite}
+    .flow-line{position:relative;overflow:hidden;height:8px;border-radius:999px;background:rgba(255,255,255,.1)}
+    .flow-line:before{content:'';position:absolute;left:-30%;top:0;bottom:0;width:35%;background:linear-gradient(90deg,transparent,#38BDF8,transparent);animation:flow 2.2s linear infinite}
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">10-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">DRF umumiy takrorlash darsi</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a class="hover:text-white" href="#maqsad">Maqsad</a>
+        <a class="hover:text-white" href="#mavzular">Mavzular</a>
+        <a class="hover:text-white" href="#amaliyot">Amaliyot</a>
+        <a class="hover:text-white" href="#tekshiruv">Tekshiruv</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">10-dars · takrorlash</div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            DRF bo‘yicha o‘tilgan barcha mavzularni <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">takrorlash darsi</span>
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu darsda yangi katta mavzu berilmaydi. Mentor o‘quvchilar bilan Swagger, CRUD endpointlar, generic views, ModelViewSet, searching, filtering, ordering, pagination, JWT token, login va register mavzularini qisqa savol-javob va amaliy mini topshiriqlar orqali qaytaradi.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="mini"><div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-rotate"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Maqsad</div><div class="text-white font-black mt-1">Takrorlash</div></div>
+            <div class="mini"><div class="text-django-light text-xl mb-2"><i class="fas fa-code"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Format</div><div class="text-white font-black mt-1">Amaliy savol-javob</div></div>
+            <div class="mini"><div class="text-ai-violet text-xl mb-2"><i class="fas fa-check-double"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div><div class="text-white font-black mt-1">Mustahkamlash</div></div>
+          </div>
+        </div>
+
+        <div class="rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-5">
+            <div><div class="text-white font-black text-lg">Takrorlash oqimi</div><div class="text-slate-400 text-sm">API → CRUD → View → Auth → Test</div></div>
+            <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl animate-bob"><i class="fas fa-layer-group"></i></div>
+          </div>
+          <div class="space-y-3 text-sm">
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Swagger va endpointlarni ko‘rish</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. CRUD va view turlarini solishtirish</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. Query mavzularni qaytarish</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. JWT, login, register test qilish</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Dars maqsadi</div>
+        <h2 class="text-3xl font-black text-white mb-6">Mentor nimani tushuntiradi?</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="ok rounded-r-2xl p-5">
+            <div class="text-white font-black mb-2">Asosiy vazifa</div>
+            <div class="text-slate-300 text-sm leading-relaxed">O‘quvchilar oldingi darslarda o‘rgangan DRF mavzularini bir-biriga bog‘lab tushunishi kerak: endpoint nima, view nima qiladi, serializer qayerda ishlaydi, Swaggerda qanday test qilinadi.</div>
+          </div>
+          <div class="info rounded-r-2xl p-5">
+            <div class="text-white font-black mb-2">Dars formati</div>
+            <div class="text-slate-300 text-sm leading-relaxed">Ko‘p nazariya emas. Qisqa eslatma, savol-javob, keyin amaliy test: endpoint ochiladi, Swaggerda tekshiriladi, token bilan protected API ishlatiladi.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mavzular" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Takrorlanadigan mavzular</div>
+        <h2 class="text-3xl font-black text-white mb-6">Qisqa checklist</h2>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="topic"><div class="text-pdp-cyan text-xl mb-3"><i class="fas fa-file-code"></i></div><div class="text-white font-black mb-2">Swagger</div><div class="text-slate-400 text-sm">Endpointlarni ko‘rish va test qilish.</div></div>
+          <div class="topic"><div class="text-django-light text-xl mb-3"><i class="fas fa-screwdriver-wrench"></i></div><div class="text-white font-black mb-2">CRUD</div><div class="text-slate-400 text-sm">Create, Read, Update, Delete endpointlar.</div></div>
+          <div class="topic"><div class="text-front-blue text-xl mb-3"><i class="fas fa-list"></i></div><div class="text-white font-black mb-2">ListView / View</div><div class="text-slate-400 text-sm">Oddiy view va ro‘yxat qaytaruvchi view farqi.</div></div>
+          <div class="topic"><div class="text-ai-violet text-xl mb-3"><i class="fas fa-plus"></i></div><div class="text-white font-black mb-2">ListCreateView</div><div class="text-slate-400 text-sm">GET list va POST create bir viewda.</div></div>
+          <div class="topic"><div class="text-warm-yellow text-xl mb-3"><i class="fas fa-cubes"></i></div><div class="text-white font-black mb-2">ModelViewSet</div><div class="text-slate-400 text-sm">CRUDni avtomatik yig‘ish.</div></div>
+          <div class="topic"><div class="text-orange-soft text-xl mb-3"><i class="fas fa-magnifying-glass"></i></div><div class="text-white font-black mb-2">Searching</div><div class="text-slate-400 text-sm">?search= orqali qidirish.</div></div>
+          <div class="topic"><div class="text-django-light text-xl mb-3"><i class="fas fa-filter"></i></div><div class="text-white font-black mb-2">Filtering</div><div class="text-slate-400 text-sm">category, status kabi fieldlar bo‘yicha ajratish.</div></div>
+          <div class="topic"><div class="text-front-blue text-xl mb-3"><i class="fas fa-arrow-down-wide-short"></i></div><div class="text-white font-black mb-2">Ordering</div><div class="text-slate-400 text-sm">price, date, rating bo‘yicha tartiblash.</div></div>
+          <div class="topic"><div class="text-ai-violet text-xl mb-3"><i class="fas fa-layer-group"></i></div><div class="text-white font-black mb-2">Pagination</div><div class="text-slate-400 text-sm">Ma’lumotlarni sahifalab qaytarish.</div></div>
+          <div class="topic"><div class="text-soft-red text-xl mb-3"><i class="fas fa-key"></i></div><div class="text-white font-black mb-2">JWT Token</div><div class="text-slate-400 text-sm">Access va refresh token bilan auth.</div></div>
+          <div class="topic"><div class="text-pdp-cyan text-xl mb-3"><i class="fas fa-right-to-bracket"></i></div><div class="text-white font-black mb-2">Login</div><div class="text-slate-400 text-sm">Token olish va APIga yuborish.</div></div>
+          <div class="topic"><div class="text-django-light text-xl mb-3"><i class="fas fa-user-plus"></i></div><div class="text-white font-black mb-2">Register</div><div class="text-slate-400 text-sm">Yangi user yaratish endpointi.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="amaliyot" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Amaliy takrorlash</div>
+        <h2 class="text-3xl font-black text-white mb-6">Darsda mentor ko‘rsatadigan endpointlar</h2>
+        <div class="grid lg:grid-cols-2 gap-5 mb-6">
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method">GET</span><span class="font-mono font-black">/api/products/</span></div><div class="text-sm text-slate-600">List endpoint, pagination, search, filter va ordering bilan test qilinadi.</div></div>
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method post">POST</span><span class="font-mono font-black">/api/products/</span></div><div class="text-sm text-slate-600">Create endpoint. ListCreateView yoki ModelViewSet orqali.</div></div>
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method put">PUT</span><span class="font-mono font-black">/api/products/&lt;id&gt;/</span></div><div class="text-sm text-slate-600">Update endpoint. Bitta objectni o‘zgartirish.</div></div>
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method del">DELETE</span><span class="font-mono font-black">/api/products/&lt;id&gt;/</span></div><div class="text-sm text-slate-600">Delete endpoint. Bitta objectni o‘chirish.</div></div>
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method query">QUERY</span><span class="font-mono font-black">?search=&ordering=&page=</span></div><div class="text-sm text-slate-600">Searching, ordering va pagination birga qaytariladi.</div></div>
+          <div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method post">AUTH</span><span class="font-mono font-black">/api/login/ · /api/register/</span></div><div class="text-sm text-slate-600">Login, register va JWT token olish takrorlanadi.</div></div>
+        </div>
+        <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Mentor gapiradigan asosiy jumla: “Bugun yangi kod yodlamaymiz. Oldingi mavzularni bitta API loyihada qanday birga ishlashini ko‘ramiz.”</div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Dars tartibi</div>
+        <h2 class="text-3xl font-black text-white mb-6">Mentor uchun qisqa reja</h2>
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="mini"><div class="text-pdp-cyan font-black text-2xl mb-2">01</div><div class="text-white font-black mb-2">Savol-javob</div><div class="text-slate-400 text-sm">Har mavzudan 1–2 ta tezkor savol.</div></div>
+          <div class="mini"><div class="text-django-light font-black text-2xl mb-2">02</div><div class="text-white font-black mb-2">Swagger test</div><div class="text-slate-400 text-sm">Endpointlar ochiladi va live test qilinadi.</div></div>
+          <div class="mini"><div class="text-front-blue font-black text-2xl mb-2">03</div><div class="text-white font-black mb-2">CRUD amaliyot</div><div class="text-slate-400 text-sm">GET, POST, PUT/PATCH, DELETE qaytariladi.</div></div>
+          <div class="mini"><div class="text-ai-violet font-black text-2xl mb-2">04</div><div class="text-white font-black mb-2">Auth tekshiruv</div><div class="text-slate-400 text-sm">Register, login, token bilan request.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tekshiruv" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Tekshiruv mezoni</div>
+        <h2 class="text-3xl font-black text-white mb-6">Dars oxirida o‘quvchi nimalarni bilishi kerak?</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="ok rounded-r-2xl p-5">
+            <div class="text-white font-black mb-2">Minimal natija</div>
+            <div class="text-slate-300 text-sm leading-relaxed">O‘quvchi Swaggerda endpoint test qila oladi, CRUD endpointlar farqini biladi, ListCreateView va ModelViewSet nima uchun ishlatilishini tushuntira oladi.</div>
+          </div>
+          <div class="info rounded-r-2xl p-5">
+            <div class="text-white font-black mb-2">Yaxshi natija</div>
+            <div class="text-slate-300 text-sm leading-relaxed">O‘quvchi searching, filtering, ordering, paginationni query orqali ishlata oladi, register/login qiladi va JWT token bilan protected endpointga request yubora oladi.</div>
+          </div>
+        </div>
+        <div class="codebox text-slate-200 text-sm mt-6">
+<pre><code>Takrorlash darsi uchun yakuniy savol:
+“Bitta product API loyihada CRUD, search, filter, ordering, pagination va JWT auth qayerda ishlaydi?”</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    DRF Teacher Guide · 10-dars · Umumiy takrorlash
+  </footer>
+</body>
+</html>

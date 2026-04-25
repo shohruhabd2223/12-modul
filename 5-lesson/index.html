@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDP Junior - Django REST Framework (5-Dars) — Authentication va Permissions</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&amp;family=Fira+Code:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'rose-soft': '#FB7185'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body { font-family: 'Montserrat', sans-serif; background:#eef4f8; overflow:hidden; }
+    .font-mono, pre, code { font-family:'Fira Code', monospace; }
+    .slider-window { width:100%; height:calc(100vh - 80px); position:relative; overflow:hidden; }
+    .slides-wrapper { display:flex; width:100%; height:100%; transition:transform .7s cubic-bezier(.65,0,.35,1); }
+    .slide { min-width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 2rem 6rem; box-sizing:border-box; overflow-y:auto; overflow-x:hidden; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background:#677381; border-radius:999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background:transparent; }
+    .pdp-logo-fixed { position:fixed; top:15px; left:24px; z-index:100; display:flex; align-items:center; gap:12px; }
+    .pdp-logo-circle { width:45px; height:45px; background:#00D1D1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .pdp-logo-circle div { width:28px; height:14px; background:#0F172A; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+    .code-wrap { max-height:430px; overflow:auto; }
+    .copy-btn { position:absolute; top:14px; right:14px; z-index:5; }
+    .copy-toast {
+      position:fixed; top:96px; left:50%; transform:translateX(-50%);
+      background:#44B78B; color:white; padding:10px 18px; border-radius:999px;
+      font-weight:700; box-shadow:0 10px 25px rgba(68,183,139,.25); opacity:0;
+      pointer-events:none; transition:opacity .25s; z-index:200;
+    }
+    .copy-toast.show { opacity:1; }
+    .hljs { background:#111827 !important; border-radius:1rem; padding:1.25rem !important; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes pulseRing { 0% { transform:scale(.95); opacity:.9; } 100% { transform:scale(1.2); opacity:0; } }
+    @keyframes dataFlow { 0% { transform:translateX(-110%); opacity:0; } 50%{opacity:1;} 100%{ transform:translateX(110%); opacity:0; } }
+    .animate-float { animation:float 3s ease-in-out infinite; }
+    .animate-bob { animation:bob 2.4s ease-in-out infinite; }
+    .api-pill { animation:bob 2.4s ease-in-out infinite; }
+    .server-rack { width:70px; height:90px; background:#1e293b; border:2px solid #44b78b; border-radius:8px; display:flex; flex-direction:column; justify-content:space-evenly; align-items:center; }
+    .server-light { width:42px; height:8px; background:#0f172a; border-radius:4px; position:relative; overflow:hidden; }
+    .server-light::after { content:''; position:absolute; top:0; left:-100%; width:50%; height:100%; background:#44b78b; box-shadow:0 0 10px #44b78b; animation:dataFlow 1.5s infinite linear; }
+    .server-light:nth-child(2)::after { animation-delay:.5s; background:#38bdf8; box-shadow:0 0 10px #38bdf8; }
+    .server-light:nth-child(3)::after { animation-delay:1s; }
+    .ring-card { position:relative; }
+    .ring-card::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius:28px; animation:pulseRing 2.2s infinite; }
+  
+    @keyframes deniedBlink { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.08);opacity:.65} }
+    @keyframes glowMove { 0%{transform:translateX(-120%);opacity:0} 50%{opacity:.9} 100%{transform:translateX(120%);opacity:0} }
+    @keyframes floatSoft { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes tiltCard { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-1.5deg)} }
+    @keyframes pulseSoft { 0%,100%{box-shadow:0 0 0 0 rgba(68,183,139,.35)} 70%{box-shadow:0 0 0 16px rgba(68,183,139,0)} }
+    @keyframes statusShine { 0%{left:-40%} 100%{left:120%} }
+    .avatar-chip{ animation:floatSoft 2.8s ease-in-out infinite; }
+    .scan-beam{ position:relative; overflow:hidden; }
+    .scan-beam::after{ content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent); animation:glowMove 2.2s linear infinite; }
+    .denied-badge{ animation:deniedBlink 1.3s ease-in-out infinite; }
+    .tilt-card{ animation:tiltCard 4s ease-in-out infinite; }
+    .pulse-soft{ animation:pulseSoft 2.2s infinite; }
+    .status-card{ position:relative; overflow:hidden; }
+    .status-card::after{ content:''; position:absolute; top:0; bottom:0; width:28%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); animation:statusShine 3.4s linear infinite; }
+    .mini-orbit{ animation:floatSoft 2s ease-in-out infinite; }
+    .access-lane{ position:relative; overflow:hidden; }
+    .access-lane::before{ content:''; position:absolute; left:-15%; top:50%; transform:translateY(-50%); width:30%; height:6px; border-radius:999px; background:linear-gradient(90deg, transparent, rgba(56,189,248,.9), transparent); animation:glowMove 2.8s linear infinite; }
+</style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+<div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+<div class="pdp-logo-fixed">
+<div class="pdp-logo-circle"><div><span class="text-[8px] text-[#00D1D1] font-bold mt-[-1px]">&gt;_</span></div></div>
+<div class="flex flex-col leading-none"><span class="text-pdp-dark font-black text-xl tracking-tighter">PDP</span><span class="text-pdp-cyan font-bold text-sm tracking-tight">Junior</span></div>
+</div>
+<header class="h-[80px] w-full flex items-center justify-end px-12 bg-white/80 backdrop-blur-md z-50 shrink-0 border-b border-gray-100 shadow-sm">
+<div class="flex gap-4 items-center">
+<button class="w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:border-django-light hover:text-django-light flex items-center justify-center transition-all" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+<span class="text-sm font-bold text-gray-500 font-mono" id="slide-counter">1 / 12</span>
+<button class="w-10 h-10 rounded-full bg-django-light text-white shadow-lg flex items-center justify-center hover:bg-[#3ca47d] transition-all" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+</div>
+</header>
+<main class="slider-window" id="touchArea">
+<div class="slides-wrapper" id="slidesWrapper">
+<section class="slide bg-slate-900 text-white relative">
+<div class="max-w-5xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[28rem] h-[28rem] bg-django-light rounded-full"></div></div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">5-DARS</span><div class="inline-block mb-6 relative z-10">
+<i class="fas fa-box-open text-8xl text-django-light animate-float mr-4"></i>
+<i class="fas fa-user-shield text-7xl text-front-blue animate-float" style="animation-delay:1s"></i>
+</div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">PRODUCT API LESSON</span>
+<h1 class="text-5xl md:text-8xl font-black tracking-tighter mb-4 relative z-10">Authentication <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light to-front-blue">va Permissions</span></h1>
+<p class="text-xl text-gray-400 font-medium mt-6 relative z-10">DRF’da Product modeli asosida endpointlarni himoyalash</p>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Authentication va Permission qanday ishlaydi?</h2>
+<p class="text-gray-500 text-center max-w-4xl mx-auto">Quyidagi vizual misolda user saytga kirishga harakat qiladi. Avval server: <b>“Sen kimsan?”</b> deb tekshiradi. Keyin esa: <b>“Senga nima mumkin?”</b> deb ruxsatni aniqlaydi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.2fr_.8fr] gap-8 items-start">
+<div class="bg-slate-900 rounded-[32px] p-6 md:p-8 text-white border border-slate-800 shadow-2xl overflow-hidden">
+<div class="grid md:grid-cols-3 gap-4 items-stretch">
+<div class="bg-slate-800 rounded-3xl p-5 text-center relative">
+<div class="w-24 h-24 mx-auto rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center avatar-chip pulse-soft">
+<i class="fas fa-user text-4xl text-blue-400"></i>
+</div>
+<div class="font-black text-xl mt-4">User</div>
+<div class="text-xs text-slate-400 mt-2">Saytga kirmoqchi</div>
+<div class="mt-4 inline-flex items-center gap-2 bg-blue-500/10 text-blue-300 border border-blue-400/20 rounded-full px-3 py-1 text-xs font-bold"><i class="fas fa-paper-plane"></i> Request yubordi</div>
+</div>
+<div class="bg-[#111827] rounded-3xl p-5 border border-slate-700 flex flex-col justify-center relative scan-beam">
+<div class="absolute top-3 right-3 text-[11px] font-black text-django-light uppercase tracking-widest">1-bosqich</div>
+<div class="w-16 h-16 rounded-2xl bg-django-light/15 border border-django-light/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-id-badge text-3xl text-django-light"></i></div>
+<div class="text-center font-black text-xl">“Sen kimsan?”</div>
+<div class="text-center text-sm text-slate-400 mt-2">Authentication userni tekshiradi</div>
+<div class="mt-4 flex justify-center gap-2 text-xs">
+<span class="bg-white/5 border border-white/10 rounded-full px-3 py-1">Token bormi?</span>
+<span class="bg-white/5 border border-white/10 rounded-full px-3 py-1">Login qilinganmi?</span>
+</div>
+</div>
+<div class="bg-[#111827] rounded-3xl p-5 border border-slate-700 flex flex-col justify-center relative">
+<div class="absolute top-3 right-3 text-[11px] font-black text-front-blue uppercase tracking-widest">2-bosqich</div>
+<div class="w-16 h-16 rounded-2xl bg-front-blue/15 border border-front-blue/30 flex items-center justify-center mx-auto mb-4"><i class="fas fa-key text-3xl text-front-blue"></i></div>
+<div class="text-center font-black text-xl">“Nima mumkin?”</div>
+<div class="text-center text-sm text-slate-400 mt-2">Permission amalni cheklaydi</div>
+<div class="mt-4 grid grid-cols-3 gap-2 text-[11px] font-bold">
+<div class="bg-green-500/10 border border-green-400/20 text-green-300 rounded-2xl py-2 text-center">GET<br/>ochiq</div>
+<div class="bg-blue-500/10 border border-blue-400/20 text-blue-300 rounded-2xl py-2 text-center">POST<br/>login</div>
+<div class="bg-red-500/10 border border-red-400/20 text-red-300 rounded-2xl py-2 text-center">DELETE<br/>admin</div>
+</div>
+</div>
+</div>
+<div class="mt-6 grid md:grid-cols-2 gap-4">
+<div class="bg-red-500/10 border border-red-400/20 rounded-3xl p-5 relative overflow-hidden">
+<div class="absolute top-4 right-4 denied-badge w-10 h-10 rounded-full bg-red-500/15 border border-red-400/30 flex items-center justify-center"><i class="fas fa-ban text-red-300"></i></div>
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"><i class="fas fa-user-slash text-2xl text-red-300"></i></div>
+<div>
+<div class="text-sm uppercase tracking-widest text-red-300 font-black">Natija 1</div>
+<div class="text-2xl font-black">Token yo‘q → taqiq</div>
+<div class="text-sm text-slate-300 mt-1">Server userni taniy olmadi. Natija: <b>401 Unauthorized</b></div>
+</div>
+</div>
+</div>
+<div class="bg-green-500/10 border border-green-400/20 rounded-3xl p-5">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"><i class="fas fa-user-check text-2xl text-green-300"></i></div>
+<div>
+<div class="text-sm uppercase tracking-widest text-green-300 font-black">Natija 2</div>
+<div class="text-2xl font-black">User tanildi</div>
+<div class="text-sm text-slate-300 mt-1">Endi permission qaraydi: list ko‘rishi mumkinmi, create qila oladimi, delete faqat adminmi?</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 shadow-sm tilt-card">
+<div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">Authentication</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-2">“Sen kimsan?”</h3>
+<p class="text-gray-600 text-sm leading-relaxed">Server request yuborgan foydalanuvchini aniqlaydi: login qildimi, token yubordimi, <span class="font-mono">request.user</span> kim bo‘ladi?</p>
+</div>
+<div class="bg-green-50 p-6 rounded-3xl border border-green-100 shadow-sm tilt-card">
+<div class="text-sm uppercase tracking-widest text-green-600 font-black mb-2">Permission</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-2">“Senga nima mumkin?”</h3>
+<p class="text-gray-600 text-sm leading-relaxed">User tanilgach, endpoint unga qaysi amallarni ruxsat qilishini tekshiradi. Masalan GET hammaga, POST authenticated userga, DELETE esa admin userga.</p>
+</div>
+<div class="bg-white p-6 rounded-3xl border border-gray-200 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-slate-500 font-black mb-3">Esda saqlash usuli</div>
+<div class="space-y-3 text-sm font-medium text-slate-700">
+<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-black">A</div> Authentication = tanish</div>
+<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-black">P</div> Permission = ruxsat berish/yopish</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-layer-group"></i> Asosiy tayanch kodlar</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Model → Serializer → View</h2>
+<p class="text-gray-500 max-w-3xl mx-auto mt-4">Authentication va permissionni tushuntirishdan oldin Product model va serializer tayyor bo‘lishi kerak.</p>
+</div>
+<div class="space-y-8">
+<div class="bg-white rounded-[28px] border border-gray-200 shadow-xl overflow-hidden">
+<div class="px-6 py-4 bg-gradient-to-r from-[#0F172A] to-[#1E293B] text-white">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-2xl"><i class="fas fa-database"></i></div>
+<div><div class="text-sm uppercase tracking-widest text-white/70 font-bold">1-qadam</div><h3 class="text-2xl font-black">Product modeli</h3></div>
+</div>
+</div>
+<div class="p-6 grid lg:grid-cols-[.92fr_1.08fr] gap-6 items-start">
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-6">
+<div class="font-black text-pdp-dark text-xl mb-3">Model nima qiladi?</div>
+<p class="text-sm text-gray-600 leading-relaxed">Bu model bazadagi product jadvalini ifodalaydi. name, category, price, is_available va created_at maydonlari shu yerda saqlanadi.</p>
+<div class="mt-4 bg-white border border-blue-100 rounded-2xl px-4 py-3 text-sm text-slate-700 font-semibold">Darsning qolgan qismi aynan shu Product modeli ustida quriladi.</div>
+</div>
+<div class="bg-[#111827] rounded-3xl border border-slate-800 shadow-xl overflow-hidden relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('modelCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-3 border-b border-slate-800 text-white text-sm font-black">models.py</div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="modelCode">from django.db import models
+
+class Product(models.Model):
+    name = models.CharField(max_length=200)
+    category = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    is_available = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name</code></pre></div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-[28px] border border-gray-200 shadow-xl overflow-hidden">
+<div class="px-6 py-4 bg-gradient-to-r from-django-light to-front-blue text-white">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-2xl"><i class="fas fa-shuffle"></i></div>
+<div><div class="text-sm uppercase tracking-widest text-white/80 font-bold">2-qadam</div><h3 class="text-2xl font-black">Serializer yoziladi</h3></div>
+</div>
+</div>
+<div class="p-6 grid lg:grid-cols-[.92fr_1.08fr] gap-6 items-start">
+<div class="bg-green-50 border border-green-100 rounded-3xl p-6">
+<div class="font-black text-pdp-dark text-xl mb-3">Serializer nima qiladi?</div>
+<p class="text-sm text-gray-600 leading-relaxed">Modelni JSON ko‘rinishga o‘tkazadi va requestdan kelgan data to‘g‘riligini tekshiradi. Product API uchun asosiy ko‘prik shu bo‘ladi.</p>
+</div>
+<div class="bg-[#111827] rounded-3xl border border-slate-800 shadow-xl overflow-hidden relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('serializerCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-3 border-b border-slate-800 text-white text-sm font-black">serializers.py</div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="serializerCode">from rest_framework import serializers
+from .models import Product
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Built-in permissionlar</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Product API uchun eng ko‘p ishlatiladigan permission classlar mana shu to‘rttasi.</p>
+<div class="grid md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+<div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-lg"><div class="text-xs uppercase tracking-widest text-slate-500 font-black mb-2">Public</div><div class="text-2xl font-black text-pdp-dark mb-2">AllowAny</div><p class="text-sm text-gray-600">Hamma kira oladi. Product list yoki detail uchun mos.</p></div>
+<div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-lg"><div class="text-xs uppercase tracking-widest text-blue-500 font-black mb-2">Protected</div><div class="text-2xl font-black text-pdp-dark mb-2">IsAuthenticated</div><p class="text-sm text-gray-600">Faqat login qilgan user kira oladi. Create uchun mos.</p></div>
+<div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-lg"><div class="text-xs uppercase tracking-widest text-rose-500 font-black mb-2">Admin</div><div class="text-2xl font-black text-pdp-dark mb-2">IsAdminUser</div><p class="text-sm text-gray-600">Faqat admin userga ruxsat. Delete uchun juda qulay.</p></div>
+<div class="bg-white rounded-3xl border border-gray-200 p-6 shadow-lg"><div class="text-xs uppercase tracking-widest text-green-600 font-black mb-2">Mixed</div><div class="text-2xl font-black text-pdp-dark mb-2">IsAuthenticatedOrReadOnly</div><p class="text-sm text-gray-600">GET hammaga, yozish authenticated userga.</p></div>
+</div>
+<div class="bg-slate-900 rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white">
+<div class="px-6 py-5 border-b border-slate-800">
+<div class="text-sm uppercase tracking-widest text-django-light font-black mb-2">Amaliy mantiq</div>
+<h3 class="text-3xl font-black">Product API uchun tavsiya etilgan sxema</h3>
+</div>
+<div class="p-6 grid md:grid-cols-2 gap-5 text-sm">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><span class="inline-block bg-green-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">GET /products/</span><div class="font-black text-xl mb-2">Hammaga ochiq</div><p class="text-slate-300">Mahsulotlar ro‘yxatini ko‘rish uchun AllowAny yoki IsAuthenticatedOrReadOnly ishlatiladi.</p></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><span class="inline-block bg-blue-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">POST /products/</span><div class="font-black text-xl mb-2">Login qilgan user</div><p class="text-slate-300">Yangi product qo‘shish uchun IsAuthenticated ishlatish qulay.</p></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><span class="inline-block bg-yellow-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">PUT /products/1/</span><div class="font-black text-xl mb-2">Authenticated yoki admin</div><p class="text-slate-300">Yangilash uchun loyiha logikasiga qarab permission beriladi.</p></div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5"><span class="inline-block bg-red-500 text-white text-xs font-black px-3 py-1 rounded-full mb-3">DELETE /products/1/</span><div class="font-black text-xl mb-2">Faqat admin</div><p class="text-slate-300">Delete xavfli amal bo‘lgani uchun IsAdminUser juda mos variant.</p></div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Kod bilan tushuntirish</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Balansli ko‘rinish uchun bloklar navbat bilan joylashtirildi: birida tushuntirish chapda, kod o‘ngda; keyingisida esa aksincha.</p>
+<div class="space-y-8">
+<div class="grid lg:grid-cols-2 gap-8 items-stretch">
+<div class="bg-blue-50 border border-blue-100 rounded-[28px] p-7 shadow-lg flex flex-col justify-center">
+<div class="text-sm uppercase tracking-widest text-blue-500 font-black mb-2">Tushuntirish</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-3">AllowAny — public product list</h3>
+<ul class="space-y-3 text-sm text-gray-700 font-medium">
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Login bo‘lish shart emas</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Product list endpointi uchun juda mos</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Online shop katalogi ko‘pincha aynan public bo‘ladi</li>
+</ul>
+<div class="mt-5 bg-white border border-blue-100 rounded-2xl p-4 text-sm text-slate-700"><b>Natija:</b> har kim <span class="font-mono">GET /products/</span> ga kira oladi.</div>
+</div>
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('allowCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800">
+<div class="text-sm uppercase tracking-widest text-django-light font-black">AllowAny</div>
+<div class="text-2xl font-black mt-1">Public product list</div>
+</div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="allowCode">from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from .models import Product
+from .serializers import ProductSerializer
+
+class ProductListPublicView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)</code></pre></div>
+</div>
+</div>
+<div class="grid lg:grid-cols-2 gap-8 items-stretch">
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative order-2 lg:order-1">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('authCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800">
+<div class="text-sm uppercase tracking-widest text-front-blue font-black">IsAuthenticated</div>
+<div class="text-2xl font-black mt-1">Faqat login qilgan user create qiladi</div>
+</div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="authCode">from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .serializers import ProductSerializer
+
+class ProductCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)</code></pre></div>
+</div>
+<div class="bg-green-50 border border-green-100 rounded-[28px] p-7 shadow-lg flex flex-col justify-center order-1 lg:order-2">
+<div class="text-sm uppercase tracking-widest text-green-600 font-black mb-2">Tushuntirish</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-3">IsAuthenticated — protected create</h3>
+<ul class="space-y-3 text-sm text-gray-700 font-medium">
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> <span class="font-mono">request.user</span> anonymous bo‘lmasligi kerak</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Login qilmagan user POST qila olmaydi</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Dashboard, admin panel yoki private actionlar uchun juda mos</li>
+</ul>
+<div class="mt-5 bg-white border border-green-100 rounded-2xl p-4 text-sm text-slate-700"><b>Natija:</b> <span class="font-mono">POST /products/</span> faqat authenticated userlar uchun ochiladi.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Admin-only va mixed access</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Delete uchun admin-only, list/create uchun mixed permission ko‘rsatish darsda eng tushunarli ketma-ketlik bo‘ladi.</p>
+<div class="grid lg:grid-cols-2 gap-8 mb-8">
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('adminCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-rose-soft font-black">IsAdminUser</div><div class="text-2xl font-black mt-1">Faqat admin delete qiladi</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="adminCode">from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework import status
+from .models import Product
+
+class ProductDeleteView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def delete(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        product.delete()
+        return Response({"message": "Product o‘chirildi"}, status=status.HTTP_204_NO_CONTENT)</code></pre></div>
+</div>
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('mixCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-yellow-300 font-black">IsAuthenticatedOrReadOnly</div><div class="text-2xl font-black mt-1">GET hammaga, POST authenticated</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="mixCode">from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import status
+from .models import Product
+from .serializers import ProductSerializer
+
+class ProductListCreateView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)</code></pre></div>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-5">
+<div class="bg-red-50 border border-red-100 rounded-3xl p-6"><div class="font-black text-pdp-dark text-xl mb-3">IsAdminUser qachon ishlatiladi?</div><p class="text-sm text-gray-600">Delete, stats, management va faqat staff user kiradigan endpointlarda ishlatiladi.</p></div>
+<div class="bg-green-50 border border-green-100 rounded-3xl p-6"><div class="font-black text-pdp-dark text-xl mb-3">IsAuthenticatedOrReadOnly qachon qulay?</div><p class="text-sm text-gray-600">Productlar hammaga ko‘rinsin, lekin yangi product qo‘shish faqat login qilgan userga berilsin desangiz juda qulay.</p></div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<h2 class="text-4xl font-black mb-2 text-pdp-dark text-center">Global settings va Token Authentication</h2>
+<p class="text-gray-500 text-center mb-8 max-w-3xl mx-auto">Har bir viewga alohida yozish o‘rniga, settings.py orqali default authentication va permission berish mumkin.</p>
+<div class="grid lg:grid-cols-2 gap-8">
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('settingsCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-django-light font-black">settings.py</div><div class="text-2xl font-black mt-1">Global auth va permission</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="settingsCode">REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}</code></pre></div>
+</div>
+<div class="bg-[#111827] rounded-[28px] border border-slate-800 shadow-2xl overflow-hidden text-white relative">
+<button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('tokenCode')"><i class="fas fa-copy"></i></button>
+<div class="px-5 py-4 border-b border-slate-800"><div class="text-sm uppercase tracking-widest text-front-blue font-black">urls.py</div><div class="text-2xl font-black mt-1">Token olish endpointi</div></div>
+<div class="p-4 code-wrap bg-[#111827]"><pre><code class="language-python" id="tokenCode">from django.urls import path
+from rest_framework.authtoken.views import obtain_auth_token
+
+urlpatterns = [
+    path('api/token/', obtain_auth_token),
+]</code></pre></div>
+</div>
+</div>
+<div class="grid md:grid-cols-3 gap-5 mt-8">
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-5"><div class="font-black text-pdp-dark text-lg mb-2">1. Token olinadi</div><p class="text-sm text-gray-600">User username va password yuboradi, server token qaytaradi.</p></div>
+<div class="bg-green-50 border border-green-100 rounded-3xl p-5"><div class="font-black text-pdp-dark text-lg mb-2">2. Headerga yuboriladi</div><p class="text-sm text-gray-600 font-mono break-all">Authorization: Token abc123xyz456</p></div>
+<div class="bg-orange-50 border border-orange-100 rounded-3xl p-5"><div class="font-black text-pdp-dark text-lg mb-2">3. request.user aniqlanadi</div><p class="text-sm text-gray-600">DRF tokenni o‘qib, authenticated userni aniqlaydi.</p></div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.8rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-signal"></i> STATUS KODLAR</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark">200, 400 va 500 lik statuslar farqi</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3">API javoblarida asosiy 3 ta katta guruhni ajratib tushuntirish juda foydali: <b>2xx</b> muvaffaqiyat, <b>4xx</b> client xatosi, <b>5xx</b> server xatosi.</p>
+</div>
+<div class="bg-white rounded-[30px] p-6 border border-gray-200 shadow-xl mb-8">
+<div class="grid md:grid-cols-[.9fr_1.2fr_.9fr] gap-4 items-center text-center">
+<div class="bg-slate-50 border border-slate-200 rounded-3xl p-5">
+<div class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3 avatar-chip"><i class="fas fa-laptop-code text-2xl"></i></div>
+<div class="font-black text-pdp-dark">Client request</div>
+</div>
+<div class="relative h-20 access-lane">
+<div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full bg-gradient-to-r from-green-200 via-orange-200 to-red-200"></div>
+<div class="absolute inset-0 flex items-center justify-center gap-4 text-xs font-black">
+<span class="bg-green-500 text-white rounded-full px-3 py-2 mini-orbit">2xx</span>
+<span class="bg-orange-500 text-white rounded-full px-3 py-2 mini-orbit" style="animation-delay:.3s">4xx</span>
+<span class="bg-red-500 text-white rounded-full px-3 py-2 mini-orbit" style="animation-delay:.6s">5xx</span>
+</div>
+</div>
+<div class="bg-slate-900 text-white rounded-3xl p-5 border border-slate-800">
+<div class="w-16 h-16 rounded-full bg-white/10 text-django-light flex items-center justify-center mx-auto mb-3 avatar-chip"><i class="fas fa-server text-2xl"></i></div>
+<div class="font-black">API response</div>
+</div>
+</div>
+</div>
+<div class="grid lg:grid-cols-3 gap-6">
+<div class="bg-green-50 border border-green-100 rounded-[30px] p-6 shadow-lg status-card">
+<div class="inline-flex items-center gap-2 bg-green-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">2xx Success</div>
+<h3 class="text-3xl font-black text-pdp-dark mb-3">Hammasi joyida</h3>
+<p class="text-sm text-gray-700 leading-relaxed mb-4">Request to‘g‘ri bordi va server muvaffaqiyatli javob qaytardi.</p>
+<div class="space-y-3 text-sm font-medium">
+<div class="bg-white/80 border border-green-200 rounded-2xl p-4"><b>200 OK</b> — list yoki detail muvaffaqiyatli olindi.</div>
+<div class="bg-white/80 border border-green-200 rounded-2xl p-4"><b>201 Created</b> — yangi product muvaffaqiyatli yaratildi.</div>
+</div>
+</div>
+<div class="bg-orange-50 border border-orange-100 rounded-[30px] p-6 shadow-lg status-card">
+<div class="inline-flex items-center gap-2 bg-orange-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">4xx Client Error</div>
+<h3 class="text-3xl font-black text-pdp-dark mb-3">Muammo request tomonda</h3>
+<p class="text-sm text-gray-700 leading-relaxed mb-4">Server ishlayapti, lekin foydalanuvchi noto‘g‘ri ma’lumot yubordi yoki ruxsat yetmadi.</p>
+<div class="space-y-3 text-sm font-medium">
+<div class="bg-white/80 border border-orange-200 rounded-2xl p-4"><b>400 Bad Request</b> — serializer xato topdi.</div>
+<div class="bg-white/80 border border-orange-200 rounded-2xl p-4"><b>401 Unauthorized</b> — user tanilmagan.</div>
+<div class="bg-white/80 border border-orange-200 rounded-2xl p-4"><b>403 Forbidden</b> — user tanilgan, lekin ruxsat yo‘q.</div>
+<div class="bg-white/80 border border-orange-200 rounded-2xl p-4"><b>404 Not Found</b> — object topilmadi.</div>
+</div>
+</div>
+<div class="bg-red-50 border border-red-100 rounded-[30px] p-6 shadow-lg status-card">
+<div class="inline-flex items-center gap-2 bg-red-500 text-white rounded-full px-4 py-2 font-black text-sm mb-4">5xx Server Error</div>
+<h3 class="text-3xl font-black text-pdp-dark mb-3">Muammo server tomonda</h3>
+<p class="text-sm text-gray-700 leading-relaxed mb-4">Request to‘g‘ri bo‘lishi mumkin, lekin backendning o‘zida xatolik yuz berdi.</p>
+<div class="space-y-3 text-sm font-medium">
+<div class="bg-white/80 border border-red-200 rounded-2xl p-4"><b>500 Internal Server Error</b> — kod ichida kutilmagan xato.</div>
+<div class="bg-white/80 border border-red-200 rounded-2xl p-4"><b>503 Service Unavailable</b> — server vaqtincha ishlamayapti.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-eye text-django-light"></i> VIZUAL XULOSA</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Product API’da kirish va ruxsat yo‘laklari</h2>
+<p class="text-gray-500 max-w-3xl mx-auto mt-3">Bu betda matndan ko‘ra ko‘proq vizual sxema bor: kim qayerga kira oladi va qayerda to‘xtatiladi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-start">
+<div class="bg-slate-900 rounded-[34px] p-6 md:p-8 text-white border border-slate-800 shadow-2xl overflow-hidden">
+<div class="grid md:grid-cols-3 gap-5">
+<div class="bg-slate-800 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-white/10 border border-white/10 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-user text-3xl text-slate-200"></i></div>
+<div class="font-black text-xl">Visitor</div>
+<div class="text-xs text-slate-400 mt-1">Login qilmagan</div>
+<div class="mt-4 text-[11px] bg-green-500/10 text-green-300 border border-green-400/20 rounded-full px-3 py-2 font-bold">GET /products/</div>
+<div class="mt-2 text-[11px] bg-red-500/10 text-red-300 border border-red-400/20 rounded-full px-3 py-2 font-bold denied-badge">POST / DELETE — yo‘q</div>
+</div>
+<div class="bg-slate-800 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-blue-500/10 border border-blue-400/20 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-user-check text-3xl text-blue-300"></i></div>
+<div class="font-black text-xl">Authenticated</div>
+<div class="text-xs text-slate-400 mt-1">Token bilan kirgan</div>
+<div class="mt-4 text-[11px] bg-green-500/10 text-green-300 border border-green-400/20 rounded-full px-3 py-2 font-bold">GET /products/</div>
+<div class="mt-2 text-[11px] bg-blue-500/10 text-blue-300 border border-blue-400/20 rounded-full px-3 py-2 font-bold">POST /products/</div>
+<div class="mt-2 text-[11px] bg-yellow-500/10 text-yellow-300 border border-yellow-400/20 rounded-full px-3 py-2 font-bold">PUT /products/&lt;id&gt;/</div>
+</div>
+<div class="bg-slate-800 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-rose-500/10 border border-rose-400/20 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-user-shield text-3xl text-rose-300"></i></div>
+<div class="font-black text-xl">Admin</div>
+<div class="text-xs text-slate-400 mt-1">is_staff = True</div>
+<div class="mt-4 text-[11px] bg-green-500/10 text-green-300 border border-green-400/20 rounded-full px-3 py-2 font-bold">GET /products/</div>
+<div class="mt-2 text-[11px] bg-blue-500/10 text-blue-300 border border-blue-400/20 rounded-full px-3 py-2 font-bold">POST /products/</div>
+<div class="mt-2 text-[11px] bg-red-500/10 text-red-300 border border-red-400/20 rounded-full px-3 py-2 font-bold">DELETE /products/&lt;id&gt;/</div>
+</div>
+</div>
+<div class="mt-8 bg-[#111827] rounded-3xl border border-slate-700 p-6">
+<div class="flex items-center justify-center gap-3 text-sm font-black mb-4">
+<span class="text-slate-300">Userlar</span>
+<i class="fas fa-arrow-right text-front-blue"></i>
+<span class="text-django-light">Authentication</span>
+<i class="fas fa-arrow-right text-front-blue"></i>
+<span class="text-yellow-300">Permission</span>
+<i class="fas fa-arrow-right text-front-blue"></i>
+<span class="text-white">API natijasi</span>
+</div>
+<div class="relative h-20 access-lane">
+<div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-slate-700 rounded-full"></div>
+<div class="absolute left-[6%] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-black mini-orbit">V</div>
+<div class="absolute left-[40%] top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl bg-django-light/20 border border-django-light/30 flex items-center justify-center text-django-light font-black">AUTH</div>
+<div class="absolute left-[64%] top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl bg-yellow-400/20 border border-yellow-400/30 flex items-center justify-center text-yellow-300 font-black">RULE</div>
+<div class="absolute right-[5%] top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl bg-front-blue/20 border border-front-blue/30 flex items-center justify-center text-front-blue font-black">API</div>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="bg-green-50 border border-green-100 rounded-3xl p-5 shadow-sm">
+<div class="font-black text-pdp-dark text-xl mb-2">Visitor</div>
+<div class="text-sm text-gray-600">Ko‘rishi mumkin, lekin yozish amallarida to‘xtatiladi.</div>
+</div>
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-5 shadow-sm">
+<div class="font-black text-pdp-dark text-xl mb-2">Authenticated user</div>
+<div class="text-sm text-gray-600">Token yuborsa create va update kabi amallarga kira boshlaydi.</div>
+</div>
+<div class="bg-rose-50 border border-rose-100 rounded-3xl p-5 shadow-sm">
+<div class="font-black text-pdp-dark text-xl mb-2">Admin</div>
+<div class="text-sm text-gray-600">Delete kabi kuchli amallar ko‘pincha faqat admin uchun ochiladi.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-orange-100 text-orange-800 px-5 py-2 rounded-full font-black mb-4 shadow-sm"><i class="fas fa-clipboard-check"></i> MUSTAQIL ISH</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Student modeli uchun mustaqil ish</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3">Bugungi darsdagi Authentication va Permission mavzusini mustahkamlash uchun endi shu logikani <b>Student</b> modeli ustida o‘zingiz amalda qilib ko‘rasiz.</p>
+</div>
+<div class="grid xl:grid-cols-[1.05fr_.95fr] gap-8 items-start">
+<div class="bg-white rounded-[30px] border border-gray-200 shadow-xl p-6 md:p-8">
+<div class="grid md:grid-cols-3 gap-5 mb-6">
+<div class="bg-indigo-50 border border-indigo-100 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-users text-3xl"></i></div>
+<div class="font-black text-pdp-dark text-xl">Student list</div>
+<div class="text-sm text-gray-500 mt-2">GET /students/</div>
+<div class="mt-4 text-xs bg-green-100 text-green-700 rounded-full px-3 py-2 font-bold">AllowAny yoki IsAuthenticatedOrReadOnly</div>
+</div>
+<div class="bg-blue-50 border border-blue-100 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-user-plus text-3xl"></i></div>
+<div class="font-black text-pdp-dark text-xl">Student create</div>
+<div class="text-sm text-gray-500 mt-2">POST /students/</div>
+<div class="mt-4 text-xs bg-blue-100 text-blue-700 rounded-full px-3 py-2 font-bold">IsAuthenticated</div>
+</div>
+<div class="bg-rose-50 border border-rose-100 rounded-3xl p-5 text-center">
+<div class="w-20 h-20 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-4 avatar-chip"><i class="fas fa-user-xmark text-3xl"></i></div>
+<div class="font-black text-pdp-dark text-xl">Student delete</div>
+<div class="text-sm text-gray-500 mt-2">DELETE /students/&lt;id&gt;/</div>
+<div class="mt-4 text-xs bg-rose-100 text-rose-700 rounded-full px-3 py-2 font-bold">IsAdminUser</div>
+</div>
+</div>
+<div class="bg-slate-900 text-white rounded-[28px] p-6 border border-slate-800">
+<div class="text-center font-black text-xl mb-4">Vazifa oqimi</div>
+<div class="grid md:grid-cols-4 gap-3 text-center">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-4">
+<div class="w-14 h-14 rounded-full bg-white/10 mx-auto mb-3 flex items-center justify-center"><i class="fas fa-database text-front-blue text-2xl"></i></div>
+<div class="text-sm font-black">Model</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-4 scan-beam">
+<div class="w-14 h-14 rounded-full bg-django-light/20 mx-auto mb-3 flex items-center justify-center"><i class="fas fa-code text-django-light text-2xl"></i></div>
+<div class="text-sm font-black">Serializer + View</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-4">
+<div class="w-14 h-14 rounded-full bg-yellow-400/20 mx-auto mb-3 flex items-center justify-center"><i class="fas fa-lock text-yellow-300 text-2xl"></i></div>
+<div class="text-sm font-black">Permission</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-4">
+<div class="w-14 h-14 rounded-full bg-front-blue/20 mx-auto mb-3 flex items-center justify-center"><i class="fas fa-vial text-front-blue text-2xl"></i></div>
+<div class="text-sm font-black">Test</div>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
+<div class="text-sm uppercase tracking-widest text-orange-600 font-black mb-2">Student uchun topshiriq</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-3">Nima qilish kerak?</h3>
+<div class="space-y-3 text-sm text-gray-700 font-medium">
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">1</div><div><b>Student model</b> yarating.</div></div>
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">2</div><div><b>Serializer</b> yozing.</div></div>
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">3</div><div>List va detail endpointlarni <b>ochiq</b> qiling.</div></div>
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">4</div><div>Create endpointga <b>IsAuthenticated</b> bering.</div></div>
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">5</div><div>Delete endpointga <b>IsAdminUser</b> bering.</div></div>
+<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-black shrink-0">6</div><div>Postman yoki Browsable API orqali test qiling.</div></div>
+</div>
+</div>
+<div class="bg-indigo-50 border border-indigo-100 rounded-3xl p-6 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-indigo-600 font-black mb-2">Expected natija</div>
+<p class="text-sm text-gray-700 leading-relaxed">Natijada Student API’da <b>GET</b> hamma uchun ochiq, <b>POST</b> faqat login qilgan userga, <b>DELETE</b> esa faqat admin userga ishlashi kerak.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+<div class="text-center mb-8">
+<div class="inline-flex items-center gap-3 bg-emerald-100 text-emerald-800 px-5 py-2 rounded-full font-black mb-4 shadow-sm"><i class="fas fa-house-laptop"></i> UY ISHI</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark">Person modeli uchun to‘liq uyga vazifa</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3">Endi bugun o‘tilgan barcha mavzularni <b>Person</b> modeli orqali mustaqil ravishda boshidan oxirigacha qilib chiqasiz.</p>
+</div>
+<div class="grid xl:grid-cols-[1.05fr_.95fr] gap-8 items-start">
+<div class="bg-slate-900 text-white rounded-[30px] p-6 md:p-8 border border-slate-800 shadow-2xl">
+<div class="text-center mb-6">
+<div class="inline-flex items-center gap-3 bg-white/10 px-4 py-2 rounded-full font-black"><i class="fas fa-route text-django-light"></i> Uy ishining ketma-ketligi</div>
+</div>
+<div class="grid md:grid-cols-2 gap-4 text-sm">
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-django-light font-black mb-2">1-qadam</div>
+<div class="text-xl font-black mb-2">Person model yarating</div>
+<div class="text-slate-300">Masalan: <span class="font-mono">full_name</span>, <span class="font-mono">age</span>, <span class="font-mono">email</span>.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-front-blue font-black mb-2">2-qadam</div>
+<div class="text-xl font-black mb-2">Serializer yozing</div>
+<div class="text-slate-300">Model ma’lumotini API orqali chiqarish va validation qilish uchun.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-yellow-300 font-black mb-2">3-qadam</div>
+<div class="text-xl font-black mb-2">View yoki ViewSet yozing</div>
+<div class="text-slate-300">CRUD endpointlarni oching.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-green-300 font-black mb-2">4-qadam</div>
+<div class="text-xl font-black mb-2">Permission bering</div>
+<div class="text-slate-300">List/detail ochiq, create login bilan, delete faqat admin bilan ishlasin.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-rose-300 font-black mb-2">5-qadam</div>
+<div class="text-xl font-black mb-2">Token auth ulang</div>
+<div class="text-slate-300">Token olish endpointini oching va header orqali yuborib ko‘ring.</div>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-3xl p-5">
+<div class="text-orange-300 font-black mb-2">6-qadam</div>
+<div class="text-xl font-black mb-2">Statuslarni test qiling</div>
+<div class="text-slate-300">200, 400, 401, 403 va kerak bo‘lsa 404 holatlarini ko‘rib chiqing.</div>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
+<div class="text-sm uppercase tracking-widest text-emerald-600 font-black mb-2">Aniq talablar</div>
+<h3 class="text-2xl font-black text-pdp-dark mb-3">Person API qanday ishlashi kerak?</h3>
+<div class="space-y-3 text-sm font-medium text-gray-700">
+<div class="flex items-center justify-between bg-green-50 rounded-2xl px-4 py-3"><span class="font-mono">GET /persons/</span><span class="text-green-700 font-black">hammaga ochiq</span></div>
+<div class="flex items-center justify-between bg-blue-50 rounded-2xl px-4 py-3"><span class="font-mono">GET /persons/&lt;id&gt;/</span><span class="text-green-700 font-black">hammaga ochiq</span></div>
+<div class="flex items-center justify-between bg-indigo-50 rounded-2xl px-4 py-3"><span class="font-mono">POST /persons/</span><span class="text-blue-700 font-black">faqat authenticated</span></div>
+<div class="flex items-center justify-between bg-yellow-50 rounded-2xl px-4 py-3"><span class="font-mono">PUT /persons/&lt;id&gt;/</span><span class="text-yellow-700 font-black">faqat authenticated</span></div>
+<div class="flex items-center justify-between bg-rose-50 rounded-2xl px-4 py-3"><span class="font-mono">DELETE /persons/&lt;id&gt;/</span><span class="text-rose-700 font-black">faqat admin</span></div>
+</div>
+</div>
+<div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-6 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-emerald-700 font-black mb-2">Bonus topshiriq</div>
+<ul class="space-y-2 text-sm text-gray-700 font-medium">
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Swagger yoki Browsable API orqali sinab ko‘ring</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Xato ma’lumot yuborib <b>400</b> ni ko‘ring</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Token yubormasdan <b>401</b> ni ko‘ring</li>
+<li><i class="fas fa-check-circle text-django-light mr-2"></i> Oddiy user bilan delete qilib <b>403</b> ni ko‘ring</li>
+</ul>
+</div>
+<div class="bg-amber-50 border border-amber-100 rounded-3xl p-6 shadow-sm">
+<div class="text-sm uppercase tracking-widest text-amber-700 font-black mb-2">Oxirgi eslatma</div>
+<p class="text-sm text-gray-700 leading-relaxed">Uy ishida asosiy maqsad — <b>authentication</b> va <b>permission</b> ni amalda qo‘llab, qaysi endpoint kimga ochiq yoki yopiq bo‘lishini to‘g‘ri boshqarishni o‘rganish.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="slide bg-slate-900 text-white relative">
+<div class="max-w-4xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[28rem] h-[28rem] bg-django-light rounded-full"></div></div>
+<div class="inline-block mb-6 relative z-10">
+<i class="fas fa-shield-halved text-8xl text-django-light animate-float mr-4"></i>
+<i class="fas fa-boxes-stacked text-7xl text-front-blue animate-float" style="animation-delay:1s"></i>
+</div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">THE END</span>
+<h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 relative z-10">Product va Student API <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light to-front-blue">himoyalandi</span></h2>
+<p class="text-xl text-gray-400 font-medium mt-6 relative z-10">Authentication userni aniqlaydi, permission esa unga qaysi amal mumkinligini tekshiradi.</p>
+</div>
+</section>
+</div>
+</main>
+<script>
+    hljs.highlightAll();
+    const slidesWrapper = document.getElementById('slidesWrapper');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('slide-counter');
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+    const touchArea = document.getElementById('touchArea');
+    let currentSlide = 0;
+    function updateSlider() {
+      slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+      counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+    }
+    prevBtn.addEventListener('click', () => { if (currentSlide > 0) { currentSlide--; updateSlider(); } });
+    nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) { currentSlide++; updateSlider(); } });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) { currentSlide++; updateSlider(); }
+      if (e.key === 'ArrowLeft' && currentSlide > 0) { currentSlide--; updateSlider(); }
+    });
+    let startX = 0;
+    touchArea.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive:true });
+    touchArea.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].clientX - startX;
+      if (diff < -50 && currentSlide < slides.length - 1) { currentSlide++; updateSlider(); }
+      if (diff > 50 && currentSlide > 0) { currentSlide--; updateSlider(); }
+    }, { passive:true });
+
+    function showToast() {
+      const toast = document.getElementById('copyToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+    async function copyText(text) {
+      await navigator.clipboard.writeText(text);
+      showToast();
+    }
+    async function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      await navigator.clipboard.writeText(el.innerText);
+      showToast();
+    }
+    updateSlider();
+  </script>
+</body>
+</html>

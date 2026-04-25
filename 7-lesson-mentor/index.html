@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>7-Dars · DRF Teacher Guide - Deployment, Render va Production Settings</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;family=Fira+Code:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+    @keyframes bob { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-8px);} }
+    @keyframes pulseRing { 0% { transform: scale(.95); opacity: .85; } 100% { transform: scale(1.08); opacity: 0; } }
+    @keyframes floatSoft { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+    .animate-bob { animation: bob 2.4s ease-in-out infinite; }
+    .animate-float { animation: floatSoft 3s ease-in-out infinite; }
+    .copy-toast {
+      position: fixed; top: 96px; left: 50%; transform: translateX(-50%);
+      background: #44B78B; color: white; padding: 10px 18px; border-radius: 999px;
+      font-weight: 700; box-shadow: 0 10px 25px rgba(68,183,139,.25); opacity: 0;
+      pointer-events:none; transition: opacity .25s; z-index: 200;
+    }
+    .copy-toast.show { opacity: 1; }
+    .deploy-row { transition: all .28s ease; }
+    .deploy-row:hover { transform: translateY(-2px) scale(1.01); }
+    .ring-core { position: relative; }
+    .ring-core::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius: 28px; animation: pulseRing 2s infinite; }
+    .flow-chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  
+    .render-dashboard-shell{border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:#0b1220;box-shadow:0 24px 50px rgba(15,23,42,.25)}
+    .render-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#111827,#0b1220)}
+    .render-layout{display:grid;grid-template-columns:220px 1fr;min-height:430px}
+    .render-sidebar{background:#0f172a;border-right:1px solid rgba(255,255,255,.06);padding:18px}
+    .render-main{background:#f8fafc;padding:18px}
+    .render-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;color:#cbd5e1;font-weight:700;font-size:14px}
+    .render-nav-item.active{background:rgba(56,189,248,.12);color:#e2f3ff;border:1px solid rgba(56,189,248,.16)}
+    .render-service-card{background:white;border:1px solid #e5e7eb;border-radius:20px;padding:16px;box-shadow:0 10px 24px rgba(15,23,42,.06)}
+    .render-service-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800}
+    .render-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:14px;box-shadow:0 8px 18px rgba(15,23,42,.05)}
+    .render-tab{padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;background:#e2e8f0;color:#334155}
+    .render-tab.active{background:#0f172a;color:white}
+</style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+<div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+</div>
+<header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+<div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+<div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+<span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+</div>
+</div>
+<div class="leading-none">
+<div class="text-white font-black text-xl tracking-tighter">7-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div>
+<div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Django REST Framework · Deployment, Render va Production Settings</div>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+<a class="hover:text-white" href="#maqsad">Maqsad</a>
+<a class="hover:text-white" href="#xarita">Dars xaritasi</a>
+<a class="hover:text-white" href="#render">Render</a>
+<a class="hover:text-white" href="#mustaqil">Mustaqil ish</a>
+<a class="hover:text-white" href="#homework">Homework</a>
+</nav>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+<section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+<div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+<div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+<div>
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            7-dars · Mentor version
+          </div>
+<h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Deployment, Render va <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">Production Settings</span><br/>
+            bo‘yicha teacher qo‘llanma
+          </h1>
+<p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sahifa aynan 7-dars uchun mentor versiya qilib tayyorlandi. Fokus — studentga <b class="text-white">production nima</b>, <b class="text-white">local va live loyiha farqi</b>, <b class="text-white">DEBUG, ALLOWED_HOSTS, STATIC_ROOT, WhiteNoise, CORS</b> va <b class="text-white">Render’da build/start command</b> larni ketma-ket, sodda va mustahkam mantiqda tushuntirish.
+          </p>
+<div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+<div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+<div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-rocket"></i></div>
+<div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+<div class="text-white font-black mt-1">Deploy mantiqi</div>
+</div>
+<div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+<div class="text-django-light text-xl mb-2"><i class="fas fa-server"></i></div>
+<div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+<div class="text-white font-black mt-1">Render + settings</div>
+</div>
+<div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+<div class="text-ai-violet text-xl mb-2"><i class="fas fa-globe"></i></div>
+<div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+<div class="text-white font-black mt-1">Live loyiha</div>
+</div>
+</div>
+</div>
+<div>
+<div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+<div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+<div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl ring-core">
+<div class="flex items-center justify-between mb-5">
+<div>
+<div class="text-white font-black text-lg">Deploy oqimi</div>
+<div class="text-slate-400 text-sm">Darsning asosiy mantiqi</div>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+<i class="fas fa-diagram-project"></i>
+</div>
+</div>
+<div class="space-y-3 text-sm">
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Local project</div>
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. Settings tayyorlash</div>
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. Static + CORS</div>
+<div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. Build + Start</div>
+<div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">Natija</span><span class="text-white font-black">Live link</span></div>
+</div>
+</div>
+</div>
+<div class="p-5 border-t border-white/10">
+<div class="text-white font-black text-lg mb-1">Asosiy dars mantig‘i</div>
+<div class="text-slate-400 text-sm leading-relaxed">Production nima, paketlar, settings, static, CORS, Render deploy va yakuniy mustaqil tahlil.</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12" id="maqsad">
+<div class="card rounded-[2rem] p-8 md:p-10">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+<h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+</div>
+<div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Local → Production → Render</div>
+</div>
+<div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+<div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">local loyiha</b> va <b class="text-white">production loyiha</b> orasidagi farqni anglab olishi kerak. Ya’ni kod yozish bilan ish tugamasligi, internetga chiqish uchun qo‘shimcha sozlamalar kerakligini tushunishi kerak.
+          </div>
+<div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student dars oxirida <b class="text-white">DEBUG, ALLOWED_HOSTS, STATIC_ROOT, WhiteNoise, CORS, build/start command</b> kabi eng kerakli deploy nuqtalarini ayta olishi va Render deploy oqimini mustaqil tushuntira olishi kerak.
+          </div>
+</div>
+</div>
+</section>
+<section class="mb-12">
+<div class="card rounded-[2rem] p-8 md:p-10">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Eng muhim pedagogik nuqta</div>
+<h2 class="text-3xl font-black text-white">“Deploy” tushunchasini “internetga chiqarish” deb sodda tarjima qiling</h2>
+</div>
+<div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars boshidagi urg‘u</div>
+</div>
+<div class="grid md:grid-cols-2 gap-5">
+<div class="ok rounded-r-[1.5rem] p-5">
+<div class="text-white font-black mb-2">Local</div>
+<div class="text-slate-300 text-sm leading-relaxed">“Bu loyiha faqat mening kompyuterimda ochilyapti” degan holat.</div>
+</div>
+<div class="warn rounded-r-[1.5rem] p-5">
+<div class="text-white font-black mb-2">Production</div>
+<div class="text-slate-300 text-sm leading-relaxed">“Bu loyiha serverga chiqdi va boshqalar ham ishlata oladi” degan holat.</div>
+</div>
+</div>
+<p class="text-slate-400 text-sm mt-4 leading-relaxed">Mentor studentlarga boshida aytsin: deploy — bu shunchaki upload emas; static, server va settings to‘g‘ri ishlashi ham shu jarayonning ichida.</p>
+</div>
+</section>
+<section class="mb-12" id="xarita">
+<div class="mb-6">
+<div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+<h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+</div>
+<div class="relative timeline pl-14 space-y-8">
+<article class="relative card rounded-[2rem] p-7 md:p-8">
+<div class="dot border-pdp-cyan"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · kirish</span>
+<span class="text-xs text-slate-400 font-bold">8–10 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">Production tushunchasini sodda misol bilan ochib bering</h3>
+<p class="text-slate-300 leading-relaxed mb-4">Masalan: daftarda yozilgan loyiha hali tayyor mahsulot emas. Uni hammaga ko‘rsatish uchun taxtaga chiqarish kerak. Xuddi shunday, local project deploy qilinmasa foydalanuvchi ko‘ra olmaydi.</p>
+<div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Bu bosqichda database va .env ni murakkablashtirmang. Asosiy fokus — projectni serverga chiqarish mantiqi.</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8">
+<div class="dot" style="border-color:#EF4444"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-red-500/10 text-red-400 font-black text-xs uppercase tracking-widest border border-red-500/20">2-qadam · paketlar</span>
+<span class="text-xs text-slate-400 font-bold">10–12 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">Gunicorn, WhiteNoise va CORS headers vazifasini ajratib tushuntiring</h3>
+<p class="text-slate-300 leading-relaxed mb-4">Mentor har bir paket uchun “bu qaysi muammoni hal qiladi?” savolini ishlatsin. Student shuni tushunsin: Gunicorn — server, WhiteNoise — static, CORS headers — frontend bilan aloqa.</p>
+<div class="grid md:grid-cols-3 gap-4 text-sm">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">Gunicorn</div><div class="text-slate-400">Django app’ni server sifatida ishga tushiradi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">WhiteNoise</div><div class="text-slate-400">Static fayllarni beradi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">CORS headers</div><div class="text-slate-400">Frontend requestlariga ruxsat beradi</div></div>
+</div>
+<div class="warn rounded-r-2xl p-4 mt-5 text-sm text-red-100/90 leading-relaxed">Studentga ayting: deploydagi ko‘p xatolar aynan static yoki host/cors sozlamasidan keladi.</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8">
+<div class="dot" style="border-color:#44B78B"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">3-qadam · settings</span>
+<span class="text-xs text-slate-400 font-bold">12–15 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">DEBUG, ALLOWED_HOSTS va STATIC_ROOT ni alohida urg‘u bilan ko‘rsating</h3>
+<p class="text-slate-300 leading-relaxed mb-4">Bu darsning eng markaziy settings qismi shu. Student shuni aniq bilishi kerak: DEBUG false, Render domeni ALLOWED_HOSTS’da, static esa collectstatic orqali yig‘iladi.</p>
+<div class="grid md:grid-cols-3 gap-4 text-sm mb-4">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">DEBUG</div><div class="text-slate-400">Production da False bo‘ladi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">ALLOWED_HOSTS</div><div class="text-slate-400">Render domeni yoziladi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">STATIC_ROOT</div><div class="text-slate-400">Static yig‘iladigan joy</div></div>
+</div>
+<div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Teacher uchun gap: “Static chiqmasa, ko‘pincha STATIC_ROOT yoki collectstatic ni tekshiramiz.”</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8">
+<div class="dot" style="border-color:#38BDF8"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">4-qadam · CORS</span>
+<span class="text-xs text-slate-400 font-bold">10–12 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">CORS ni frontend va backend alohida turgan holat bilan bog‘lang</h3>
+<p class="text-slate-300 leading-relaxed mb-5">Student ko‘pincha CORS’ni yodlaydi, lekin mohiyatini tushunmaydi. Tushuntiring: frontend boshqa origin’da turgani uchun browser ruxsat so‘raydi; shu joyda CORS kerak bo‘ladi.</p>
+<div class="flex flex-wrap gap-3 text-sm">
+<div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">1. Frontend boshqa joyda</div>
+<div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">2. Browser tekshiradi</div>
+<div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">3. Backend ruxsat beradi</div>
+<div class="flow-chip px-4 py-3 rounded-2xl text-slate-300">4. API ishlaydi</div>
+</div>
+<div class="tip rounded-r-2xl p-4 mt-5 text-sm text-amber-100/90">Studentlarga ayting: “CORS yo‘q bo‘lsa backend ishlayotgan bo‘lsa ham browser requestni bloklashi mumkin.”</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8" id="render">
+<div class="dot" style="border-color:#22C55E"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-green-500/10 text-green-400 font-black text-xs uppercase tracking-widest border border-green-500/20">5-qadam · Render amaliyoti</span>
+<span class="text-xs text-slate-400 font-bold">12–15 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">Render dashboard mantig‘iga o‘xshatib deploy oqimini ko‘rsating</h3>
+<p class="text-slate-300 leading-relaxed mb-5">Bu bo‘lim endi Swagger uslubida emas. Student Render’ni <b class="text-white">dashboard</b> sifatida ko‘rsin: chapda workspace va servislar, o‘ngda service overview, deploy holati, logs va settings mantig‘i.</p>
+<div class="grid lg:grid-cols-[1.08fr_0.92fr] gap-5 items-start">
+<div class="render-dashboard-shell">
+<div class="render-topbar">
+<div class="flex items-center gap-3 text-white">
+<div class="w-10 h-10 rounded-2xl bg-pdp-cyan/20 text-pdp-cyan flex items-center justify-center text-lg"><i class="fas fa-cloud"></i></div>
+<div>
+<div class="font-black text-lg leading-none">Render Dashboard</div>
+<div class="text-[11px] text-slate-400 mt-1">Workspace → Services → Deploy status</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-slate-600 text-sm font-medium border border-slate-200">
+<i class="fas fa-magnifying-glass text-slate-400"></i> Search services
+          </div>
+<div class="px-4 py-2 rounded-xl bg-[#46e3b7] text-slate-900 font-black text-sm">+ New</div>
+</div>
+</div>
+<div class="render-layout">
+<div class="render-sidebar">
+<div class="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-black mb-3">Workspace</div>
+<div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 mb-4">
+<div class="w-10 h-10 rounded-xl bg-pdp-cyan/15 text-pdp-cyan flex items-center justify-center font-black">R</div>
+<div>
+<div class="text-white font-black text-sm">my-team</div>
+<div class="text-slate-400 text-xs">Deploy workspace</div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="render-nav-item active"><i class="fas fa-layer-group"></i> Services</div>
+<div class="render-nav-item"><i class="fas fa-folder-tree"></i> Projects</div>
+<div class="render-nav-item"><i class="fas fa-chart-line"></i> Metrics</div>
+<div class="render-nav-item"><i class="fas fa-file-lines"></i> Logs</div>
+<div class="render-nav-item"><i class="fas fa-gear"></i> Settings</div>
+</div>
+</div>
+<div class="render-main">
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<div>
+<div class="text-sm uppercase tracking-[0.18em] text-slate-500 font-black mb-1">Web service</div>
+<div class="text-3xl font-black text-slate-800">drf-api</div>
+</div>
+<div class="render-service-pill bg-green-50 text-green-700 border border-green-100">
+<span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span> Live
+            </div>
+</div>
+<div class="grid md:grid-cols-3 gap-3 mb-4">
+<div class="render-kpi">
+<div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Branch</div>
+<div class="text-lg font-black text-slate-800">main</div>
+</div>
+<div class="render-kpi">
+<div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Runtime</div>
+<div class="text-lg font-black text-slate-800">Python</div>
+</div>
+<div class="render-kpi">
+<div class="text-[11px] uppercase tracking-[0.16em] text-slate-500 font-black mb-1">Domain</div>
+<div class="text-lg font-black text-slate-800">onrender.com</div>
+</div>
+</div>
+<div class="render-service-card mb-4">
+<div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+<div class="text-lg font-black text-slate-800">Latest deploy</div>
+<div class="text-xs font-black text-slate-500 uppercase tracking-[0.15em]">Success</div>
+</div>
+<div class="grid md:grid-cols-[1fr_auto] gap-4 items-center">
+<div>
+<div class="text-sm text-slate-500 mb-1">Build command</div>
+<div class="font-mono text-sm text-slate-800">python manage.py collectstatic --noinput</div>
+</div>
+<div class="px-4 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 font-black text-sm">Build OK</div>
+</div>
+<div class="grid md:grid-cols-[1fr_auto] gap-4 items-center mt-3">
+<div>
+<div class="text-sm text-slate-500 mb-1">Start command</div>
+<div class="font-mono text-sm text-slate-800">gunicorn root.wsgi:application</div>
+</div>
+<div class="px-4 py-2 rounded-xl bg-green-50 text-green-700 border border-green-100 font-black text-sm">Live</div>
+</div>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="render-tab active">Overview</div>
+<div class="render-tab">Events</div>
+<div class="render-tab">Logs</div>
+<div class="render-tab">Settings</div>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-white font-black mb-2"><i class="fas fa-list-check text-front-blue mr-2"></i>Qisqa tartib</div>
+<div class="text-slate-400 text-sm leading-relaxed">1) Repo ulanadi  2) Service yaratiladi  3) Build yoziladi  4) Start yoziladi  5) Overview/Logs orqali natija tekshiriladi.</div>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-white font-black mb-2"><i class="fas fa-bug text-soft-red mr-2"></i>Mentor urg‘usi</div>
+<div class="text-slate-400 text-sm leading-relaxed">Studentga Render’ni faqat “deploy tugmasi” sifatida emas, balki <b class="text-white">dashboard</b> sifatida ko‘rsating: service holati, deploy tarixi, logs va settings bir joyda bo‘ladi.</div>
+</div>
+<div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90">Bu vizual endi Swagger’ga o‘xshamaydi. Chapda workspace/service navigatsiyasi, o‘ngda service overview va deploy status ko‘rinishi Render dashboard mantig‘iga yaqinlashtirildi.</div>
+</div>
+</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8" id="mustaqil">
+<div class="dot" style="border-color:#FBBF24"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">6-qadam · mustaqil ish</span>
+<span class="text-xs text-slate-400 font-bold">10–12 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">Loyihani 1 marta deploy qildirib, natijasini tahlil qildiring</h3>
+<p class="text-slate-300 leading-relaxed mb-5">Darsning mustaqil ish qismida student kamida 1 marta loyihasini serverga chiqaradi va ishlash holatini tahlil qiladi. Vazifa — loyiha ochildimi, static chiqdimi, qayerda xato bo‘ldi — shuni aniqlash.</p>
+<div class="grid md:grid-cols-3 gap-4 mb-5">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">1. Deploy</div><div class="text-slate-400 text-sm">Loyihani serverga chiqardi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">2. Tekshiruv</div><div class="text-slate-400 text-sm">Live linkni ochib ko‘rdi</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">3. Tahlil</div><div class="text-slate-400 text-sm">Nima ishladi, nima xato bo‘ldi</div></div>
+</div>
+<div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Mentor uchun urg‘u: “Bu topshiriqda maqsad faqat deploy emas, natijani o‘qish va xatoni ko‘ra olish.”</div>
+</article>
+<article class="relative card rounded-[2rem] p-7 md:p-8" id="homework">
+<div class="dot" style="border-color:#00D1D1"></div>
+<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+<span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">7-qadam · homework</span>
+<span class="text-xs text-slate-400 font-bold">5–7 min</span>
+</div>
+<h3 class="text-2xl font-black text-white mb-3">Uyga vazifada 3 marta deploy qilib, har safargi natijani topshirtiring</h3>
+<p class="text-slate-300 leading-relaxed mb-5">Homework da student kamida 3 marta loyihasini serverga deploy qiladi va har bir urinishdagi natijani ustozga yuboradi. Bu orqali real deploy tajribasi hosil bo‘ladi.</p>
+<div class="grid md:grid-cols-3 gap-4 mb-5">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">1-urinish</div><div class="text-slate-400 text-sm">Deploy qilib ko‘rish</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">2-urinish</div><div class="text-slate-400 text-sm">Xatoni tuzatib qayta deploy</div></div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">3-urinish</div><div class="text-slate-400 text-sm">Yakuniy ishlagan natija</div></div>
+</div>
+<div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Tekshiruv mezoni: student build/start commandni tushunishi, static va host/cors muammolarini ko‘ra olishi va deploy natijasini tahlil qila olishi.</div>
+</article>
+</div>
+</section>
+<section class="mb-12">
+<div class="card rounded-[2rem] p-8 md:p-10">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Lesson bilan moslashtirish</div>
+<h2 class="text-3xl font-black text-white">Teacher guide’ga qo‘shilgan 7-darsga xos joylar</h2>
+</div>
+<div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Current lesson update</div>
+</div>
+<div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-red-300 text-xl mb-2"><i class="fas fa-sitemap"></i></div>
+<div class="text-white font-black mb-2">Deploy mantig‘i</div>
+<div class="text-slate-400 text-sm">Local dan production ga o‘tish ketma-ketlik bilan joylandi.</div>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-green-300 text-xl mb-2"><i class="fas fa-book-open-reader"></i></div>
+<div class="text-white font-black mb-2">Render amaliyoti</div>
+<div class="text-slate-400 text-sm">Repo, build va start orqali deploy uchun mentor bo‘lim qo‘shildi.</div>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-blue-300 text-xl mb-2"><i class="fas fa-arrows-rotate"></i></div>
+<div class="text-white font-black mb-2">Settings</div>
+<div class="text-slate-400 text-sm">DEBUG, ALLOWED_HOSTS, STATIC_ROOT va CORS uchun alohida urg‘ular yozildi.</div>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+<div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-check-double"></i></div>
+<div class="text-white font-black mb-2">Mustaqil tahlil</div>
+<div class="text-slate-400 text-sm">Deploy natijasini o‘qish va tahlil qilishga yo‘naltirilgan bo‘lim qo‘shildi.</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12">
+<div class="card rounded-[2rem] p-8 md:p-10">
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+<div>
+<div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+<h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+</div>
+<div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+</div>
+<div class="grid lg:grid-cols-2 gap-6">
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+<div class="text-white font-black mb-3">Boshlanishida</div>
+<p class="text-slate-300 leading-relaxed text-sm">“Bugun biz local loyiha bilan production loyiha orasidagi farqni tushunamiz va Render ga deploy qilishni o‘rganamiz.”</p>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+<div class="text-white font-black mb-3">Settings da</div>
+<p class="text-slate-300 leading-relaxed text-sm">“DEBUG false bo‘ladi, Render domeni ALLOWED_HOSTS ga yoziladi, static esa collectstatic bilan yig‘iladi.”</p>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+<div class="text-white font-black mb-3">Render da</div>
+<p class="text-slate-300 leading-relaxed text-sm">“Avval repo ulaymiz, keyin build yozamiz, keyin start command bilan loyihani ishga tushiramiz.”</p>
+</div>
+<div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+<div class="text-white font-black mb-3">Mustaqil ishda</div>
+<p class="text-slate-300 leading-relaxed text-sm">“Bu topshiriqda maqsad faqat deploy qilish emas, natijani o‘qish va xatoni ko‘ra olish.”</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+<footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    DRF Teacher Guide · 7-dars uchun mentor qo‘llanma sahifasi
+  </footer>
+<script>
+    function showCopyToast() {
+      const toast = document.getElementById('copyToast');
+      if (!toast) return;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+    function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(showCopyToast);
+    }
+  </script>
+</body>
+</html>

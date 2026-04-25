@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teacher Guide - DRF da CRUD yozish usullari (2-dars)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'ai-violet': '#7C3AED',
+            'warm-yellow': '#FBBF24',
+            'soft-red': '#EF4444'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #0F172A; color: #E2E8F0; }
+    .font-mono, code, pre { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.84); backdrop-filter: blur(14px); }
+    .card { background: linear-gradient(180deg, rgba(30,41,59,0.96), rgba(15,23,42,0.97)); border: 1px solid rgba(148,163,184,0.14); transition: all .25s ease; }
+    .card:hover { transform: translateY(-2px); border-color: rgba(0,209,209,0.28); }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background: linear-gradient(to bottom, #00D1D1, #44B78B, #38BDF8, #7C3AED, #FBBF24); }
+    .dot { position:absolute; left:10px; top:28px; width:22px; height:22px; border-radius:999px; background:#0F172A; border:4px solid #00D1D1; z-index:2; }
+    .tip { background: rgba(251,191,36,0.08); border-left: 4px solid #FBBF24; }
+    .warn { background: rgba(239,68,68,0.08); border-left: 4px solid #EF4444; }
+    .ok { background: rgba(68,183,139,0.10); border-left: 4px solid #44B78B; }
+    .hero-glow { box-shadow: 0 0 80px rgba(0,209,209,.12); }
+    .code-chip { font-family: 'Fira Code', monospace; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); }
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20">
+          <div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center">
+            <span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span>
+          </div>
+        </div>
+        <div class="leading-none">
+          <div class="text-white font-black text-xl tracking-tighter">Teacher <span class="text-pdp-cyan">Guide</span></div>
+          <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">DRF da CRUD yozish usullari · 2-dars</div>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#xarita" class="hover:text-white">Dars xaritasi</a>
+        <a href="#taqqoslash" class="hover:text-white">Taqqoslash</a>
+        <a href="#xatolar" class="hover:text-white">Xatolar</a>
+        <a href="#homework" class="hover:text-white">Homework</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">
+            Mentor version
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">DRF da CRUD yozish usullari</span><br><span class="text-white/90">2-dars</span>
+            uchun teacher qo‘llanma
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu sahifa aynan studentlarga ko‘rsatilgan CRUD darsi asosida mentor uchun tayyorlandi. Fokus — bitta umumiy <b class="text-white">Model + Serializer</b> dan boshlab, CRUD ni <b class="text-white">APIView</b>, <b class="text-white">alohida generic viewlar</b>, <b class="text-white">ListCreateAPIView + RetrieveUpdateDestroyAPIView</b> va <b class="text-white">ModelViewSet</b> usullarida ketma-ket tushuntirish.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-bullseye"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Asosiy fokus</div>
+              <div class="text-white font-black mt-1">4 xil CRUD usuli</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-django-light text-xl mb-2"><i class="fas fa-code"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Mavzu</div>
+              <div class="text-white font-black mt-1">DRF lesson guide</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-ai-violet text-xl mb-2"><i class="fas fa-user-graduate"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">Natija</div>
+              <div class="text-white font-black mt-1">Student homework</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] overflow-hidden border border-white/10 bg-slate-800 shadow-2xl">
+            <div class="h-[24rem] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 flex items-center justify-center p-8">
+              <div class="w-full max-w-sm rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <div class="text-white font-black text-lg">Dars oqimi</div>
+                    <div class="text-slate-400 text-sm">Mentor eslab qolishi uchun</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl">
+                    <i class="fas fa-diagram-project"></i>
+                  </div>
+                </div>
+                <div class="space-y-3 text-sm">
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">1. Umumiy model va serializer</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">2. APIView CRUD</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">3. Generic CRUD viewlar</div>
+                  <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">4. Combined generics</div>
+                  <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">5. Yakun</span><span class="text-white font-black">ModelViewSet</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 border-t border-white/10">
+              <div class="text-white font-black text-lg mb-1">Muhim eslatma</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Har bir usulda student bitta narsani ko‘rishi kerak: CRUD ishlashi bir xil, faqat yozilish usuli va kod hajmi farq qiladi.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor dars oxirida nimaga erishishi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Common model → 4 usul</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student <b class="text-white">CRUD bitta maqsadga xizmat qiladi</b>, faqat yozilishi har xil bo‘lishini anglab olishi kerak.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Student qaysi usulda qachon ishlash qulayligini ajrata olishi kerak: <b class="text-white">fundamental</b>, <b class="text-white">o‘rta</b>, <b class="text-white">tezkor</b>, <b class="text-white">eng qulay</b>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="xarita" class="mb-12">
+      <div class="mb-6">
+        <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">Dars o‘tish xaritasi</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot border-pdp-cyan"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pdp-cyan/10 text-pdp-cyan font-black text-xs uppercase tracking-widest border border-pdp-cyan/20">1-qadam · poydevor</span>
+            <span class="text-xs text-slate-400 font-bold">5–7 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Bitta umumiy model va serializer bilan start bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Mentor avval studentga shuni aytsin: “Biz barcha misollarda bir xil <b class="text-white">Book modeli</b> va bir xil <b class="text-white">BookSerializer</b> dan foydalanamiz. Farq faqat view yozilishida bo‘ladi.” Bu usullar taqqoslanishini osonlashtiradi.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Teacher iborasi: “Model va serializer o‘zgarmaydi, endi faqat view yozishning turli yo‘llarini ko‘ramiz.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#EF4444"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-red-500/10 text-red-400 font-black text-xs uppercase tracking-widest border border-red-500/20">2-qadam · APIView</span>
+            <span class="text-xs text-slate-400 font-bold">12–15 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">APIView ni qo‘lda boshqariladigan CRUD sifatida tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Bu yerda student <b class="text-white">get</b>, <b class="text-white">post</b>, <b class="text-white">put</b>, <b class="text-white">patch</b>, <b class="text-white">delete</b> metodlarini qo‘lda yozishini ko‘radi. Bu usul fundamental tushuncha beradi.</p>
+          <div class="warn rounded-r-2xl p-4 text-sm text-red-100/90 leading-relaxed">Student ko‘p metod yozib charchashi mumkin. Shu payt ayting: “Bu eng uzun usul, lekin tushunish uchun juda foydali.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#44B78B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-django-light/10 text-django-light font-black text-xs uppercase tracking-widest border border-django-light/20">3-qadam · alohida generic viewlar</span>
+            <span class="text-xs text-slate-400 font-bold">10–12 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">ListAPIView dan DestroyAPIView gacha bo‘lib tushuntiring</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Bu qismda har bir amal uchun alohida class bor: <span class="code-chip px-2 py-1 rounded-lg">ListAPIView</span>, <span class="code-chip px-2 py-1 rounded-lg">CreateAPIView</span>, <span class="code-chip px-2 py-1 rounded-lg">RetrieveAPIView</span>, <span class="code-chip px-2 py-1 rounded-lg">UpdateAPIView</span>, <span class="code-chip px-2 py-1 rounded-lg">DestroyAPIView</span>. Studentga bu usul aniq va tartibli ekanini ko‘rsating.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Teacher iborasi: “Bu yerda DRF bizga tayyor classlar beradi. Har bir class bitta ishga javob beradi.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-front-blue/10 text-front-blue font-black text-xs uppercase tracking-widest border border-front-blue/20">4-qadam · combined generics</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">ListCreateAPIView va RetrieveUpdateDestroyAPIView ni “kamroq kod” sifatida bering</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Student endi shuni ko‘radi: avvalgi 5 ta class o‘rniga, endi atigi 2 ta class bilan CRUD yopiladi. Buni <b class="text-white">real loyihalarda ko‘p ishlatiladigan qulay variant</b> deb aytish mumkin.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Aynan shu joyda student “ha, endi yengillashdi” degan hissiyotga keladi. Shu momentni ushlang.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#7C3AED"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-ai-violet/10 text-ai-violet font-black text-xs uppercase tracking-widest border border-ai-violet/20">5-qadam · ModelViewSet</span>
+            <span class="text-xs text-slate-400 font-bold">8–10 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">ModelViewSet ni eng ixcham va kuchli usul sifatida yakunlang</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Bu yerda student juda qisqa kod bilan to‘liq CRUD olayotganini ko‘radi. <span class="code-chip px-2 py-1 rounded-lg">ModelViewSet</span> va <span class="code-chip px-2 py-1 rounded-lg">DefaultRouter</span> birga ishlaganda URL lar avtomatik ochiladi.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Teacher iborasi: “Eng kam kod — eng tez natija. Shu sabab ModelViewSet amalda juda mashhur.”</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#FBBF24"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-warm-yellow/10 text-warm-yellow font-black text-xs uppercase tracking-widest border border-warm-yellow/20">6-qadam · yakun</span>
+            <span class="text-xs text-slate-400 font-bold">5–6 min</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Studentdan farqni o‘zi ayttirib yakun qiling</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Dars oxirida shunday savol bering: “Qaysi usul eng uzun?”, “Qaysi usul eng qulay?”, “Qaysi usulni amalda ko‘p ishlatamiz?” Shu savollar bilimni yopishtiradi.</p>
+          <div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed">Kutilgan javob: APIView — eng uzun, separate generics — aniq, ListCreate+RUD — qulay, ModelViewSet — eng qisqa va tezkor.</div>
+        </article>
+      </div>
+    </section>
+
+
+    <section id="tayyorgarlik" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Darsdan oldin</div>
+            <h2 class="text-3xl font-black text-white">Mentor tayyorgarligi</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Before class checklist</div>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-django-light text-xl mb-3"><i class="fas fa-database"></i></div>
+            <div class="text-white font-black mb-2">Texnik tayyorgarlik</div>
+            <ul class="text-sm text-slate-300 space-y-2 leading-relaxed">
+              <li>• Django loyiha ishga tushgan bo‘lsin</li>
+              <li>• DRF o‘rnatilgan bo‘lsin</li>
+              <li>• migrate va runserver tekshirilgan bo‘lsin</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-front-blue text-xl mb-3"><i class="fas fa-layer-group"></i></div>
+            <div class="text-white font-black mb-2">Kod tayyorligi</div>
+            <ul class="text-sm text-slate-300 space-y-2 leading-relaxed">
+              <li>• Bitta umumiy Book model tayyor</li>
+              <li>• BookSerializer oldindan yozilgan</li>
+              <li>• Har usul uchun view namunasi tayyor</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-ai-violet text-xl mb-3"><i class="fas fa-users"></i></div>
+            <div class="text-white font-black mb-2">Auditoriya nazorati</div>
+            <ul class="text-sm text-slate-300 space-y-2 leading-relaxed">
+              <li>• Studentlar CRUD ma’nosini biladimi</li>
+              <li>• URL va serializer tushunchasi esdami</li>
+              <li>• Terminal xatolarini o‘qiy oladimi</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">O‘tish usuli</div>
+            <h2 class="text-3xl font-black text-white">Darsni qanday olib borish qulay?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Live teaching flow</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-4">Tavsiya etilgan ketma-ketlik</div>
+            <div class="space-y-3 text-sm text-slate-300">
+              <div>1. CRUD nima ekanini 1–2 daqiqada eslatib o‘ting.</div>
+              <div>2. Book modeli va serializer hammaga umumiy ekanini ko‘rsating.</div>
+              <div>3. APIView bilan eng uzun variantni yozib bering.</div>
+              <div>4. Keyin generics bilan kod qanday qisqarishini ko‘rsating.</div>
+              <div>5. Oxirida ModelViewSet bilan “eng tez usul”ni yopib bering.</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-4">Muhim pedagogik nuqta</div>
+            <div class="space-y-3 text-sm text-slate-300 leading-relaxed">
+              <div><b class="text-white">Bitta narsani qayta-qayta urg‘ulang:</b> endpoint natijasi bir xil, faqat kod yozilish usuli o‘zgaradi.</div>
+              <div><b class="text-white">Har bo‘limdan keyin mini savol bering:</b> “Bu usulning afzalligi nima?”, “Kod nega kamaydi?”</div>
+              <div><b class="text-white">Tezlikni oshirmang:</b> student endpoint, view va url bog‘lanishini ko‘rib ulgursin.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="endpointlar" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Endpoint namunalari</div>
+            <h2 class="text-3xl font-black text-white">Mentor ko‘rsatishi kerak bo‘lgan minimal yo‘llar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">localhost:8000</div>
+        </div>
+        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-5 text-sm">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">APIView</div>
+            <div class="space-y-2 text-slate-300">
+              <div><span class="text-green-400 font-bold">GET</span> localhost:8000/</div>
+              <div><span class="text-blue-400 font-bold">POST</span> localhost:8000/</div>
+              <div><span class="text-purple-400 font-bold">GET</span> localhost:8000/1/</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">Separate Generics</div>
+            <div class="space-y-2 text-slate-300">
+              <div><span class="text-green-400 font-bold">GET</span> localhost:8000/</div>
+              <div><span class="text-blue-400 font-bold">POST</span> localhost:8000/create/</div>
+              <div><span class="text-red-400 font-bold">DELETE</span> localhost:8000/1/delete/</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">ListCreate + RUD</div>
+            <div class="space-y-2 text-slate-300">
+              <div><span class="text-green-400 font-bold">GET</span> localhost:8000/</div>
+              <div><span class="text-blue-400 font-bold">POST</span> localhost:8000/</div>
+              <div><span class="text-orange-400 font-bold">PUT/PATCH</span> localhost:8000/1/</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">ModelViewSet</div>
+            <div class="space-y-2 text-slate-300">
+              <div><span class="text-green-400 font-bold">GET</span> localhost:8000/</div>
+              <div><span class="text-blue-400 font-bold">POST</span> localhost:8000/</div>
+              <div><span class="text-purple-400 font-bold">GET</span> localhost:8000/1/</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="taqqoslash" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Taqqoslash</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun qisqa xulosa</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Bir qarashda farqi</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-4">Qanday gapirib berish kerak</div>
+            <div class="space-y-3 text-sm text-slate-300">
+              <div><b class="text-white">APIView</b> — hammasini o‘zim boshqaraman.</div>
+              <div><b class="text-white">Separate generic views</b> — har amal uchun tayyor class bor.</div>
+              <div><b class="text-white">ListCreate + RUD</b> — kamroq class bilan CRUD.</div>
+              <div><b class="text-white">ModelViewSet</b> — eng qisqa va kuchli variant.</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-4">Qachon urg‘u beriladi</div>
+            <div class="space-y-3 text-sm text-slate-300">
+              <div><b class="text-white">Tushuncha uchun</b> — APIView.</div>
+              <div><b class="text-white">Tartibli ajratish uchun</b> — alohida generic viewlar.</div>
+              <div><b class="text-white">Amaliy qulaylik uchun</b> — ListCreateAPIView va RetrieveUpdateDestroyAPIView.</div>
+              <div><b class="text-white">Tez API uchun</b> — ModelViewSet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="xatolar" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Ko‘p uchraydigan xatolar</div>
+            <h2 class="text-3xl font-black text-white">Mentor oldindan ogohlantirishi kerak bo‘lgan joylar</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Common issues</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="warn rounded-r-2xl p-5 text-sm text-red-100/90 leading-relaxed"><b class="text-white">serializer_class yozilmay qolishi</b><br>Student view yozadi, lekin serializer_class ko‘rsatishni unutadi. Shu holatda view ishlamaydi.</div>
+          <div class="warn rounded-r-2xl p-5 text-sm text-red-100/90 leading-relaxed"><b class="text-white">queryset berilmay qolishi</b><br>Generic viewlarda queryset ko‘rsatilmasa retrieve, update va delete ishlamay qolishi mumkin.</div>
+          <div class="warn rounded-r-2xl p-5 text-sm text-red-100/90 leading-relaxed"><b class="text-white">URL bilan view mos kelmasligi</b><br>path ichidagi pk va view ichidagi pk parametri bir xil bo‘lishi kerak.</div>
+          <div class="warn rounded-r-2xl p-5 text-sm text-red-100/90 leading-relaxed"><b class="text-white">router register noto‘g‘ri yozilishi</b><br>ModelViewSet qismida router noto‘g‘ri ulangan bo‘lsa endpoint chiqmaydi.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="homework" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Homework</div>
+            <h2 class="text-3xl font-black text-white">Student uchun uyga vazifa</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Book emas, Product</div>
+        </div>
+        <p class="text-slate-300 leading-relaxed mb-6">Darsda <b class="text-white">Book</b> bilan ishlangan bo‘lsa, uyga vazifada modelni almashtirib, aynan shu oqimni <b class="text-white">Product</b> bilan qayta yozishsin. Maqsad — student kodni ko‘chirib emas, mantiqni tushunib takrorlashi.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">name</div><div class="text-slate-400 text-sm">mahsulot nomi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">price</div><div class="text-slate-400 text-sm">narxi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">quantity</div><div class="text-slate-400 text-sm">quantity izohi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">category</div><div class="text-slate-400 text-sm">kategoriyasi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">brand</div><div class="text-slate-400 text-sm">brendi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">description</div><div class="text-slate-400 text-sm">izohi</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">created_at</div><div class="text-slate-400 text-sm">yaratilgan sana</div></div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5"><div class="text-white font-black mb-2">is_available</div><div class="text-slate-400 text-sm">sotuvda bor-yo‘qligi</div></div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="tip rounded-r-2xl p-5 text-sm text-amber-100/90 leading-relaxed">Mentor aytishi mumkin: “Book misolida o‘rgangan narsalaringizni endi Product modelida takrorlaysiz. Ketma-ketlik o‘sha-o‘sha.”</div>
+          <div class="ok rounded-r-2xl p-5 text-sm text-green-100/90 leading-relaxed">Tekshiruv mezoni: model to‘g‘ri, serializer bor, CRUD endpoint ishlaydi, kamida bitta usulni mustaqil yozib bera oladi.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Tayyor skript</div>
+            <h2 class="text-3xl font-black text-white">Mentor uchun gapirishga qulay matn</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Dars paytida ishlatish uchun</div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Boshlanishida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bugun CRUD ni bir emas, to‘rtta usulda yozib ko‘ramiz. Barcha misollarda model va serializer bir xil bo‘ladi. Shunda farqni view qismida aniq ko‘rasiz.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">APIView da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Bu usulda hamma metodlarni o‘zimiz yozamiz. Uzunroq, lekin kuchli tushuncha beradi.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Generics da</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“DRF bizga tayyor classlar berayotganini ko‘ryapsiz. Demak, kod kamaymoqda.”</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black mb-3">Yakunida</div>
+            <p class="text-slate-300 leading-relaxed text-sm">“Endi Book o‘rniga Student bilan xuddi shu oqimni o‘zingiz mustaqil takrorlaysiz.”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-pdp-cyan font-black uppercase tracking-[0.2em] text-xs mb-2">Yakuniy checklist</div>
+            <h2 class="text-3xl font-black text-white">Dars tugashidan oldin mentor tekshiradi</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Finish strong</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">✓ Student CRUD ning ochilmasini ayta oladimi</div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">✓ APIView va Generic view farqini tushuntira oladimi</div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">✓ ModelViewSet nega tezroq ekanini biladimi</div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">✓ Mustaqil Product homework ni boshlashga tayyormi</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    Teacher Guide · DRF da CRUD yozish usullari · 2-dars
+  </footer>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>9-Dars · NovaMarket DRF Endpoint Mustaqil Ish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      'pdp-cyan':'#00D1D1','pdp-dark':'#0F172A','django-light':'#44B78B','front-blue':'#38BDF8','ai-violet':'#7C3AED','warm-yellow':'#FBBF24','soft-red':'#EF4444','orange-soft':'#F97316'
+    }}}}
+  </script>
+  <style>
+    body{font-family:'Montserrat',sans-serif;background:#0F172A;color:#E2E8F0}.font-mono,code{font-family:'Fira Code',monospace}.glass{background:rgba(15,23,42,.84);backdrop-filter:blur(14px)}.card{background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.97));border:1px solid rgba(148,163,184,.14);transition:.25s}.card:hover{transform:translateY(-2px);border-color:rgba(0,209,209,.28)}.hero-glow{box-shadow:0 0 80px rgba(0,209,209,.12)}.tip{background:rgba(251,191,36,.08);border-left:4px solid #FBBF24}.ok{background:rgba(68,183,139,.10);border-left:4px solid #44B78B}.info{background:rgba(56,189,248,.09);border-left:4px solid #38BDF8}.warn{background:rgba(239,68,68,.08);border-left:4px solid #EF4444}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes flow{0%{transform:translateX(-120%);opacity:0}50%{opacity:1}100%{transform:translateX(120%);opacity:0}}.animate-bob{animation:bob 2.4s ease-in-out infinite}.flow-line{position:relative;overflow:hidden;height:8px;border-radius:999px;background:rgba(255,255,255,.1)}.flow-line:before{content:'';position:absolute;left:-30%;top:0;bottom:0;width:35%;background:linear-gradient(90deg,transparent,#38BDF8,transparent);animation:flow 2.2s linear infinite}.method{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:7px 10px;border-radius:999px;color:white;font-weight:900;font-size:11px;letter-spacing:.08em;background:#22c55e}.query{background:#7c3aed}.endpoint{background:white;color:#0f172a;border:1px solid #e5e7eb;border-radius:20px;padding:16px;box-shadow:0 8px 18px rgba(15,23,42,.06)}.codebox{background:#0b1220;border:1px solid rgba(148,163,184,.18);border-radius:22px;padding:18px}pre{white-space:pre-wrap;line-height:1.6}.mini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:18px}
+  </style>
+</head>
+<body class="min-h-screen selection:bg-pdp-cyan selection:text-pdp-dark">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none"><div class="absolute top-0 right-0 w-[34rem] h-[34rem] rounded-full bg-ai-violet/20 blur-3xl"></div><div class="absolute bottom-0 left-0 w-[32rem] h-[32rem] rounded-full bg-pdp-cyan/10 blur-3xl"></div></div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-pdp-cyan rounded-full flex items-center justify-center shadow-lg shadow-pdp-cyan/20"><div class="w-6 h-3 bg-pdp-dark rounded-full flex items-center justify-center"><span class="text-[6px] text-pdp-cyan font-bold leading-none mt-[1px]">&gt;_</span></div></div>
+        <div class="leading-none"><div class="text-white font-black text-xl tracking-tighter">9-Dars · Teacher <span class="text-pdp-cyan">Guide</span></div><div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">NovaMarket frontendga qarab DRF endpoint chiqarish</div></div>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300"><a class="hover:text-white" href="#maqsad">Maqsad</a><a class="hover:text-white" href="#flow">Flow</a><a class="hover:text-white" href="#endpoint">Endpoint</a><a class="hover:text-white" href="#mustaqil">Mustaqil ish</a></nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 p-8 md:p-12 mb-12 hero-glow">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,#7C3AED,transparent_35%),radial-gradient(circle_at_bottom_left,#00D1D1,transparent_30%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex px-4 py-2 rounded-full bg-pdp-cyan/15 text-pdp-cyan font-black tracking-widest uppercase text-xs border border-pdp-cyan/20 mb-5">9-dars · mustaqil backend endpoint</div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">NovaMarket frontiga qarab <span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-pdp-cyan to-ai-violet">DRF endpoint</span> chiqarish</h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">Bu darsda <b class="text-white">frontend qismiga aralashilmaydi</b>. Mentor faqat NovaMarket ko‘rinishiga qarab backendda qanday model, serializer va endpoint kerakligini tushuntiradi. Keyin o‘quvchilar endpointlarni <b class="text-white">mustaqil</b> yozishadi.</p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="mini"><div class="text-pdp-cyan text-xl mb-2"><i class="fas fa-eye"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">1</div><div class="text-white font-black mt-1">Frontni tahlil qilish</div></div>
+            <div class="mini"><div class="text-django-light text-xl mb-2"><i class="fas fa-database"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">2</div><div class="text-white font-black mt-1">Data fieldlarni topish</div></div>
+            <div class="mini"><div class="text-ai-violet text-xl mb-2"><i class="fas fa-route"></i></div><div class="text-xs uppercase tracking-widest text-slate-400 font-bold">3</div><div class="text-white font-black mt-1">Endpoint yozish</div></div>
+          </div>
+        </div>
+        <div class="rounded-[2rem] border border-white/10 bg-slate-900/80 p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-5"><div><div class="text-white font-black text-lg">Asosiy qoida</div><div class="text-slate-400 text-sm">Frontga tegmaymiz, backend API chiqaramiz</div></div><div class="w-12 h-12 rounded-2xl bg-front-blue/20 text-front-blue flex items-center justify-center text-xl animate-bob"><i class="fas fa-code-branch"></i></div></div>
+          <div class="space-y-3 text-sm">
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">NovaMarket ekranini ko‘ramiz</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">Qaysi data kerakligini topamiz</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 p-4 text-slate-300">DRF endpointlarni yozamiz</div><div class="flow-line"></div>
+            <div class="rounded-2xl bg-pdp-cyan/10 border border-pdp-cyan/20 p-4 flex items-center justify-between"><span class="text-pdp-cyan font-bold">Natija</span><span class="text-white font-black">Mustaqil backend ish</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12"><div class="card rounded-[2rem] p-8 md:p-10"><div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Dars maqsadi</div><h2 class="text-3xl font-black text-white mb-6">Qisqa va aniq maqsad</h2><div class="grid md:grid-cols-2 gap-6"><div class="ok rounded-r-2xl p-5"><div class="text-white font-black mb-2">Mentor tushuntiradi</div><div class="text-slate-300 text-sm leading-relaxed">NovaMarket frontida ko‘ringan card, kategoriya, detail tugmasi va filter uchun backenddan qanday data kerakligini ko‘rsatadi.</div></div><div class="info rounded-r-2xl p-5"><div class="text-white font-black mb-2">O‘quvchi bajaradi</div><div class="text-slate-300 text-sm leading-relaxed">Product model, serializer, list endpoint, detail endpoint va query parametrlarni mustaqil yozadi.</div></div></div></div></section>
+
+    <section id="flow" class="mb-12"><div class="card rounded-[2rem] p-8 md:p-10"><div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Backend flow</div><h2 class="text-3xl font-black text-white mb-6">Frontendga qarab endpoint chiqarish tartibi</h2><div class="grid md:grid-cols-4 gap-4"><div class="mini"><div class="step text-pdp-cyan font-black text-2xl mb-2">01</div><div class="text-white font-black mb-2">Cardni ko‘rish</div><div class="text-slate-400 text-sm">name, description, price, image, badge</div></div><div class="mini"><div class="step text-django-light font-black text-2xl mb-2">02</div><div class="text-white font-black mb-2">Categoryni ko‘rish</div><div class="text-slate-400 text-sm">category field va filter query kerak</div></div><div class="mini"><div class="step text-front-blue font-black text-2xl mb-2">03</div><div class="text-white font-black mb-2">Ko‘rish tugmasi</div><div class="text-slate-400 text-sm">detail endpoint kerak</div></div><div class="mini"><div class="step text-ai-violet font-black text-2xl mb-2">04</div><div class="text-white font-black mb-2">DRF yozish</div><div class="text-slate-400 text-sm">model, serializer, views, urls</div></div></div><div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed mt-6">Mentor gapiradigan asosiy jumla: “Front tayyor. Biz frontni o‘zgartirmaymiz. Biz faqat shu frontga data beradigan backend endpointlarni yozamiz.”</div></div></section>
+
+    <section id="endpoint" class="mb-12"><div class="card rounded-[2rem] p-8 md:p-10"><div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Endpoint map</div><h2 class="text-3xl font-black text-white mb-6">NovaMarket uchun kerakli endpointlar</h2><div class="grid lg:grid-cols-2 gap-5 mb-6"><div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method">GET</span><span class="font-mono font-black">/api/products/</span></div><div class="text-sm text-slate-600">Katalogdagi barcha product cardlar uchun.</div></div><div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method">GET</span><span class="font-mono font-black">/api/products/&lt;id&gt;/</span></div><div class="text-sm text-slate-600">“Ko‘rish” tugmasi bosilganda bitta product uchun.</div></div><div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method query">QUERY</span><span class="font-mono font-black">?category=smartfon</span></div><div class="text-sm text-slate-600">Smartfon, Laptop, Aksessuar filterlari uchun.</div></div><div class="endpoint"><div class="flex items-center gap-3 mb-3"><span class="method query">QUERY</span><span class="font-mono font-black">?search=&ordering=&page=</span></div><div class="text-sm text-slate-600">Qidiruv, sort va pagination uchun.</div></div></div><div class="codebox text-slate-200 text-sm"><pre><code>Product model → ProductSerializer → ProductListAPIView → ProductDetailAPIView → urls.py
+
+Frontend tegilmaydi. Endpointlar front ishlashi uchun yoziladi.</code></pre></div></div></section>
+
+    <section id="mustaqil" class="mb-12"><div class="card rounded-[2rem] p-8 md:p-10"><div class="text-pdp-cyan font-black uppercase tracking-[.2em] text-xs mb-2">Mustaqil ish</div><h2 class="text-3xl font-black text-white mb-6">Mentor o‘quvchilarga qanday topshiriq beradi?</h2><div class="warn rounded-r-2xl p-5 mb-6"><div class="text-white font-black mb-2">Asosiy shart</div><div class="text-slate-300 text-sm leading-relaxed">O‘quvchilar NovaMarket frontendiga umuman aralashmaydi. Ular faqat shu frontendga mos backend endpointlarni DRFda mustaqil yozishadi.</div></div><div class="grid md:grid-cols-4 gap-4"><div class="mini"><div class="text-white font-black mb-2">1. Field list</div><div class="text-slate-400 text-sm">Carddan kerakli data ro‘yxatini chiqarish</div></div><div class="mini"><div class="text-white font-black mb-2">2. Model</div><div class="text-slate-400 text-sm">Product va kerak bo‘lsa Category model</div></div><div class="mini"><div class="text-white font-black mb-2">3. API</div><div class="text-slate-400 text-sm">List/detail/filter endpointlar</div></div><div class="mini"><div class="text-white font-black mb-2">4. Test</div><div class="text-slate-400 text-sm">JSON frontga mos kelishini tekshirish</div></div></div><div class="ok rounded-r-2xl p-4 text-sm text-green-100/90 leading-relaxed mt-6">Mentor aytadi: “Bu loyiha sizlarning mustaqil ishingiz. Men yo‘lni ko‘rsataman, lekin endpointlarni frontendga qarab o‘zingiz chiqarasiz.”</div></div></section>
+  </main>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">DRF Teacher Guide · 9-dars · NovaMarket frontga qarab endpoint chiqarish</footer>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dars 12 — Teacher Guide | Yakuniy Loyiha Tekshiruvi va Taqdimotga Tayyorlanish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cyanBrand: '#1dd3f8',
+            deep: '#06111f',
+            violetSoft: '#7C3AED',
+            pinkSoft: '#EC4899',
+            emeraldSoft: '#10B981',
+            amberSoft: '#F59E0B',
+            roseSoft: '#FB7185'
+          },
+          boxShadow: {
+            glow: '0 0 60px rgba(29,211,248,.18)',
+            soft: '0 25px 70px rgba(2,6,23,.35)'
+          },
+          keyframes: {
+            floatY: {
+              '0%,100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            pulseRing: {
+              '0%': { transform: 'scale(.9)', opacity: '.7' },
+              '100%': { transform: 'scale(1.16)', opacity: '0' }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            },
+            blinkSoft: {
+              '0%,100%': { opacity: '.55' },
+              '50%': { opacity: '1' }
+            }
+          },
+          animation: {
+            floatY: 'floatY 3.6s ease-in-out infinite',
+            pulseRing: 'pulseRing 1.8s linear infinite',
+            shimmer: 'shimmer 3.5s linear infinite',
+            blinkSoft: 'blinkSoft 1.4s ease-in-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background:#040b16; color:#eaf4ff; }
+    .font-mono { font-family: 'Fira Code', monospace; }
+    .glass { background: rgba(4,11,22,.82); backdrop-filter: blur(18px); }
+    .card { background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(7,15,28,.98)); border: 1px solid rgba(148,163,184,.15); box-shadow: 0 20px 60px rgba(2,6,23,.28); }
+    .card:hover { border-color: rgba(29,211,248,.35); }
+    .hero-grid { background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 28px 28px; }
+    .timeline::before { content:''; position:absolute; left:20px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom, #1dd3f8, #7C3AED, #EC4899, #10B981); }
+    .dot { position:absolute; left:10px; top:32px; width:22px; height:22px; border-radius:999px; background:#081221; border:4px solid #1dd3f8; z-index:10; }
+    .tip { background: rgba(245,158,11,.09); border-left: 4px solid #F59E0B; }
+    .prompt { background: rgba(124,58,237,.11); border:1px dashed rgba(167,139,250,.40); }
+    .hero-stage { position:relative; min-height:360px; overflow:hidden; border-radius:30px; background: radial-gradient(circle at top, rgba(255,255,255,.05), transparent 35%), #020817; }
+    .shine { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.15) 50%, rgba(255,255,255,0) 100%); background-size: 200% 100%; animation: shimmer 3.5s linear infinite; }
+    .orb::before { content:''; position:absolute; inset:-8px; border:2px solid rgba(29,211,248,.32); border-radius:999px; animation:pulseRing 1.9s linear infinite; }
+    .lesson-pill { background: linear-gradient(90deg, rgba(29,211,248,.15), rgba(124,58,237,.18)); border:1px solid rgba(255,255,255,.08); }
+    .wave span { display:block; width:8px; border-radius:999px; background: linear-gradient(to top, #1dd3f8, #7C3AED); animation: blinkSoft 1.1s ease-in-out infinite; }
+    .wave span:nth-child(1){ height:18px; animation-delay:0s; }
+    .wave span:nth-child(2){ height:36px; animation-delay:.15s; }
+    .wave span:nth-child(3){ height:54px; animation-delay:.30s; }
+    .wave span:nth-child(4){ height:30px; animation-delay:.45s; }
+    .wave span:nth-child(5){ height:16px; animation-delay:.6s; }
+  </style>
+  
+</head>
+<body class="min-h-screen selection:bg-cyanBrand selection:text-deep">
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute -top-10 -left-10 w-[30rem] h-[30rem] rounded-full bg-cyanBrand/10 blur-3xl"></div>
+    <div class="absolute top-0 right-0 w-[32rem] h-[32rem] rounded-full bg-violetSoft/20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-1/3 w-[28rem] h-[28rem] rounded-full bg-pinkSoft/10 blur-3xl"></div>
+  </div>
+
+  <header class="glass sticky top-0 z-50 h-20 border-b border-white/10">
+    <div class="max-w-7xl mx-auto h-full px-6 lg:px-10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shadow-glow">
+            <img src="static/img/pdp-junior-logo.png" alt="PDP Junior logo" class="w-9 h-9 object-contain"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div class="hidden w-full h-full items-center justify-center text-cyanBrand text-xs font-black tracking-wider">PDP</div>
+          </div>
+          <div class="leading-none">
+            <div class="text-white font-black text-xl tracking-tight">PDP Junior <span class="text-cyanBrand">Teacher Guide</span></div>
+            <div class="text-[11px] uppercase tracking-[0.22em] text-slate-400 font-bold mt-1">Dars 12 · Project Final Check</div>
+          </div>
+        </a>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-300">
+        <a href="#maqsad" class="hover:text-white">Maqsad</a>
+        <a href="#jarayon" class="hover:text-white">Jarayon</a>
+        <a href="#baholash" class="hover:text-white">Baholash</a>
+        <a href="#nutq" class="hover:text-white">Nutq</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-10 md:py-14">
+    
+    <section class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 hero-grid p-8 md:p-12 mb-12 shadow-glow">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,.22),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(29,211,248,.18),transparent_28%)]"></div>
+      <div class="relative z-10 grid lg:grid-cols-[1.08fr_0.92fr] gap-10 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full lesson-pill text-cyanBrand font-black tracking-widest uppercase text-xs mb-5">
+            Teacher version · Dars 12
+          </div>
+          <h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-5">
+            Yakuniy loyihani <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyanBrand via-sky-300 to-violetSoft">full tekshirish va gapirishga tayyorlash</span> uchun teacher qo‘llanma
+          </h1>
+          <p class="text-slate-300 text-lg leading-relaxed max-w-3xl mb-6">
+            Bu darsda mentor har bir o‘quvchining <span class="text-white font-bold">yakuniy loyihasi full tugaganiga ishonch hosil qiladi</span>. Local bo‘lsa ishga tushirib ko‘riladi, deploy bo‘lsa link ochib tekshiriladi. Shundan keyin o‘quvchilar imtihonda loyihasini <span class="text-white font-bold">qisqa, aniq va ishonch bilan gapirib berishga</span> tayyorlanadi.
+          </p>
+          <div class="grid sm:grid-cols-3 gap-4 max-w-3xl">
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-cyanBrand text-xl mb-2"><i class="fas fa-laptop-code"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">1-bosqich</div>
+              <div class="text-white font-black mt-1">Loyihani tekshirish</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-emeraldSoft text-xl mb-2"><i class="fas fa-microphone-lines"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">2-bosqich</div>
+              <div class="text-white font-black mt-1">Kamchilikni yopish</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-slate-800/80 p-4">
+              <div class="text-pinkSoft text-xl mb-2"><i class="fas fa-users"></i></div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">3-bosqich</div>
+              <div class="text-white font-black mt-1">Gapirishga tayyorlash</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rounded-[2rem] border border-white/10 bg-slate-800 p-6 shadow-soft">
+            <div class="hero-stage border border-white/10 p-4 mb-4">
+              <div class="w-full h-[330px] rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative overflow-hidden">
+                <div class="absolute inset-0 shine opacity-30"></div>
+                <div class="absolute left-1/2 top-[16%] -translate-x-1/2 w-20 h-20 rounded-full border-[4px] border-cyanBrand orb"></div>
+                <div class="absolute left-1/2 top-[34%] -translate-x-1/2 w-44 h-28 rounded-[2rem] border-[4px] border-violetSoft orb" style="animation-delay:.5s"></div>
+                <div class="absolute left-[18%] top-[42%] w-20 h-20 rounded-full border-[4px] border-pinkSoft orb" style="animation-delay:1s"></div>
+                <div class="absolute right-[18%] top-[42%] w-20 h-20 rounded-full border-[4px] border-emeraldSoft orb" style="animation-delay:1.2s"></div>
+                <div class="absolute left-[8%] top-[16%] text-cyanBrand font-black text-xs uppercase tracking-[0.2em] bg-slate-950/70 px-3 py-1 rounded-full">Demo</div>
+                <div class="absolute right-[8%] top-[16%] text-pinkSoft font-black text-xs uppercase tracking-[0.2em] bg-slate-950/70 px-3 py-1 rounded-full">Speech</div>
+                <div class="absolute bottom-[12%] left-1/2 -translate-x-1/2 flex items-end gap-2 wave">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="absolute bottom-[8%] left-6 right-6 rounded-3xl border border-white/10 bg-slate-950/70 p-4">
+                  <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="rounded-2xl bg-cyanBrand/10 border border-cyanBrand/20 p-3">
+                      <div class="text-cyanBrand text-xl mb-1"><i class="fa-solid fa-play"></i></div>
+                      <div class="text-xs text-slate-300 font-bold">Check</div>
+                    </div>
+                    <div class="rounded-2xl bg-violetSoft/10 border border-violetSoft/20 p-3">
+                      <div class="text-violetSoft text-xl mb-1"><i class="fa-solid fa-lightbulb"></i></div>
+                      <div class="text-xs text-slate-300 font-bold">Fix</div>
+                    </div>
+                    <div class="rounded-2xl bg-pinkSoft/10 border border-pinkSoft/20 p-3">
+                      <div class="text-pinkSoft text-xl mb-1"><i class="fa-solid fa-clap"></i></div>
+                      <div class="text-xs text-slate-300 font-bold">Speak</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-3xl bg-slate-900 border border-white/10 p-5">
+              <div class="text-white font-black text-lg mb-2">Dars flow'i</div>
+              <div class="text-slate-400 text-sm leading-relaxed">Loyihani ochish → asosiy funksiyalarni tekshirish → kamchiliklarni yopish → link/faylni qayd qilish → 5 daqiqalik taqdimotga tayyorlash.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maqsad" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Dars maqsadi</div>
+            <h2 class="text-3xl font-black text-white">Mentor bu darsda nimani ta’minlashi kerak?</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-slate-300">Final exam lesson</div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            Har bir o‘quvchining yakuniy loyihasi <b class="text-white">full tugagan, ishga tushadigan va tekshiruvdan o‘tgan</b> holatda bo‘lishi kerak.
+          </div>
+          <div class="rounded-2xl bg-slate-900/70 border border-white/10 p-6">
+            O‘quvchi imtihonda loyihasi haqida <b class="text-white">qisqa, tartibli, ravon va ishonch bilan</b> gapirishni mashq qiladi.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="grid xl:grid-cols-[1.05fr_0.95fr] gap-6">
+        <div class="card rounded-[2rem] p-8">
+          <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Teacher insight</div>
+          <h2 class="text-3xl font-black text-white mb-5">Bu darsning asosiy ruhiyati qanday bo‘lishi kerak?</h2>
+          <div class="space-y-4 text-slate-300 leading-relaxed">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">1. Bu darsning asosiy maqsadi — <b class="text-white">yakuniy loyihalar tayyorligini 100% tekshirish</b>.</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">2. Mentor har bir o‘quvchi loyihasini alohida ochib ko‘radi, xato bo‘lsa joyida tuzatishga yordam beradi.</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">3. Loyiha tekshiruvidan keyin o‘quvchi <b class="text-white">imtihonda gapirish tartibini</b> mashq qiladi.</div>
+          </div>
+        </div>
+        <div class="card rounded-[2rem] p-8 overflow-hidden">
+          <div class="text-violetSoft font-black uppercase tracking-[0.2em] text-xs mb-2">Visual plan</div>
+          <h3 class="text-2xl font-black text-white mb-4">Project Check + Fix + Speech</h3>
+          <div class="grid grid-cols-3 gap-3 text-center text-sm font-bold text-slate-300">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><i class="fa-solid fa-cubes text-cyanBrand text-2xl mb-2"></i><div>Check</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><i class="fa-solid fa-book-open text-emeraldSoft text-2xl mb-2"></i><div>Fix</div></div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-4"><i class="fa-solid fa-user-tie text-pinkSoft text-2xl mb-2"></i><div>Speakation</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="jarayon" class="mb-12">
+      <div class="mb-6">
+        <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Step by step</div>
+        <h2 class="text-3xl font-black text-white">12-dars jarayoni</h2>
+      </div>
+
+      <div class="relative timeline pl-14 space-y-8">
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-cyanBrand/10 text-cyanBrand font-black text-xs uppercase tracking-widest border border-cyanBrand/20">1-qadam · loyiha holati</span>
+            <span class="text-xs text-slate-400 font-bold">Dars boshida</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Har bir o‘quvchining loyiha holatini aniqlang</h3>
+          <p class="text-slate-300 leading-relaxed">Mentor dars boshida har bir o‘quvchidan loyiha holatini so‘raydi: localmi, deploy qilinganmi, GitHub bormi, qanday kamchilik qolgan. Keyin tekshiruv navbati belgilanadi.</p>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#38BDF8"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-sky-400/10 text-sky-300 font-black text-xs uppercase tracking-widest border border-sky-400/20">2-qadam · local/deploy tekshiruv</span>
+            <span class="text-xs text-slate-400 font-bold">Har bir o‘quvchi</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Loyihani local yoki deploy holatda ochib tekshiring</h3>
+          <p class="text-slate-300 leading-relaxed">Local loyiha bo‘lsa mentor o‘z laptopida yig‘ib ko‘radi. Deploy bo‘lsa link ochib tekshiradi. Asosiy sahifalar, login/register, formalar, static/media, database va loyiha funksiyalari ishlashi ko‘riladi.</p>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#7C3AED"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-violetSoft/10 text-violetSoft font-black text-xs uppercase tracking-widest border border-violetSoft/20">3-qadam · kamchiliklarni yopish</span>
+            <span class="text-xs text-slate-400 font-bold">~5 daqiqa</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Kamchilik bo‘lsa mentor shaxsan bartaraf etadi</h3>
+          <p class="text-slate-300 leading-relaxed">Agar loyiha ishga tushmasa yoki biror joyi ishlamasa, mentor o‘quvchi bilan birga xatoni topadi: settings, migrations, static/media, template, form, auth yoki deploy muammolari tuzatiladi.</p>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#F59E0B"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-amber-300/10 text-amber-300 font-black text-xs uppercase tracking-widest border border-amber-300/20">4-qadam · gapirishga tayyorlash</span>
+            <span class="text-xs text-slate-400 font-bold">Ota-onalar oldida</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">O‘quvchini imtihonda gapirishga tayyorlang</h3>
+          <p class="text-slate-300 leading-relaxed mb-4">Loyiha tayyor bo‘lgach, o‘quvchi 5 daqiqalik nutq strukturasini mashq qiladi: loyiha nomi, nima qiladi, kimga foydali, qaysi funksiyalar bor, qaysi qismi qiyin bo‘lgan va qanday hal qilgan.</p>
+          <div class="tip rounded-r-2xl p-4 text-sm text-amber-100/90 leading-relaxed">Teacher tavsiya: o‘quvchi gapirishga qiynalsa, unga tayyor strukturadan foydalanishni ayting. Maqsad — imtihonda to‘xtab qolmasdan, loyihasini aniq tushuntira olishi.</div>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#EC4899"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-pinkSoft/10 text-pinkSoft font-black text-xs uppercase tracking-widest border border-pinkSoft/20">5-qadam · link/fayl yig‘ish</span>
+            <span class="text-xs text-slate-400 font-bold">Qisqa</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Loyiha linklari va fayllarni bitta joyga yig‘ing</h3>
+          <p class="text-slate-300 leading-relaxed">Deploy qilingan loyihalar link sifatida, local loyihalar esa GitHub, zip yoki papka ko‘rinishida bitta ro‘yxatga kiritiladi. Mentor kimning loyihasi tayyor, kimniki qayta tekshirilishi kerakligini belgilaydi.</p>
+        </article>
+
+        <article class="relative card rounded-[2rem] p-7 md:p-8">
+          <div class="dot" style="border-color:#10B981"></div>
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <span class="inline-flex px-4 py-1 rounded-full bg-emeraldSoft/10 text-emeraldSoft font-black text-xs uppercase tracking-widest border border-emeraldSoft/20">6-qadam · yakuniy tayyorlik</span>
+            <span class="text-xs text-slate-400 font-bold">Dars oxiri</span>
+          </div>
+          <h3 class="text-2xl font-black text-white mb-3">Imtihonga tayyorlikni yakuniy belgilang</h3>
+          <p class="text-slate-300 leading-relaxed">Dars oxirida mentor har bir o‘quvchi bo‘yicha holatni belgilaydi: tayyor, tuzatilmoqda yoki qayta tekshiruv kerak. Tayyor o‘quvchilar imtihon nutqini yana bir bor mashq qiladi.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="baholash" class="mb-12">
+      <div class="grid lg:grid-cols-2 gap-6">
+        <div class="card rounded-[2rem] p-8 md:p-10">
+          <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Tekshiruv mezonlari</div>
+          <h2 class="text-3xl font-black text-white mb-6">Mentor nimalarga qaraydi?</h2>
+          <div class="space-y-4 text-slate-300 leading-relaxed">
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">Loyiha local yoki deploy holatda xatosiz ochildimi?</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">Asosiy sahifalar, formalar, auth va database ishlayaptimi?</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">Static/media, template va fayl yo‘llarida muammo yo‘qmi?</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">Kamchiliklar mentor yordamida yopildimi?</div>
+            <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">O‘quvchi 5 daqiqalik taqdimotga tayyormi?</div>
+          </div>
+        </div>
+        <div class="card rounded-[2rem] p-8 md:p-10">
+          <div class="text-violetSoft font-black uppercase tracking-[0.2em] text-xs mb-2">Eng muhim nuqta</div>
+          <h2 class="text-3xl font-black text-white mb-6">Bu dars nimani yakunlaydi?</h2>
+          <div class="space-y-4 text-slate-300 leading-relaxed">
+            <div class="prompt rounded-2xl p-4">“Mening yakuniy loyiham full tayyor va tekshiruvdan o‘tgan.”</div>
+            <div class="prompt rounded-2xl p-4">“Men loyihamni local yoki deploy holatda ko‘rsata olaman.”</div>
+            <div class="prompt rounded-2xl p-4">“Men loyiham haqida 5 daqiqada aniq gapira olaman.”</div>
+            <div class="prompt rounded-2xl p-4">“Men imtihonga tayyor holda kiraman.”</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="yigish" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Loyihalarni yig‘ish</div>
+        <h2 class="text-3xl font-black text-white mb-6">Mentor uchun loyiha ro‘yxati</h2>
+        <div class="grid md:grid-cols-2 gap-5 text-slate-300 leading-relaxed mb-6">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black text-xl mb-3"><i class="fa-solid fa-laptop-code text-cyanBrand mr-2"></i>Local loyiha</div>
+            <p>Mentor loyihani o‘z laptopida yig‘ib tekshiradi: virtualenv, requirements, migrations, database, static/media va runserver ishlashi ko‘riladi.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black text-xl mb-3"><i class="fa-solid fa-globe text-emeraldSoft mr-2"></i>Deploy loyiha</div>
+            <p>Deploy link ochiladi, asosiy sahifalar va funksiyalar test qilinadi. Link bitta umumiy fayl yoki trackerga yozib boriladi.</p>
+          </div>
+        </div>
+        <div class="rounded-3xl overflow-hidden border border-white/10">
+          <div class="grid md:grid-cols-5 bg-slate-950/80 text-xs uppercase tracking-[0.16em] text-slate-400 font-black">
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">O‘quvchi</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Loyiha nomi</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Holat</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Kamchilik</div>
+            <div class="p-4">Link/Fayl</div>
+          </div>
+          <div class="grid md:grid-cols-5 text-sm text-slate-300">
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Student 1</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Yakuniy loyiha</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10 text-emeraldSoft font-bold">Tayyor</div>
+            <div class="p-4 border-b md:border-b-0 md:border-r border-white/10">Yo‘q</div>
+            <div class="p-4 font-mono">https://...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section id="nutq" class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10">
+        <div class="text-cyanBrand font-black uppercase tracking-[0.2em] text-xs mb-2">Gapirishga tayyorlov</div>
+        <h2 class="text-3xl font-black text-white mb-6">Imtihonda loyiha haqida gapirish strukturasi</h2>
+        <div class="grid lg:grid-cols-2 gap-5 text-slate-300 leading-relaxed">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black text-xl mb-3">Gapirish tartibi</div>
+            <ol class="list-decimal pl-5 space-y-3">
+              <li>O‘zingizni tanishtiring va loyiha nomini ayting.</li>
+              <li>Loyiha nima vazifa bajarishini tushuntiring.</li>
+              <li>Uni qancha vaqtda qilganingizni ayting.</li>
+              <li>Loyiha qanday muammoni yechishini izohlang.</li>
+              <li>Qaysi texnologiyalardan foydalanganingizni ayting.</li>
+              <li>Qaysi qismi qiyin bo‘lganini va qanday hal qilganingizni ayting.</li>
+            </ol>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-6">
+            <div class="text-white font-black text-xl mb-3">Namuna nutq</div>
+            <p>Assalomu alaykum, mening loyiham nomi <b class="text-white">Mening yakuniy loyiham</b>. Bu loyiha foydalanuvchiga kerakli vazifani bajarishga yordam beradi. Men bu loyihani yakuniy imtihon uchun tayyorladim. Loyihada asosiy sahifalar, formalar, database bilan ishlash va foydalanuvchi uchun qulay interface bor. Eng qiyin qismi loyihadagi xatolarni to‘g‘rilash bo‘ldi, lekin mentor bilan tekshirib, ularni bartaraf qildim.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="card rounded-[2rem] p-8 md:p-10 border border-violetSoft/30 shadow-[0_0_30px_rgba(124,58,237,0.12)]">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <div class="text-violetSoft font-black uppercase tracking-[0.2em] text-xs mb-2">Mentor checklist</div>
+            <h2 class="text-3xl font-black text-white">Dars oxirida tekshiriladigan yakuniy ro‘yxat</h2>
+          </div>
+          <div class="px-4 py-2 rounded-full bg-violetSoft/10 border border-violetSoft/20 text-sm font-bold text-violetSoft">Final control</div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">Loyiha bo‘yicha</div>
+            <ul class="space-y-2 text-sm text-slate-300">
+              <li>• Loyiha full tugaganmi?</li>
+              <li>• Local/deploy holatda ochildimi?</li>
+              <li>• Asosiy sahifa va funksiyalar ishladimi?</li>
+              <li>• Link/fayl bitta ro‘yxatga kiritildimi?</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl bg-slate-900 border border-white/10 p-5">
+            <div class="text-white font-black mb-3">Taqdimot bo‘yicha</div>
+            <ul class="space-y-2 text-sm text-slate-300">
+              <li>• O‘quvchi 5 daqiqalik nutqni mashq qildimi?</li>
+              <li>• Loyiha nima qilishini tushuntira oldimi?</li>
+              <li>• Qiyin joy va yechimni ayta oldimi?</li>
+              <li>• Imtihonda gapirishga tayyormi?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+      
+  </main>
+
+  <footer class="py-10 border-t border-white/10 text-center text-slate-500 text-sm">
+    Teacher qo‘llanma sayti · Dars 12 yakuniy loyiha tekshiruvi va gapirishga tayyorlanish uchun tayyorlandi
+  </footer>
+  
+</body>
+</html>
