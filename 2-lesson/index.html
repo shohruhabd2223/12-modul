@@ -166,8 +166,8 @@ class StudentSerializer(serializers.ModelSerializer):
         <div class="w-full max-w-6xl mx-auto space-y-8">
           <div class="text-center">
             <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-hand"></i> 1-usul</div>
-            <h2 class="text-4xl font-black text-pdp-dark">APIView bilan CRUD</h2>
-            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng fundamental usul. <b>get</b>, <b>post</b>, <b>put</b>, <b>patch</b>, <b>delete</b> metodlarini o‘zingiz yozasiz. O‘rganish uchun juda foydali.</p>
+            <h2 class="text-4xl font-black text-pdp-dark">APIView bilan CRUD + Swagger</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng fundamental usul. <b>post</b>, <b>put</b>, <b>patch</b> metodlariga <b>request_body</b> berilsa, Swagger ichida input forma chiqadi.</p>
           </div>
           <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
             <div class="space-y-4">
@@ -187,18 +187,28 @@ class StudentSerializer(serializers.ModelSerializer):
             <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
               <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('apiViewCrud')"><i class="fas fa-copy"></i></button>
               <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
-              <div class="p-4 code-wrap"><pre><code class="language-python" id="apiViewCrud">from rest_framework.views import APIView
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="apiViewCrud">from drf_yasg.utils import swagger_auto_schema
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Student
 from .serializers import StudentSerializer
 
 class StudentListCreateAPIView(APIView):
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentlar ro&#x27;yxati&quot;,
+        responses={200: StudentSerializer(many=True)}
+    )
     def get(self, request):
         students = Student.objects.all()
         serializer = StudentSerializer(students, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Student yaratish&quot;,
+        request_body=StudentSerializer,
+        responses={201: StudentSerializer}
+    )
     def post(self, request):
         serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
@@ -213,39 +223,57 @@ class StudentDetailAPIView(APIView):
         except Student.DoesNotExist:
             return None
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Bitta studentni olish&quot;,
+        responses={200: StudentSerializer}
+    )
     def get(self, request, pk):
         student = self.get_object(pk)
         if not student:
-            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({&quot;error&quot;: &quot;Student not found&quot;}, status=status.HTTP_404_NOT_FOUND)
         serializer = StudentSerializer(student)
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni to&#x27;liq yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
     def put(self, request, pk):
         student = self.get_object(pk)
         if not student:
-            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({&quot;error&quot;: &quot;Student not found&quot;}, status=status.HTTP_404_NOT_FOUND)
         serializer = StudentSerializer(student, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni qisman yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
     def patch(self, request, pk):
         student = self.get_object(pk)
         if not student:
-            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({&quot;error&quot;: &quot;Student not found&quot;}, status=status.HTTP_404_NOT_FOUND)
         serializer = StudentSerializer(student, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni o&#x27;chirish&quot;,
+        responses={204: &quot;O&#x27;chirildi&quot;}
+    )
     def delete(self, request, pk):
         student = self.get_object(pk)
         if not student:
-            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({&quot;error&quot;: &quot;Student not found&quot;}, status=status.HTTP_404_NOT_FOUND)
         student.delete()
-        return Response({"message": "Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)</code></pre></div>
+        return Response({&quot;message&quot;: &quot;Deleted successfully&quot;}, status=status.HTTP_204_NO_CONTENT)</code></pre></div>
             </div>
           </div>
         </div>
@@ -295,8 +323,8 @@ urlpatterns = [
         <div class="w-full max-w-6xl mx-auto space-y-8">
           <div class="text-center">
             <div class="inline-flex items-center gap-3 bg-django-light text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-list"></i> 2-usul</div>
-            <h2 class="text-4xl font-black text-pdp-dark">Alohida Generic Views bilan CRUD</h2>
-            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu usulda har bir amal uchun alohida class yoziladi: list, create, retrieve, update, destroy. Kod tozaroq bo‘ladi, lekin class soni ko‘payadi.</p>
+            <h2 class="text-4xl font-black text-pdp-dark">Alohida Generic Views + Swagger</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu usulda har bir amal uchun alohida class yoziladi. Swagger uchun kerakli get/post/put/patch/delete metodlarini override qilib, ularga to‘g‘ridan-to‘g‘ri <b>@swagger_auto_schema</b> qo‘yamiz.</p>
           </div>
           <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
             <div class="space-y-4">
@@ -316,7 +344,8 @@ urlpatterns = [
             <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
               <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('separateGenericViews')"><i class="fas fa-copy"></i></button>
               <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
-              <div class="p-4 code-wrap"><pre><code class="language-python" id="separateGenericViews">from rest_framework.generics import (
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="separateGenericViews">from drf_yasg.utils import swagger_auto_schema
+from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
     RetrieveAPIView,
@@ -330,21 +359,66 @@ class StudentListAPIView(ListAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentlar ro&#x27;yxati&quot;,
+        responses={200: StudentSerializer(many=True)}
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 class StudentCreateAPIView(CreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Student yaratish&quot;,
+        request_body=StudentSerializer,
+        responses={201: StudentSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 class StudentRetrieveAPIView(RetrieveAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Bitta studentni olish&quot;,
+        responses={200: StudentSerializer}
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 class StudentUpdateAPIView(UpdateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni to&#x27;liq yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni qisman yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
 class StudentDestroyAPIView(DestroyAPIView):
     queryset = Student.objects.all()
-    serializer_class = StudentSerializer</code></pre></div>
+    serializer_class = StudentSerializer
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni o&#x27;chirish&quot;,
+        responses={204: &quot;O&#x27;chirildi&quot;}
+    )
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)</code></pre></div>
             </div>
           </div>
         </div>
@@ -399,8 +473,8 @@ urlpatterns = [
         <div class="w-full max-w-6xl mx-auto space-y-8">
           <div class="text-center">
             <div class="inline-flex items-center gap-3 bg-front-blue text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-compress"></i> 3-usul</div>
-            <h2 class="text-4xl font-black text-pdp-dark">ListCreateAPIView + RetrieveUpdateDestroyAPIView</h2>
-            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng ko‘p ishlatiladigan generics usullardan biri. CRUD ni juda ixcham qiladi. Faqat 2 ta class bilan hammasi chiqadi.</p>
+            <h2 class="text-4xl font-black text-pdp-dark">ListCreateAPIView + RUD + Swagger</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng ko‘p ishlatiladigan generics usullardan biri. Faqat 2 ta class bilan CRUD chiqadi, Swagger input uchun esa POST/PUT/PATCH metodlari override qilinib, to‘g‘ridan-to‘g‘ri <b>@swagger_auto_schema</b> orqali <b>request_body</b> qo‘shiladi.</p>
           </div>
           <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-8 items-start">
             <div class="space-y-4">
@@ -420,7 +494,8 @@ urlpatterns = [
             <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
               <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('combinedGenericViews')"><i class="fas fa-copy"></i></button>
               <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
-              <div class="p-4 code-wrap"><pre><code class="language-python" id="combinedGenericViews">from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="combinedGenericViews">from drf_yasg.utils import swagger_auto_schema
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Student
 from .serializers import StudentSerializer
 
@@ -428,9 +503,54 @@ class StudentListCreateAPIView(ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentlar ro&#x27;yxati&quot;,
+        responses={200: StudentSerializer(many=True)}
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Student yaratish&quot;,
+        request_body=StudentSerializer,
+        responses={201: StudentSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 class StudentRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
-    serializer_class = StudentSerializer</code></pre></div>
+    serializer_class = StudentSerializer
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Bitta studentni olish&quot;,
+        responses={200: StudentSerializer}
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni to&#x27;liq yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni qisman yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni o&#x27;chirish&quot;,
+        responses={204: &quot;O&#x27;chirildi&quot;}
+    )
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)</code></pre></div>
             </div>
           </div>
         </div>
@@ -476,20 +596,66 @@ urlpatterns = [
         <div class="w-full max-w-6xl mx-auto space-y-8">
           <div class="text-center">
             <div class="inline-flex items-center gap-3 bg-purple-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-rocket"></i> 4-usul</div>
-            <h2 class="text-4xl font-black text-pdp-dark">ModelViewSet bilan CRUD</h2>
-            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng qisqa va kuchli variant. DRF sizga list, create, retrieve, update, partial_update, destroy metodlarini tayyor beradi. Router esa URL’larni avtomatik ochadi.</p>
+            <h2 class="text-4xl font-black text-pdp-dark">ModelViewSet bilan CRUD + Swagger</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mt-4">Bu eng qisqa va kuchli variant. Swagger’da input ko‘rinishi uchun <b>create</b>, <b>update</b>, <b>partial_update</b> metodlariga <b>request_body</b> qo‘shamiz.</p>
           </div>
           <div class="grid lg:grid-cols-2 gap-8">
             <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
               <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('modelViewSetCode')"><i class="fas fa-copy"></i></button>
               <div class="px-5 py-3 border-b border-slate-800 text-white font-black">views.py</div>
-              <div class="p-4 code-wrap"><pre><code class="language-python" id="modelViewSetCode">from rest_framework.viewsets import ModelViewSet
+              <div class="p-4 code-wrap"><pre><code class="language-python" id="modelViewSetCode">from drf_yasg.utils import swagger_auto_schema
+from rest_framework.viewsets import ModelViewSet
 from .models import Student
 from .serializers import StudentSerializer
 
 class StudentModelViewSet(ModelViewSet):
     queryset = Student.objects.all()
-    serializer_class = StudentSerializer</code></pre></div>
+    serializer_class = StudentSerializer
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentlar ro&#x27;yxati&quot;,
+        responses={200: StudentSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Student yaratish&quot;,
+        request_body=StudentSerializer,
+        responses={201: StudentSerializer}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Bitta studentni olish&quot;,
+        responses={200: StudentSerializer}
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni to&#x27;liq yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni qisman yangilash&quot;,
+        request_body=StudentSerializer,
+        responses={200: StudentSerializer}
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary=&quot;Studentni o&#x27;chirish&quot;,
+        responses={204: &quot;O&#x27;chirildi&quot;}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)</code></pre></div>
             </div>
             <div class="bg-[#111827] rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
               <button class="copy-btn w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white" onclick="copyById('modelViewSetUrls')"><i class="fas fa-copy"></i></button>
