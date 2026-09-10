@@ -1,3 +1,7 @@
+<!-- Chosen Palette: PDP Junior Dark & Django Light Theme -->
+<!-- Application Structure Plan: Interactive presentation slider covering DRF Filtering, Search, and Pagination with integrated Swagger documentation examples for students. -->
+<!-- Visualization & Content Choices: Interactive code blocks with Highlight.js, copy-to-clipboard functionality, and dynamic step-by-step visual cards. NO SVG used. NO Mermaid JS used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 <!DOCTYPE html>
 
 <html lang="uz">
@@ -478,11 +482,21 @@ class Product(models.Model):
                         <div class="px-4 py-3 border-b border-slate-800 text-slate-300 font-mono text-sm">views.py</div>
                         <div class="p-3 code-wrap" style="max-height: 420px;"><pre><code class="language-python"
                                                                                          id="manualFilterCode">from rest_framework.generics import ListAPIView
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from .models import Product
 from .serializers import ProductSerializer
 
 class ProductListAPIView(ListAPIView):
     serializer_class = ProductSerializer
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('category', openapi.IN_QUERY, description="Kategoriya", type=openapi.TYPE_STRING)
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = Product.objects.all()
