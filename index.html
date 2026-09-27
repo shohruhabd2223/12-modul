@@ -51,6 +51,7 @@
       min-width: 150px;
     }
     .stat strong { display:block; font-size: 24px; margin-bottom: 6px; }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -90,6 +91,8 @@
     .btn:hover { transform: translateY(-2px); opacity: .95; }
     .btn.primary { background: var(--primary); color: #082f49; }
     .btn.secondary { background: var(--secondary); color: #052e16; }
+    .btn.warning { background: #f59e0b; color: #451a03; }
+    .btn.purple { background: #a855f7; color: #ffffff; }
     footer { margin-top: 26px; color: var(--muted); font-size: 14px; }
   </style>
 </head>
@@ -107,66 +110,121 @@
 
     <section class="grid">
       <article class="card">
-      <div class="badge">1-dars</div>
-      <h2>1-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="1-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="1-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">2-dars</div>
-      <h2>2-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="2-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="2-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">3-dars</div>
-      <h2>3-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="3-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="3-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">4-dars</div>
-      <h2>4-dars</h2>
-      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
-      <div class="actions"><a class="btn secondary" href="4-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">5-dars</div>
-      <h2>5-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="5-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="5-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">6-dars</div>
-      <h2>6-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="6-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="6-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">7-dars</div>
-      <h2>7-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="7-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="7-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">8-dars</div>
-      <h2>8-dars</h2>
-      <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
-      <div class="actions"><a class="btn primary" href="8-lesson/index.html">Dars versiyasi</a><a class="btn secondary" href="8-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">9-dars</div>
-      <h2>9-dars</h2>
-      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
-      <div class="actions"><a class="btn secondary" href="9-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">10-dars</div>
-      <h2>10-dars</h2>
-      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
-      <div class="actions"><a class="btn secondary" href="10-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">11-dars</div>
-      <h2>11-dars</h2>
-      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
-      <div class="actions"><a class="btn secondary" href="11-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article><article class="card">
-      <div class="badge">12-dars</div>
-      <h2>12-dars</h2>
-      <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
-      <div class="actions"><a class="btn secondary" href="12-lesson-mentor/index.html">Mentor versiyasi</a></div>
-    </article>
+        <div class="badge">1-dars</div>
+        <h2>1-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="1-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="1-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">2-dars</div>
+        <h2>2-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="2-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="2-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">3-dars</div>
+        <h2>3-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="3-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="3-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">4-dars</div>
+        <h2>4-dars</h2>
+        <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn secondary" href="4-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">5-dars</div>
+        <h2>5-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="5-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="5-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">6-dars</div>
+        <h2>6-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Email-verify, SMS-verify, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="6-lesson/index.html">Dars versiyasi</a>
+          <a class="btn warning" href="6-lesson/email-verify.html">Email-verify</a>
+          <a class="btn purple" href="6-lesson/sms-verify.html">SMS-verify</a>
+          <a class="btn secondary" href="6-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">7-dars</div>
+        <h2>7-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="7-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="7-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">8-dars</div>
+        <h2>8-dars</h2>
+        <p>Mavjud bo‘limlar: Dars versiyasi, Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn primary" href="8-lesson/index.html">Dars versiyasi</a>
+          <a class="btn secondary" href="8-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">9-dars</div>
+        <h2>9-dars</h2>
+        <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn secondary" href="9-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">10-dars</div>
+        <h2>10-dars</h2>
+        <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn secondary" href="10-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">11-dars</div>
+        <h2>11-dars</h2>
+        <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn secondary" href="11-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="badge">12-dars</div>
+        <h2>12-dars</h2>
+        <p>Mavjud bo‘limlar: Mentor versiyasi.</p>
+        <div class="actions">
+          <a class="btn secondary" href="12-lesson-mentor/index.html">Mentor versiyasi</a>
+        </div>
+      </article>
     </section>
 
     <footer>
