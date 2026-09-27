@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+
+<html lang="uz">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PDP Junior - 6-dars (davomi) — Emailga tasdiqlash kodi (OTP)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&amp;family=Fira+Code:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'pdp-cyan': '#00D1D1',
+            'pdp-dark': '#0F172A',
+            'django-green': '#0C4B33',
+            'django-light': '#44B78B',
+            'front-blue': '#38BDF8',
+            'rose-soft': '#FB7185',
+            'amber-soft': '#F59E0B',
+            'violet-soft': '#8B5CF6'
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body { font-family: 'Montserrat', sans-serif; background:#eef4f8; overflow:hidden; }
+    .font-mono, pre, code { font-family:'Fira Code', monospace; }
+    .slider-window { width:100%; height:calc(100vh - 80px); position:relative; overflow:hidden; }
+    .slides-wrapper { display:flex; width:100%; height:100%; transition:transform .7s cubic-bezier(.65,0,.35,1); }
+    .slide { min-width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 2rem 6rem; box-sizing:border-box; overflow-y:auto; overflow-x:hidden; }
+    .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background:#677381; border-radius:999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background:transparent; }
+    .pdp-logo-fixed { position:fixed; top:15px; left:24px; z-index:100; display:flex; align-items:center; gap:12px; }
+    .pdp-logo-circle { width:45px; height:45px; background:#00D1D1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .pdp-logo-circle div { width:28px; height:14px; background:#0F172A; border-radius:14px; display:flex; align-items:center; justify-content:center; }
+    .copy-btn { position:absolute; top:14px; right:14px; z-index:5; }
+    .copy-toast {
+      position:fixed; top:96px; left:50%; transform:translateX(-50%);
+      background:#44B78B; color:white; padding:10px 18px; border-radius:999px;
+      font-weight:700; box-shadow:0 10px 25px rgba(68,183,139,.25); opacity:0;
+      pointer-events:none; transition:opacity .25s; z-index:200;
+    }
+    .copy-toast.show { opacity:1; }
+    .code-wrap { max-height:430px; overflow:auto; }
+    .hljs { background:#111827 !important; border-radius:1rem; padding:1.25rem !important; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes pulseRing { 0% { transform:scale(.95); opacity:.9; } 100% { transform:scale(1.2); opacity:0; } }
+    @keyframes dataFlow { 0% { transform:translateX(-110%); opacity:0; } 50%{opacity:1;} 100%{ transform:translateX(110%); opacity:0; } }
+    @keyframes rotateSlow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes shineMove { 0%{left:-35%} 100%{left:120%} }
+    @keyframes blinkSoft { 0%,100%{opacity:1} 50%{opacity:.45} }
+    @keyframes scaleSoft { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    .animate-float { animation:float 3s ease-in-out infinite; }
+    .animate-bob { animation:bob 2.5s ease-in-out infinite; }
+    .rotate-slow { animation:rotateSlow 10s linear infinite; }
+    .pulse-ring { position:relative; }
+    .pulse-ring::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius:28px; animation:pulseRing 2.2s infinite; }
+    .status-shine { position:relative; overflow:hidden; }
+    .status-shine::after { content:''; position:absolute; top:0; bottom:0; width:25%; transform:skewX(-18deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); animation:shineMove 3s linear infinite; }
+    .flow-line { position:relative; overflow:hidden; }
+    .flow-line::before { content:''; position:absolute; left:-20%; top:50%; transform:translateY(-50%); width:28%; height:6px; border-radius:999px; background:linear-gradient(90deg, transparent, rgba(56,189,248,.95), transparent); animation:dataFlow 2.6s linear infinite; }
+    .blink-soft { animation:blinkSoft 1.3s ease-in-out infinite; }
+    .scale-soft { animation:scaleSoft 2.1s ease-in-out infinite; }
+    .hero-grid {
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.12) 1px, transparent 0);
+      background-size: 28px 28px;
+    }
+  
+    @keyframes pulseSpot { 0%,100%{transform:translate(-50%,-50%) scale(1); box-shadow:0 0 0 0 rgba(59,130,246,.35)} 70%{transform:translate(-50%,-50%) scale(1.06); box-shadow:0 0 0 18px rgba(59,130,246,0)} }
+    @keyframes floatCard { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes dashMove { to { stroke-dashoffset:-18; } }
+    .swagger-shot { position:relative; overflow:hidden; border-radius:28px; border:1px solid #dbeafe; background:linear-gradient(180deg,#f8fbff,#eef6ff); box-shadow:0 20px 45px rgba(15,23,42,.12); }
+    .swagger-shot img { display:block; width:100%; height:auto; }
+    .swagger-spot { position:absolute; width:18px; height:18px; border-radius:999px; background:#3b82f6; border:3px solid white; animation:pulseSpot 2s infinite; z-index:3; }
+    .swagger-spot.green { background:#10b981; }
+    .swagger-spot.yellow { background:#f59e0b; }
+    .swagger-spot.violet { background:#8b5cf6; }
+    .swagger-callout { position:absolute; z-index:4; background:rgba(15,23,42,.92); color:white; border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:10px 12px; width:190px; backdrop-filter: blur(8px); animation:floatCard 3s ease-in-out infinite; }
+    .swagger-callout .num { width:28px; height:28px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-weight:900; margin-right:8px; font-size:12px; color:#0f172a; }
+    .swagger-callout small { display:block; color:#cbd5e1; margin-top:4px; font-size:11px; line-height:1.3; }
+    .swagger-tag { position:absolute; top:16px; right:16px; z-index:5; background:rgba(15,23,42,.88); color:white; border:1px solid rgba(255,255,255,.1); padding:10px 14px; border-radius:999px; font-size:12px; font-weight:800; letter-spacing:.04em; }
+    .swagger-float-authorize { position:absolute; top:56px; right:22px; z-index:5; background:linear-gradient(90deg,#f59e0b,#fb7185); color:white; padding:10px 16px; border-radius:999px; font-weight:900; box-shadow:0 18px 38px rgba(251,113,133,.24); animation:floatCard 2.6s ease-in-out infinite; }
+    .swagger-connector { position:absolute; inset:0; pointer-events:none; z-index:2; }
+    .swagger-connector path { stroke:#60a5fa; stroke-width:3; fill:none; stroke-dasharray:8 10; animation:dashMove 1.2s linear infinite; opacity:.8; }
+
+
+    .lesson11-hero-card{background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);border:1px solid #e2e8f0;border-radius:30px;box-shadow:0 18px 45px rgba(15,23,42,.08)}
+    .lesson11-step{position:relative;background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:18px 18px 18px 72px;box-shadow:0 10px 25px rgba(15,23,42,.05);transition:transform .25s ease, box-shadow .25s ease}
+    .lesson11-step:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(15,23,42,.08)}
+    .lesson11-step .num{position:absolute;left:18px;top:18px;width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:15px}
+    .lesson11-note{border-radius:22px;padding:16px 18px;border:1px solid #e5e7eb;background:#fff;box-shadow:0 8px 20px rgba(15,23,42,.04)}
+    .lesson11-mini{background:#0f172a;color:#fff;border-radius:24px;border:1px solid #1e293b;overflow:hidden;box-shadow:0 16px 34px rgba(15,23,42,.14)}
+    .swagger-soft-label{position:absolute;z-index:4;background:rgba(255,255,255,.95);border:1px solid #dbeafe;border-radius:16px;padding:10px 12px;box-shadow:0 12px 24px rgba(15,23,42,.08);backdrop-filter:blur(6px);font-size:12px;font-weight:700;color:#0f172a;max-width:180px;line-height:1.35}
+    .swagger-soft-label .pin{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;color:#fff;font-size:12px;font-weight:900;margin-right:8px}
+    .swagger-soft-bar{position:absolute;left:14px;right:14px;bottom:14px;z-index:4;background:rgba(15,23,42,.9);color:#fff;border-radius:18px;padding:12px 14px;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(15,23,42,.18)}
+
+
+    @keyframes l11Float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes l11Pulse { 0%,100%{transform:translate(-50%,-50%) scale(1); box-shadow:0 0 0 0 rgba(59,130,246,.28)} 70%{transform:translate(-50%,-50%) scale(1.08); box-shadow:0 0 0 16px rgba(59,130,246,0)} }
+    @keyframes l11Beam { 0%{transform:translateX(-120%);opacity:0} 40%{opacity:1} 100%{transform:translateX(160%);opacity:0} }
+    .lesson11-shell{background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);border:1px solid #e5edf6;border-radius:32px;box-shadow:0 18px 48px rgba(15,23,42,.08)}
+    .lesson11-shot{position:relative;border-radius:28px;overflow:hidden;border:1px solid #dbeafe;background:white;box-shadow:0 14px 32px rgba(15,23,42,.10)}
+    .lesson11-shot img{display:block;width:100%;height:auto}
+    .lesson11-marker{position:absolute;width:18px;height:18px;border-radius:999px;background:#3b82f6;border:3px solid white;z-index:3;animation:l11Pulse 2.2s infinite}
+    .lesson11-marker.green{background:#10b981}
+    .lesson11-tag{position:absolute;z-index:4;background:rgba(255,255,255,.96);border:1px solid #dbeafe;border-radius:18px;padding:12px 14px;box-shadow:0 12px 28px rgba(15,23,42,.08);max-width:200px;font-size:12px;line-height:1.42;color:#0f172a}
+    .lesson11-tag .head{display:flex;align-items:center;gap:8px;font-weight:900;margin-bottom:4px}
+    .lesson11-tag .badge{width:26px;height:26px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:900}
+    .lesson11-flow{position:relative;overflow:hidden;background:#0f172a;color:white;border-radius:22px;padding:14px 16px;border:1px solid #1e293b}
+    .lesson11-flow::after{content:'';position:absolute;top:0;bottom:0;left:-30%;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:l11Beam 3.4s linear infinite}
+    .lesson11-step{position:relative;background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:18px 18px 18px 76px;box-shadow:0 10px 22px rgba(15,23,42,.05);transition:transform .25s ease,box-shadow .25s ease;min-height:128px}
+    .lesson11-step:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(15,23,42,.08)}
+    .lesson11-step .n{position:absolute;left:18px;top:18px;width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px}
+    .lesson11-mini-card{background:#fff;border:1px solid #e5e7eb;border-radius:24px;box-shadow:0 10px 22px rgba(15,23,42,.05);overflow:hidden}
+    .lesson11-mini-card.dark{background:#0f172a;color:white;border-color:#1e293b;box-shadow:0 18px 34px rgba(15,23,42,.14)}
+    .lesson11-tip{border-radius:20px;padding:16px 18px;border:1px solid #e5e7eb;background:#fff;box-shadow:0 8px 20px rgba(15,23,42,.04)}
+    .lesson11-soft-float{animation:l11Float 2.8s ease-in-out infinite}
+
+/* Integrated additions from lesson 7 */
+    @keyframes glowMove { 0%{transform:translateX(-120%);opacity:0} 50%{opacity:.9} 100%{transform:translateX(120%);opacity:0} }
+    @keyframes tiltCard { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-1.5deg)} }
+    @keyframes pulseSoft { 0%,100%{box-shadow:0 0 0 0 rgba(68,183,139,.35)} 70%{box-shadow:0 0 0 16px rgba(68,183,139,0)} }
+    @keyframes statusShine { 0%{left:-40%} 100%{left:120%} }
+    .animate-bob { animation:bob 2.4s ease-in-out infinite; }
+    .avatar-chip{ animation:bob 2.8s ease-in-out infinite; }
+    .scan-beam{ position:relative; overflow:hidden; }
+    .scan-beam::after{ content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent); animation:glowMove 2.2s linear infinite; }
+    .tilt-card{ animation:tiltCard 4s ease-in-out infinite; }
+    .pulse-soft{ animation:pulseSoft 2.2s infinite; }
+    .status-card{ position:relative; overflow:hidden; }
+    .status-card::after{ content:''; position:absolute; top:0; bottom:0; width:28%; transform:skewX(-20deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent); animation:statusShine 3.4s linear infinite; }
+    .ring-card { position:relative; }
+    .ring-card::after { content:''; position:absolute; inset:-8px; border:2px solid rgba(68,183,139,.22); border-radius:28px; animation:pulseRing 2.2s infinite; }
+    .access-lane{ position:relative; overflow:hidden; }
+    .access-lane::before{ content:''; position:absolute; left:-15%; top:50%; transform:translateY(-50%); width:30%; height:6px; border-radius:999px; background:linear-gradient(90deg, transparent, rgba(56,189,248,.9), transparent); animation:glowMove 2.8s linear infinite; }
+  
+    .lesson13-hero-wrap{max-width:72rem;margin:0 auto;text-align:center;position:relative;z-index:10;padding-top:2.5rem}
+    .lesson13-badge{display:inline-flex;align-items:center;gap:.7rem;background:rgba(255,255,255,.10);padding:.65rem 1rem;border-radius:999px;font-weight:900;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.1rem}
+    .lesson13-title{font-size:clamp(2.3rem,4.6vw,4.9rem);line-height:1.06;font-weight:900;letter-spacing:-.04em;margin-bottom:1rem}
+    .lesson13-sub{max-width:52rem;margin:1rem auto 0;color:#cbd5e1;font-size:1.02rem;line-height:1.7}
+    .lesson13-mini-flow{display:flex;flex-wrap:wrap;gap:.8rem;justify-content:center;margin-top:1.8rem}
+    .lesson13-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:.8rem 1rem;border-radius:1rem;font-weight:800;font-size:.95rem}
+    .slide14-left-panel{background:linear-gradient(180deg,#0f172a 0%, #0b1731 100%);border:1px solid rgba(96,165,250,.18);color:white;border-radius:28px;padding:1.5rem;min-height:590px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 40px rgba(15,23,42,.14)}
+    .slide14-key-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .slide14-key{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:1.2rem 1rem;text-align:center}
+    .slide14-key .icon{width:74px;height:74px;border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+    .slide14-note{margin-top:1rem;background:rgba(255,255,255,.04);border:1px solid rgba(147,197,253,.18);border-radius:24px;padding:1.2rem 1.3rem}
+    .slide14-code{min-height:590px;display:flex;flex-direction:column}
+    .slide14-code .code-wrap{flex:1;overflow:auto}
+    .slide16-grid{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:2rem;align-items:stretch}
+    .slide16-code{min-height:560px;display:flex;flex-direction:column}
+    .slide16-code .code-wrap{flex:1;overflow:auto}
+    .slide16-highlight{border-radius:28px;padding:1.45rem 1.35rem;border:1px solid #d1fae5;background:linear-gradient(180deg,#ecfdf5 0%,#ffffff 100%);box-shadow:0 14px 30px rgba(15,23,42,.05)}
+    .slide16-sidecard{border-radius:26px;padding:1.35rem;border:1px solid #dbeafe;background:#fff;box-shadow:0 10px 24px rgba(15,23,42,.05)}
+    .slide22-shell{background:linear-gradient(180deg,#0f172a 0%,#081121 100%);border:1px solid rgba(96,165,250,.18);border-radius:34px;padding:2rem;box-shadow:0 22px 50px rgba(15,23,42,.22)}
+    .slide22-repeat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .slide22-repeat-card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);border-radius:26px;padding:1.4rem 1.2rem;text-align:center;color:white;overflow:hidden}
+    .slide22-repeat-card:after{content:'';position:absolute;inset:auto -20% -70% auto;width:140px;height:140px;background:rgba(96,165,250,.18);filter:blur(20px);border-radius:999px}
+    .slide22-flow-chip{display:inline-flex;align-items:center;gap:.55rem;padding:.85rem 1rem;border-radius:999px;font-weight:800;border:1px solid rgba(255,255,255,.10)}
+    .slide22-task{background:#fff;border:1px solid #e5e7eb;border-radius:24px;padding:1rem 1.1rem;box-shadow:0 10px 22px rgba(15,23,42,.05)}
+    @media (max-width:1024px){.slide14-key-grid{grid-template-columns:1fr}.slide16-grid{grid-template-columns:1fr}.slide22-repeat-grid{grid-template-columns:1fr}.slide14-left-panel,.slide14-code,.slide16-code{min-height:auto}}
+
+    .slide14-left-panel{min-height:640px;padding:1.45rem 1.35rem}
+    .slide14-key-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.95rem;align-items:stretch}
+    .slide14-key{padding:1rem .7rem;min-height:205px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
+    .slide14-key .icon{width:66px;height:66px;margin-bottom:.9rem;flex:0 0 auto}
+    .slide14-key > div:nth-child(2){font-size:1.32rem !important;line-height:1.08 !important;min-height:3rem;display:flex;align-items:center;justify-content:center;text-align:center;overflow-wrap:anywhere;word-break:break-word;letter-spacing:-.02em;width:100%}
+    .slide14-key > div:nth-child(3){font-size:.94rem;line-height:1.45;max-width:11rem;margin-inline:auto}
+    .slide14-code{min-height:640px}
+    .slide14-code .code-wrap{flex:1;overflow-y:auto;overflow-x:hidden}
+    .slide14-code pre,.slide14-code code{white-space:pre-wrap !important;word-break:break-word;overflow-wrap:anywhere}
+    .slide14-code .hljs{min-height:100%;padding:1rem !important}
+    .slide16-grid{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:1.75rem}
+    .slide16-grid > div:first-child{display:flex;flex-direction:column;justify-content:space-between;min-height:620px}
+    .slide16-code{min-height:620px}
+    .slide16-code .code-wrap{flex:1;overflow-y:auto;overflow-x:hidden}
+    .slide16-code pre,.slide16-code code{white-space:pre-wrap !important;word-break:break-word;overflow-wrap:anywhere}
+    .slide16-code .hljs{min-height:100%;padding:1rem !important}
+    .slide18-layout{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr);gap:2rem;align-items:stretch}
+    .slide18-code{min-height:500px;display:flex;flex-direction:column}
+    .slide18-code .code-wrap{flex:1;overflow-y:auto;overflow-x:hidden}
+    .slide18-code pre,.slide18-code code{white-space:pre-wrap !important;word-break:break-word;overflow-wrap:anywhere}
+    .slide18-code .hljs{min-height:100%;padding:1rem !important}
+    .slide18-right{display:flex;flex-direction:column;gap:1rem}
+    .slide18-card{border-radius:24px;padding:1.1rem 1.15rem;box-shadow:0 10px 22px rgba(15,23,42,.05);border:1px solid #e5e7eb;background:#fff}
+    .slide18-card .method{display:inline-flex;align-items:center;justify-content:center;min-width:72px;padding:.35rem .75rem;border-radius:999px;font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#fff;margin-bottom:.75rem}
+    .slide18-card .endpoint{font-size:1.25rem;font-weight:900;color:#0f172a;margin-bottom:.35rem}
+    .slide18-card .desc{font-size:.94rem;line-height:1.55;color:#475569}
+    @media (max-width:1024px){.slide18-layout{grid-template-columns:1fr}.slide18-code{min-height:auto}.slide16-grid>div:first-child{min-height:auto}}
+
+    .slide14-grid-fix{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:1.5rem;align-items:start}
+    .slide14-left-panel{min-height:auto !important;height:auto !important;padding:1.35rem 1.2rem}
+    .slide14-key-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem;align-items:stretch}
+    .slide14-key{min-height:190px;padding:1rem .65rem;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}
+    .slide14-key .icon{width:60px;height:60px;margin-bottom:.85rem}
+    .slide14-label{font-size:1rem;line-height:1.08;font-weight:900;min-height:2.6rem;display:flex;align-items:center;justify-content:center;text-align:center;word-break:break-word;overflow-wrap:anywhere;width:100%}
+    .slide14-desc{font-size:.92rem;line-height:1.4;color:#cbd5e1;text-align:center;max-width:9rem;margin-inline:auto}
+    .slide14-code{min-height:auto !important;height:auto !important;display:block}
+    .slide14-code .code-wrap{max-height:none !important;overflow-y:visible !important;overflow-x:hidden !important}
+    .slide14-code pre,.slide14-code code{white-space:pre-wrap !important;word-break:break-word !important;overflow-wrap:anywhere !important}
+    .slide14-code .hljs{padding:1rem !important}
+    .slide16-grid{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:1.6rem;align-items:start}
+    .slide16-grid > div:first-child{display:flex;flex-direction:column;gap:1rem}
+    .slide16-code{min-height:auto !important;height:auto !important;display:block}
+    .slide16-code .code-wrap{max-height:none !important;overflow-y:visible !important;overflow-x:hidden !important}
+    .slide16-code pre,.slide16-code code{white-space:pre-wrap !important;word-break:break-word !important;overflow-wrap:anywhere !important}
+    .slide16-code .hljs{padding:1rem !important}
+    .slide18-layout{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:1.5rem;align-items:start}
+    .slide18-code{min-height:auto !important;height:auto !important;display:block}
+    .slide18-code .code-wrap{max-height:none !important;overflow-y:visible !important;overflow-x:hidden !important}
+    .slide18-code pre,.slide18-code code{white-space:pre-wrap !important;word-break:break-word !important;overflow-wrap:anywhere !important}
+    .slide18-code .hljs{padding:1rem !important}
+    .slide18-right{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;align-content:start}
+    .slide18-card{min-height:132px;padding:1rem 1rem;border-radius:22px}
+    .slide18-card.full{grid-column:1 / -1;min-height:118px}
+    .slide18-card .endpoint{font-size:1.08rem;line-height:1.2}
+    .slide18-card .desc{font-size:.88rem;line-height:1.48}
+    .lesson6-end-wrap{max-width:72rem;margin:0 auto;text-align:center;position:relative;z-index:10}
+    .lesson6-end-icon{width:112px;height:112px;border-radius:32px;display:flex;align-items:center;justify-content:center;background:rgba(68,183,139,.12);border:1px solid rgba(68,183,139,.24);box-shadow:0 18px 40px rgba(15,23,42,.16)}
+    .lesson6-end-icon.alt{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.22)}
+    @media (max-width:1024px){.slide14-grid-fix,.slide16-grid,.slide18-layout{grid-template-columns:1fr}.slide18-right{grid-template-columns:1fr}.slide18-card.full{grid-column:auto}}
+
+    /* ===== v2: animatsion oqim komponentlari ===== */
+    .fd{background:linear-gradient(180deg,#0f172a 0%,#0b1325 100%);border:1px solid #1e293b;border-radius:30px;padding:22px;color:#fff;box-shadow:0 22px 50px rgba(15,23,42,.22);position:relative;overflow:hidden}
+    .fd::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.07) 1px,transparent 0);background-size:24px 24px;pointer-events:none}
+    .fd > *{position:relative}
+    .fd-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+    .fd-title{font-weight:900;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#7dd3fc}
+    .fd-btns{display:flex;gap:8px}
+    .fd-btns button{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#e2e8f0;font-size:13px}
+    .fd-btns button:hover{background:rgba(255,255,255,.16)}
+    .fd-stage{position:relative;height:190px}
+    .fd-track{position:absolute;left:9%;right:9%;top:44px;height:4px;border-radius:99px;background:repeating-linear-gradient(90deg,#334155 0 10px,transparent 10px 18px);background-size:18px 4px;animation:fdTrack .9s linear infinite}
+    @keyframes fdTrack{to{background-position:18px 0}}
+    .fd-node{position:absolute;top:0;transform:translateX(-50%);text-align:center;width:130px;z-index:2}
+    .fd-node .ic{width:88px;height:88px;border-radius:26px;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:34px;background:#111c33;border:2px solid rgba(255,255,255,.12);transition:all .35s ease}
+    .fd-node .nm{font-weight:900;font-size:14px;margin-top:8px;color:#e2e8f0}
+    .fd-node .sb{font-size:11px;color:#94a3b8;font-weight:600}
+    .fd-node.hl .ic{transform:scale(1.12);border-color:var(--nc,#44B78B);box-shadow:0 0 0 7px color-mix(in srgb,var(--nc,#44B78B) 22%,transparent),0 0 34px color-mix(in srgb,var(--nc,#44B78B) 55%,transparent)}
+    .fd-packet{position:absolute;top:140px;left:10%;transform:translateX(-50%);transition:left 1.15s cubic-bezier(.65,0,.35,1),opacity .3s;background:var(--pc,#38BDF8);color:#0f172a;font:700 13px 'Fira Code',monospace;padding:8px 13px;border-radius:12px;white-space:nowrap;max-width:min(430px,70vw);overflow:hidden;text-overflow:ellipsis;box-shadow:0 12px 28px rgba(0,0,0,.4),0 0 22px color-mix(in srgb,var(--pc,#38BDF8) 55%,transparent);z-index:3;opacity:0}
+    .fd-packet::before{content:'';position:absolute;left:50%;top:-7px;transform:translateX(-50%);border:7px solid transparent;border-top:0;border-bottom-color:var(--pc,#38BDF8)}
+    .fd-steps{display:grid;gap:8px;margin-top:10px}
+    .fd-steps.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .fd-steps.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .fd-step{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:13.5px;line-height:1.45;color:#94a3b8;cursor:pointer;transition:all .3s ease}
+    .fd-step .k{width:26px;height:26px;border-radius:9px;background:#1e293b;color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+    .fd-step.done{color:#cbd5e1}
+    .fd-step.done .k{background:#166534}
+    .fd-step.on{background:rgba(56,189,248,.13);border-color:rgba(56,189,248,.55);color:#fff;transform:translateX(4px)}
+    .fd-step.on .k{background:#38BDF8;color:#0f172a}
+    .fd-step b{color:#fff}
+    .fd-step code,.fd code{font-family:'Fira Code',monospace;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:6px;font-size:12px;color:#fde68a}
+    .fd-bar{height:4px;background:#1e293b;border-radius:99px;overflow:hidden;margin-top:12px}
+    .fd-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#44B78B,#38BDF8)}
+    .fd-group{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin:6px 2px 2px}
+    [data-show]{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+    [data-show].vis{opacity:1;transform:none;pointer-events:auto}
+    .hide-off[data-show]:not(.vis){display:none}
+
+    /* umumiy yorqin kartalar */
+    .glow-card{position:relative;border-radius:26px;padding:20px;background:#fff;border:1px solid #e5e7eb;box-shadow:0 12px 28px rgba(15,23,42,.06);transition:transform .25s ease,box-shadow .25s ease;overflow:hidden}
+    .glow-card:hover{transform:translateY(-5px);box-shadow:0 22px 40px rgba(15,23,42,.12)}
+    .glow-card .gi{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin-bottom:12px}
+    .pop-in{animation:popIn .7s cubic-bezier(.2,.9,.3,1.3) both}
+    @keyframes popIn{from{opacity:0;transform:translateY(18px) scale(.92)}to{opacity:1;transform:none}}
+
+    .d1{animation-delay:.1s}.d2{animation-delay:.25s}.d3{animation-delay:.4s}.d4{animation-delay:.55s}.d5{animation-delay:.7s}.d6{animation-delay:.85s}
+    .tag-chip{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem .9rem;border-radius:999px;font-weight:900;font-size:.8rem;letter-spacing:.06em}
+    .mono{font-family:'Fira Code',monospace}
+    .dark-box{background:#0f172a;color:#e2e8f0;border:1px solid #1e293b;border-radius:24px}
+    .code-card{background:#111827;border:1px solid #1f2937;border-radius:26px;overflow:hidden;color:#fff;position:relative;box-shadow:0 18px 40px rgba(15,23,42,.18)}
+    .code-card .hd{padding:14px 18px;border-bottom:1px solid #1f2937;display:flex;align-items:center;gap:10px}
+    .code-card .hd .dots{display:flex;gap:6px}.code-card .hd .dots i{width:10px;height:10px;border-radius:99px;display:block}
+    .code-card .hd .fn{font-weight:900;font-size:14px}
+    .code-card .hd .sub{font-size:11px;color:#94a3b8;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-left:auto;margin-right:44px}
+    .code-card pre{margin:0}
+    .code-card .copy-btn{top:9px;right:10px;width:34px;height:34px;border-radius:10px}
+    .code-card .code-wrap{max-height:none}
+    .code-card .hljs{border-radius:0;padding:1rem 1.1rem !important;font-size:13.5px;line-height:1.6}
+
+    /* 2-bet: darvoza */
+    .gate-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+    .gate-legend div{border-radius:18px;padding:12px 14px;font-size:13px;line-height:1.4}
+
+    /* Base64 jonli misol */
+    .b64-box input{background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:10px 12px;font-family:'Fira Code',monospace;font-size:14px;width:100%;outline:none}
+    .b64-box input:focus{border-color:#38BDF8}
+    .b64-out{font-family:'Fira Code',monospace;font-size:14px;background:#0f172a;color:#fde68a;border-radius:14px;padding:12px 14px;word-break:break-all}
+
+    /* JWT rangli token */
+    .jwt-str{font-family:'Fira Code',monospace;font-size:15px;line-height:1.7;word-break:break-all;background:#0b1220;border:1px solid #1e293b;border-radius:18px;padding:16px 18px}
+    .jwt-str .h{color:#fb7185}.jwt-str .p{color:#c084fc}.jwt-str .s{color:#22d3ee}.jwt-str .dot{color:#fff;font-weight:900}
+    .jwt-str span.part{transition:all .3s;border-radius:6px;padding:0 2px}
+    .jwt-str span.part.lit{background:rgba(255,255,255,.12);box-shadow:0 0 18px currentColor}
+    .jwt-dec{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+    .jwt-dec > div{border-radius:18px;padding:14px;font-size:12.5px;border:1px solid;transition:all .3s}
+    .jwt-dec pre{font-family:'Fira Code',monospace;white-space:pre-wrap;margin-top:6px;font-size:12px;line-height:1.5}
+    .jwt-dec > div.lit{transform:translateY(-4px) scale(1.02);box-shadow:0 16px 32px rgba(0,0,0,.35)}
+
+    /* DB hisoblagich (Token vs JWT) */
+    .race{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .race-lane{border-radius:22px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+    .race-track{position:relative;height:46px;margin:10px 0;border-radius:14px;background:rgba(255,255,255,.05);overflow:hidden}
+    .race-dot{position:absolute;top:11px;left:4px;width:24px;height:24px;border-radius:99px;animation:raceGo 2.4s linear infinite}
+    @keyframes raceGo{0%{left:4%}100%{left:88%}}
+    .race-db{position:absolute;right:10px;top:8px;font-size:22px}
+    .race-count{font:900 28px 'Fira Code',monospace}
+
+    /* Swagger mock */
+    .sw{background:#fff;border-radius:22px;overflow:hidden;border:1px solid #dbe3ea;box-shadow:0 18px 40px rgba(15,23,42,.14);position:relative;font-family:Arial,Helvetica,sans-serif;color:#3b4151}
+    .sw-top{background:#1b1b1b;padding:10px 16px;display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:14px}
+    .sw-top .lg{width:26px;height:26px;border-radius:99px;background:#85ea2d;color:#1b1b1b;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}
+    .sw-info{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
+    .sw-info h4{font-size:20px;font-weight:700;color:#3b4151}
+    .sw-info h4 small{font-size:10px;background:#7d8492;color:#fff;border-radius:57px;padding:2px 6px;vertical-align:super;margin-left:4px}
+    .sw-auth{border:2px solid #49cc90;color:#49cc90;background:#fff;padding:6px 14px;border-radius:5px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;transition:all .3s}
+    .sw-auth.pulse{animation:swPulse 1s ease-in-out infinite}
+    @keyframes swPulse{0%,100%{box-shadow:0 0 0 0 rgba(73,204,144,.6)}60%{box-shadow:0 0 0 10px rgba(73,204,144,0)}}
+    .sw-body{padding:10px 14px 14px}
+    .sw-op{display:flex;align-items:center;gap:10px;border-radius:5px;padding:6px 8px;margin:7px 0;border:1px solid;font-size:13px;transition:all .3s}
+    .sw-op .m{min-width:64px;text-align:center;color:#fff;font-weight:700;border-radius:3px;padding:5px 0;font-size:12px}
+    .sw-op .pth{font-family:'Fira Code',monospace;font-weight:700;color:#3b4151}
+    .sw-op .lock{margin-left:auto;color:#999;font-size:14px}
+    .sw-op.post{background:rgba(73,204,144,.1);border-color:#49cc90}.sw-op.post .m{background:#49cc90}
+    .sw-op.get{background:rgba(97,175,254,.1);border-color:#61affe}.sw-op.get .m{background:#61affe}
+    .sw-op.focus{box-shadow:0 0 0 3px rgba(251,191,36,.7)}
+    .sw-panel{background:#fafafa;border:1px solid #e5e7eb;border-radius:6px;padding:10px;margin:4px 0 8px;font-size:12px}
+    .sw-panel pre{background:#333;color:#fff;border-radius:4px;padding:8px 10px;font-family:'Fira Code',monospace;font-size:11.5px;white-space:pre-wrap;word-break:break-all;margin-top:4px}
+    .sw-exec{display:inline-block;background:#4990e2;color:#fff;border-radius:4px;padding:5px 16px;font-weight:700;font-size:12px;margin-top:6px}
+    .sw-code{display:inline-block;font-weight:700;border-radius:4px;padding:1px 6px;color:#fff;font-size:11px}
+    .sw-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:10}
+    .sw-modal{background:#fff;border-radius:6px;width:min(420px,88%);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+    .sw-modal .t{padding:12px 16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;display:flex;justify-content:space-between}
+    .sw-modal .c{padding:14px 16px;font-size:13px;line-height:1.7}
+    .sw-modal .inp{border:1px solid #d9d9d9;border-radius:4px;padding:7px 9px;font-family:'Fira Code',monospace;font-size:12px;min-height:34px;margin-top:4px;word-break:break-all;background:#fff}
+    .sw-modal .inp.typing::after{content:'|';animation:blinkSoft .8s infinite;margin-left:1px}
+    .sw-modal .bt{display:flex;gap:8px;padding:0 16px 14px}
+    .sw-modal .bt span{border:2px solid #49cc90;color:#49cc90;border-radius:4px;padding:4px 14px;font-weight:700;font-size:12px}
+    .sw-modal .bt span.grey{border-color:#888;color:#888}
+    .sw-cursor{position:absolute;z-index:12;font-size:22px;color:#0f172a;filter:drop-shadow(0 2px 3px rgba(255,255,255,.9));transition:left .9s cubic-bezier(.65,0,.35,1),top .9s cubic-bezier(.65,0,.35,1);pointer-events:none}
+
+    /* Custom user: parol hash animatsiyasi */
+    .hash-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .hash-pill{font-family:'Fira Code',monospace;font-size:13px;border-radius:12px;padding:8px 12px}
+    .hash-arrow{animation:hashArr 1.4s ease-in-out infinite}
+    @keyframes hashArr{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(6px);opacity:1}}
+    .morph{position:relative;height:44px}
+    .morph span{position:absolute;inset:0;display:flex;align-items:center;gap:10px;border-radius:12px;padding:0 12px;font-weight:800;font-size:14px}
+    .morph .a{background:rgba(251,113,133,.15);color:#fda4af;animation:morphA 5s infinite}
+    .morph .b{background:rgba(74,222,128,.15);color:#86efac;animation:morphB 5s infinite}
+    @keyframes morphA{0%,40%{opacity:1;transform:none}50%,90%{opacity:0;transform:translateY(-10px)}100%{opacity:1}}
+    @keyframes morphB{0%,40%{opacity:0;transform:translateY(10px)}50%,90%{opacity:1;transform:none}100%{opacity:0}}
+
+    /* URL xaritasi */
+    .route{display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr) 44px minmax(0,.9fr);align-items:center;gap:6px;padding:10px;border-radius:18px;border:1px solid #e5e7eb;background:#fff;transition:all .35s;cursor:pointer}
+    .route .p{font-family:'Fira Code',monospace;font-weight:700;font-size:13px;border-radius:12px;padding:8px 10px;text-align:center}
+    .route .ar{height:3px;border-radius:99px;background:repeating-linear-gradient(90deg,#94a3b8 0 6px,transparent 6px 11px);background-size:11px 3px}
+    .route.on{border-color:#38BDF8;box-shadow:0 0 0 4px rgba(56,189,248,.18),0 16px 30px rgba(15,23,42,.1);transform:scale(1.02)}
+    .route.on .ar{background:repeating-linear-gradient(90deg,#0ea5e9 0 6px,transparent 6px 11px);background-size:11px 3px;animation:fdTrack .6s linear infinite}
+    .route.done{opacity:.75}
+
+    /* Postman uslubidagi panel */
+    .pm{background:#0f172a;border:1px solid #1e293b;border-radius:24px;overflow:hidden;color:#e2e8f0}
+    .pm-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #1e293b;font-family:'Fira Code',monospace;font-size:13px}
+    .pm-m{font-weight:900;border-radius:8px;padding:3px 9px;color:#0f172a}
+    .pm-sec{padding:12px 14px;font-family:'Fira Code',monospace;font-size:12.5px;white-space:pre-wrap;line-height:1.55}
+    .pm-lbl{font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b;margin-bottom:4px}
+
+    /* Xatolar kartasi */
+    .bug{border-radius:26px;overflow:hidden;border:1px solid #e5e7eb;background:#fff;box-shadow:0 12px 26px rgba(15,23,42,.06);transition:all .35s}
+    .bug .err{background:#1f0f14;color:#fda4af;font-family:'Fira Code',monospace;font-size:12.5px;padding:12px 14px;min-height:62px;position:relative}
+    .bug .err::after{content:'▍';animation:blinkSoft .8s infinite;color:#fb7185}
+    .bug .bd{padding:14px 16px;font-size:13.5px;line-height:1.5;color:#475569}
+    .bug .fix{margin-top:8px;background:#ecfdf5;border:1px solid #bbf7d0;color:#065f46;border-radius:14px;padding:9px 11px;font-size:13px}
+    .bug.on{transform:translateY(-6px) scale(1.02);border-color:#fb7185;box-shadow:0 0 0 4px rgba(251,113,133,.18),0 24px 44px rgba(15,23,42,.14)}
+
+    /* Mustaqil ish kartalari */
+    .mission{border-radius:24px;padding:16px 16px 16px 64px;position:relative;background:#fff;border:1px solid #e5e7eb;box-shadow:0 10px 22px rgba(15,23,42,.05);cursor:pointer;transition:all .25s;user-select:none}
+    .mission:hover{transform:translateY(-3px)}
+    .mission .n{position:absolute;left:14px;top:16px;width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
+    .mission .ck{position:absolute;right:14px;top:14px;width:28px;height:28px;border-radius:9px;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;color:transparent;transition:all .25s}
+    .mission.ok{background:#f0fdf4;border-color:#86efac}
+    .mission.ok .ck{background:#22c55e;border-color:#22c55e;color:#fff}
+    .mission h4{font-weight:900;color:#0f172a;font-size:16px;margin-bottom:4px;padding-right:34px}
+    .mission p{font-size:13px;color:#475569;line-height:1.5}
+    .mission code{font-family:'Fira Code',monospace;font-size:12px;background:#f1f5f9;border-radius:6px;padding:1px 5px;color:#0f172a}
+    .expect{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;font-size:13px}
+    .expect .st{font-family:'Fira Code',monospace;font-weight:900;border-radius:8px;padding:3px 8px;text-align:center}
+    .progress-ring{font-weight:900}
+
+    /* Uyga vazifa yo'l xaritasi */
+    .road{position:relative;padding:18px 8px 6px}
+    .road-line{position:absolute;left:5%;right:5%;top:52px;height:6px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+    .road-line i{position:absolute;inset:0;width:30%;background:linear-gradient(90deg,transparent,#38BDF8,#44B78B,transparent);animation:roadRun 3.2s linear infinite}
+    @keyframes roadRun{0%{left:-30%}100%{left:100%}}
+    .road-pts{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
+    .road-pt .c{width:68px;height:68px;border-radius:22px;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:24px;background:#111c33;border:2px solid rgba(255,255,255,.14);animation:roadPop 7s infinite}
+    .road-pt .l{font-weight:900;font-size:12.5px;margin-top:8px;color:#e2e8f0}
+    .road-pt .s{font-size:11px;color:#94a3b8;font-family:'Fira Code',monospace}
+    @keyframes roadPop{0%,8%{transform:none;border-color:rgba(255,255,255,.14)}4%{transform:scale(1.18);border-color:#44B78B;box-shadow:0 0 26px rgba(68,183,139,.6)}}
+    .lap{border-radius:24px;padding:16px;text-align:center;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);position:relative;overflow:hidden}
+    .lap .big{font-size:40px;font-weight:900;line-height:1}
+    .zipname{font-family:'Fira Code',monospace;font-size:12px;background:rgba(0,0,0,.3);border-radius:10px;padding:6px 8px;margin-top:8px;color:#fde68a;word-break:break-all}
+
+    @media (max-width:1024px){
+      .fd-steps.cols2,.fd-steps.cols3,.gate-legend,.jwt-dec,.race{grid-template-columns:1fr}
+      .fd-node{width:92px}.fd-node .ic{width:60px;height:60px;font-size:24px;border-radius:18px}.fd-node .nm{font-size:12px}.fd-node .sb{display:none}
+      .fd-track{top:30px}.fd-packet{top:108px;font-size:11px}
+      .road-pts{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .route{grid-template-columns:1fr;text-align:center}.route .ar{display:none}
+    }
+    .sw-op.lit{box-shadow:0 0 0 3px rgba(251,191,36,.85)}
+    .sw-auth.lit{animation:swPulse 1s ease-in-out infinite;background:#49cc90;color:#fff}
+    .acc-hl{transition:all .3s;border-radius:3px}
+    .acc-hl.lit{background:#fde047;color:#111;padding:0 3px}
+    @keyframes fillBar{0%{width:0}60%,100%{width:100%}}
+    .slide:not(.is-active) .pop-in{animation:none}
+    .door{border-radius:24px;padding:16px 18px;background:#fff;border:2px solid #e5e7eb;transition:all .35s;cursor:pointer}
+    .door .dico{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex:none}
+    .door.on{border-color:var(--dc);box-shadow:0 0 0 5px color-mix(in srgb,var(--dc) 18%,transparent),0 18px 36px rgba(15,23,42,.12);transform:translateX(6px)}
+    .door.on .dico{animation:scaleSoft 1s ease-in-out infinite}
+    .bug{cursor:pointer}
+    .jwt-dec > div{cursor:pointer}
+    .code-card pre,.code-card code{white-space:pre-wrap !important;word-break:break-word;overflow-wrap:anywhere}
+
+    /* ===== email tasdiqlash darsi uchun qo'shimcha ===== */
+    .otp{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .otp span{width:52px;height:64px;border-radius:14px;background:#0b1220;border:2px solid #334155;display:flex;align-items:center;justify-content:center;font:900 26px 'Fira Code',monospace;color:#7dd3fc;animation:otpPop .5s both}
+    @keyframes otpPop{from{opacity:0;transform:translateY(14px) scale(.8)}to{opacity:1;transform:none}}
+    .otp span:nth-child(1){animation-delay:.05s}.otp span:nth-child(2){animation-delay:.15s}.otp span:nth-child(3){animation-delay:.25s}
+    .otp span:nth-child(4){animation-delay:.35s}.otp span:nth-child(5){animation-delay:.45s}.otp span:nth-child(6){animation-delay:.55s}
+    .mailcard{background:#fff;border-radius:22px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 16px 34px rgba(15,23,42,.10)}
+    .mailcard .mh{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid #eef2f7}
+    .mailcard .av{width:42px;height:42px;border-radius:999px;background:#38BDF8;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+    .mailcard .mb{padding:16px;font-size:14px;color:#334155;line-height:1.7}
+    .mailcard .code{display:inline-block;font:900 26px 'Fira Code',monospace;letter-spacing:.3em;background:#f1f5f9;border:1px dashed #94a3b8;border-radius:12px;padding:8px 14px;margin:8px 0}
+    .timer{display:flex;align-items:center;gap:10px}
+    .timer .bar{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+    .timer .bar i{display:block;height:100%;background:linear-gradient(90deg,#4ade80,#fbbf24,#fb7185);animation:tick 5s linear infinite}
+    @keyframes tick{from{width:100%}to{width:0}}
+    .dots{display:flex;gap:6px}
+    .dots i{width:14px;height:14px;border-radius:999px;background:rgba(255,255,255,.14);display:block}
+    .dots i.used{background:#fb7185}
+    .gate{display:grid;gap:10px}
+    .gate .g{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1px solid #e5e7eb;background:#fff;font-size:13.5px;transition:all .3s}
+    .gate .g .ico{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+    .gate .g.on{border-color:#38BDF8;box-shadow:0 0 0 4px rgba(56,189,248,.16);transform:translateX(5px)}
+    .env{background:#0b1220;border:1px solid #1e293b;border-radius:20px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:13px;color:#e2e8f0;line-height:1.7}
+    .env b{color:#fde68a;font-weight:700}
+    .toggle-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    @media (max-width:1024px){.toggle-row{grid-template-columns:1fr}}
+    .code-card code.hljs{display:block}
+</style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+<div class="copy-toast" id="copyToast">Kod nusxalandi</div>
+<div class="pdp-logo-fixed">
+<div class="pdp-logo-circle"><div><span class="text-[8px] text-[#00D1D1] font-bold mt-[-1px]">&gt;_</span></div></div>
+<div class="flex flex-col leading-none"><span class="text-pdp-dark font-black text-xl tracking-tighter">PDP</span><span class="text-pdp-cyan font-bold text-sm tracking-tight">Junior</span></div>
+</div>
+<header class="h-[80px] w-full flex items-center justify-end px-12 bg-white/80 backdrop-blur-md z-50 shrink-0 border-b border-gray-100 shadow-sm">
+<div class="flex gap-4 items-center">
+<button class="w-10 h-10 rounded-full border border-gray-200 text-gray-400 hover:border-django-light hover:text-django-light flex items-center justify-center transition-all" id="btn-prev"><i class="fas fa-chevron-left"></i></button>
+<span class="text-sm font-bold text-gray-500 font-mono" id="slide-counter">1 / 15</span>
+<button class="w-10 h-10 rounded-full bg-django-light text-white shadow-lg flex items-center justify-center hover:bg-[#3ca47d] transition-all" id="btn-next"><i class="fas fa-chevron-right"></i></button>
+</div>
+</header>
+<main class="slider-window" id="touchArea">
+<div class="slides-wrapper" id="slidesWrapper">
+<section class="slide bg-slate-900 text-white relative hero-grid">
+<div class="max-w-5xl text-center relative z-10">
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[30rem] h-[30rem] bg-front-blue rounded-full"></div></div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">6-DARS · DAVOMI</span>
+<div class="inline-block mb-6 relative z-10">
+<i class="fas fa-envelope-open-text text-8xl text-front-blue animate-float mr-4"></i>
+<i class="fas fa-shield-halved text-7xl text-django-light animate-float" style="animation-delay:.6s"></i>
+<i class="fas fa-key text-7xl text-yellow-300 animate-float ml-4" style="animation-delay:1s"></i>
+</div>
+<h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 relative z-10">Emailga tasdiqlash kodi <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-front-blue via-django-light to-yellow-300">(OTP) yuborish</span></h1>
+<p class="text-xl text-gray-300 font-medium mt-6 relative z-10 max-w-4xl mx-auto">Oldingi qismda JWT bilan <b>register → login → logout</b> qildik. Endi ro‘yxatdan o‘tgan odam <b>haqiqatan ham shu email egasi</b> ekanini tekshiramiz: pochtaga 6 xonali kod yuboramiz va faqat kod tasdiqlangach login’ga ruxsat beramiz.</p>
+<a href="index.html" class="inline-flex items-center gap-2 mt-8 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm relative z-10"><i class="fas fa-arrow-left"></i> 1-qismga qaytish (JWT register / login)</a>
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-circle-question"></i> MUAMMO VA YECHIM</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Nega emailni tasdiqlash kerak?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Hozirgi tizimda istalgan odam <span class='mono'>aaa@bbb.ccc</span> deb yozib, darrov login qilib ketadi. Email haqiqiymi — hech kim bilmaydi.</p>
+</div>
+<div class="grid lg:grid-cols-2 gap-6 items-stretch">
+  <div class="glow-card pop-in d1 !border-rose-200 bg-rose-50">
+    <div class="tag-chip bg-rose-500 text-white mb-3"><i class="fas fa-xmark"></i> OLDIN</div>
+    <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700">
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">register</span><i class="fas fa-arrow-right text-rose-400"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">login</span><i class="fas fa-arrow-right text-rose-400"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">JWT</span>
+    </div>
+    <ul class="text-sm text-gray-700 mt-4 space-y-2">
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Soxta email bilan ham akkaunt ochiladi</li>
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Bot bir daqiqada 100 ta user yaratadi</li>
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Parol unutilsa — tiklab bo‘lmaydi</li>
+    </ul>
+  </div>
+  <div class="glow-card pop-in d2 !border-green-200 bg-green-50">
+    <div class="tag-chip bg-green-600 text-white mb-3"><i class="fas fa-check"></i> ENDI</div>
+    <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700">
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">register</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">📧 kod</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">verify</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">login</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">JWT</span>
+    </div>
+    <ul class="text-sm text-gray-700 mt-4 space-y-2">
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Email egasi ekani isbotlanadi</li>
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Tasdiqlanmagan user <span class="mono">is_active = False</span> — login qila olmaydi</li>
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Keyinchalik parolni tiklash ham shu yo‘l bilan ishlaydi</li>
+    </ul>
+  </div>
+</div>
+<div class="grid md:grid-cols-4 gap-4 mt-6">
+  <div class="glow-card pop-in d1"><div class="gi bg-sky-500"><i class="fas fa-user-check"></i></div><div class="font-black text-pdp-dark">Haqiqiy user</div><p class="text-sm text-gray-600 mt-1">Pochtaga kirish huquqi bor odamgina ro‘yxatdan o‘tadi.</p></div>
+  <div class="glow-card pop-in d2"><div class="gi bg-violet-500"><i class="fas fa-robot"></i></div><div class="font-black text-pdp-dark">Botlarga to‘siq</div><p class="text-sm text-gray-600 mt-1">Soxta emaillar hech qachon faollashmaydi.</p></div>
+  <div class="glow-card pop-in d3"><div class="gi bg-amber-500"><i class="fas fa-unlock-keyhole"></i></div><div class="font-black text-pdp-dark">Parolni tiklash</div><p class="text-sm text-gray-600 mt-1">Aynan shu kod mexanizmi qayta ishlatiladi.</p></div>
+  <div class="glow-card pop-in d4"><div class="gi bg-green-500"><i class="fas fa-bell"></i></div><div class="font-black text-pdp-dark">Aloqa kanali</div><p class="text-sm text-gray-600 mt-1">Chek, hisobot, ogohlantirish — hammasi shu emailga boradi.</p></div>
+</div>
+<div class="dark-box p-5 mt-6 text-sm flex flex-wrap items-center gap-3">
+  <i class="fas fa-lightbulb text-yellow-300"></i><b>Bu texnika OTP deb ataladi</b> — One Time Password, ya’ni bir martalik kod. Telegram, Instagram, bank ilovalari — hammasi shu tamoyilda ishlaydi. SMS o‘rniga biz <b>email</b> ishlatamiz: bepul va sozlash oson.
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-route"></i> TO‘LIQ OQIM</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Kod qayerda tug‘iladi va qayerda tekshiriladi?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Butun jarayon <b>4 ta ishtirokchi</b> orasida kechadi: Client, Django API, Email xizmati va Database. Animatsiyani kuzating — har qadam alohida yoritiladi.</p>
+</div>
+<div class="fd" data-seq data-interval="2400">
+<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>register → kod → email → verify → login</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
+
+<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:8%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb">Swagger</div></div><div class="fd-node" style="left:36%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">Django API</div><div class="sb">accounts</div></div><div class="fd-node" style="left:64%;--nc:#fbbf24"><div class="ic"><i class="fas fa-envelope" style="color:#fbbf24"></i></div><div class="nm">Email</div><div class="sb">SMTP / console</div></div><div class="fd-node" style="left:92%;--nc:#c084fc"><div class="ic"><i class="fas fa-database" style="color:#c084fc"></i></div><div class="nm">Database</div><div class="sb">User + EmailCode</div></div><div class="fd-packet"></div></div>
+
+<div class="fd-steps cols2"><div class="grid gap-2 content-start"><div class="fd-group text-green-300"><i class="fas fa-user-plus mr-1"></i> Register va kod yuborish</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /register/  {email, password}" data-color="#38BDF8" ><span class="k">1</span><div>User ro‘yxatdan o‘tmoqchi.</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="create_user() → is_active = False" data-color="#c084fc" ><span class="k">2</span><div>User yaratiladi, lekin <b>faol emas</b> (model default’i) — login qila olmaydi.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="36" data-packet="secrets → 482913" data-color="#fbbf24" ><span class="k">3</span><div>Server 6 xonali <b>tasodifiy</b> kod yaratadi.</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="EmailCode: kod + created_at" data-color="#c084fc" ><span class="k">4</span><div>Kod bazaga yoziladi (muddat hisoblash uchun vaqti bilan).</div></div><div class="fd-step" data-step data-hl="1,2" data-from="36" data-to="64" data-packet="send_mail(to=user.email)" data-color="#38BDF8" ><span class="k">5</span><div>Kod emailga jo‘natiladi.</div></div><div class="fd-step" data-step data-hl="2,0" data-from="64" data-to="8" data-packet="📧 Tasdiqlash kodingiz: 482913" data-color="#4ade80" ><span class="k">6</span><div>User pochtasidan kodni oladi.</div></div></div><div class="grid gap-2 content-start"><div class="fd-group text-sky-300"><i class="fas fa-shield-halved mr-1"></i> Tasdiqlash va login</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /verify-email/  {email, code}" data-color="#38BDF8" ><span class="k">7</span><div>User kodni kiritadi.</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="kod ✓  muddat ✓  urinish ✓" data-color="#fbbf24" ><span class="k">8</span><div>3 ta tekshiruv: kod to‘g‘rimi, 5 daqiqa o‘tmaganmi, urinishlar tugamaganmi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="200 · Email tasdiqlandi" data-color="#4ade80" ><span class="k">9</span><div><span class='mono'>is_active = True</span>, kod bazadan o‘chiriladi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /login/  {email, password}" data-color="#38BDF8" ><span class="k">10</span><div>Endi login mumkin.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="{&quot;access&quot;: &quot;eyJ…&quot;, &quot;refresh&quot;: &quot;eyJ…&quot;}" data-color="#4ade80" ><span class="k">11</span><div>JWT keldi — 1-qismdagi tizim davom etadi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /verify-email/  {code: &quot;000000&quot;}" data-color="#fb7185" ><span class="k">12</span><div>Kod xato kiritilsa…</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="8" data-packet="400 · Kod noto‘g‘ri (urinish +1)" data-color="#fb7185" ><span class="k">13</span><div>5 marta xato → yangi kod so‘rash kerak.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /resend-code/  {email}" data-color="#c084fc" ><span class="k">14</span><div>Kod kelmasa — qayta yuborish.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="8" data-packet="429 · 1 daqiqada faqat 1 marta" data-color="#fb923c" ><span class="k">15</span><div>Ketma-ket bosishning oldini olamiz (cooldown).</div></div></div></div>
+<div class="fd-bar"><i></i></div>
+</div>
+<div class="grid md:grid-cols-3 gap-4 mt-6">
+  <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-user-slash text-rose-500 mr-2"></i>is_active = False</div><p class="text-sm text-gray-600 mt-1">Tasdiqlanmagan user uchun login <b>401</b> qaytaradi — qo‘shimcha kod yozmaymiz, Django o‘zi tekshiradi.</p></div>
+  <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-hourglass-half text-amber-500 mr-2"></i>5 daqiqa</div><p class="text-sm text-gray-600 mt-1">Kod qisqa yashaydi. O‘g‘irlansa ham foydasi bo‘lmaydi.</p></div>
+  <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-trash text-slate-500 mr-2"></i>1 user = 1 kod</div><p class="text-sm text-gray-600 mt-1">Yangi kod yuborilganda eskisi o‘chiriladi — chalkashlik bo‘lmaydi.</p></div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-sliders"></i> 1-QADAM · settings.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Django’ni email yuborishga o‘rgatamiz</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Darsda <b>console backend</b> ishlatamiz: email jo‘natilmaydi, xat terminalga chiqadi — tekshirish tez va bepul. Loyiha internetga chiqqanda esa bitta blokni almashtiramiz.</p>
+</div>
+<div class="toggle-row">
+  <div class="pop-in d1">
+    <div class="tag-chip bg-sky-100 text-sky-700 mb-3"><i class="fas fa-laptop-code"></i> DARSDA / DEV</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('emailDev')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">console</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="emailDev"># DEV — kod terminalda (konsolda) chiqadi
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "PDP Junior &lt;noreply@example.com&gt;"</code></pre></div>
+</div>
+    <div class="dark-box p-4 mt-3 mono text-xs leading-relaxed">
+      <span class="text-slate-500">runserver terminalida shunday chiqadi:</span><br/>
+      Content-Type: text/plain; charset="utf-8"<br/>
+      Subject: Tasdiqlash kodi<br/>
+      To: test@gmail.com<br/><br/>
+      <span class="text-green-300">Tasdiqlash kodingiz: 482913</span><br/>
+      Kod 5 daqiqa amal qiladi.
+    </div>
+  </div>
+  <div class="pop-in d2">
+    <div class="tag-chip bg-green-100 text-green-700 mb-3"><i class="fas fa-globe"></i> REAL LOYIHADA / PROD</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('emailProd')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">gmail smtp</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="emailProd"># PRODUCTION — haqiqiy Gmail orqali
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER</code></pre></div>
+</div>
+    <div class="env mt-3">
+      <span class="text-slate-500"># .env fayl (git’ga qo‘shilmaydi!)</span><br/>
+      <b>EMAIL_HOST_USER</b>=mening.pochtam@gmail.com<br/>
+      <b>EMAIL_HOST_PASSWORD</b>=abcd efgh ijkl mnop
+    </div>
+  </div>
+</div>
+<div class="grid md:grid-cols-3 gap-4 mt-6">
+  <div class="glow-card pop-in d1 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-key text-amber-500 mr-2"></i>Gmail paroli EMAS</div><p class="text-sm text-gray-600 mt-1">Google hisobingizda <b>2 bosqichli tasdiq</b> yoqiladi, so‘ng <b>App password</b> (16 harf) yaratiladi. Oddiy parol ishlamaydi.</p></div>
+  <div class="glow-card pop-in d2 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-eye-slash text-rose-500 mr-2"></i>Parolni kodga yozmang</div><p class="text-sm text-gray-600 mt-1">Faqat <span class="mono">.env</span> + <span class="mono">os.getenv()</span>. GitHub’ga tushgan parolni botlar bir soatda topadi.</p></div>
+  <div class="glow-card pop-in d3 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-paper-plane text-violet-500 mr-2"></i>Boshqa xizmatlar</div><p class="text-sm text-gray-600 mt-1">Katta loyihalarda Gmail o‘rniga <b>SendGrid</b>, <b>Mailgun</b>, <b>Resend</b> ishlatiladi — ular kuniga minglab xat yubora oladi.</p></div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-table"></i> 2-QADAM · accounts/models.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">models.py — ikkita o‘zgarish</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Birinchisi: yangi user <b>o‘zi faol bo‘lmasin</b>. Ikkinchisi: kodni saqlaydigan kichik jadval.</p>
+</div>
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="tag-chip bg-rose-100 text-rose-700"><i class="fas fa-1"></i> User modeliga bitta qator</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('userDefaultActive')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">is_active default</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="userDefaultActive">class User(AbstractUser):
+    username = None
+    email = models.EmailField(unique=True)
+    is_active = models.BooleanField(default=False)   # &lt;-- yangi qator
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []</code></pre></div>
+</div>
+    <div class="glow-card !p-5 pop-in d1">
+      <div class="font-black text-pdp-dark mb-2"><i class="fas fa-circle-question text-sky-500 mr-2"></i>Nega <span class="mono">models.py</span> da, serializer’da emas?</div>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li><i class="fas fa-shield-halved text-green-600 mr-2"></i><b>Qoida bitta joyda.</b> User qayerda yaratilsa ham — serializer, admin, shell, boshqa API — hammasi <b>tasdiqlanmagan</b> holda tug‘iladi. Bitta joyni yozib qo‘yib, boshqasini unutish xavfi yo‘q.</li>
+        <li><i class="fas fa-code text-violet-500 mr-2"></i><b>Kod toza.</b> Serializer’da <span class="mono">create_user(is_active=False, …)</span> deb yozish shart emas — u oddiy <span class="mono">create_user(**validated_data)</span> bo‘lib qoladi.</li>
+        <li><i class="fas fa-database text-amber-500 mr-2"></i><b>Baza darajasida.</b> Default qiymat jadvalning o‘zida turadi, ya’ni tasodifan “faol” user paydo bo‘lmaydi.</li>
+      </ul>
+    </div>
+    <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-sm text-red-900 pop-in d2">
+      <b><i class="fas fa-triangle-exclamation mr-1"></i> Diqqat — superuser ham o‘chib qoladi!</b>
+      <p class="mt-1">Endi <span class="mono">createsuperuser</span> ham <span class="mono">is_active=False</span> user yasaydi va admin panelga kira olmaysiz. Shuning uchun manager’ga bitta so‘z qo‘shamiz:</p>
+      <div class="mt-2"><div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('superuserActive')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">UserManager</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="superuserActive">    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.update(is_staff=True, is_superuser=True, is_active=True)
+        return self.create_user(email, password, **extra_fields)</code></pre></div>
+</div></div>
+    </div>
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
+      <i class="fas fa-circle-info mr-1"></i> O‘zgarishlardan keyin: <span class="mono">makemigrations</span> → <span class="mono">migrate</span>. Eski userlar o‘z holicha qoladi — default faqat <b>yangi</b> yozuvlarga ta’sir qiladi.
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div class="tag-chip bg-sky-100 text-sky-700"><i class="fas fa-2"></i> Kod uchun kichik jadval</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('emailCodeModel')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">EmailCode</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="emailCodeModel">from datetime import timedelta
+
+from django.conf import settings
+from django.db import models
+from django.utils import timezone
+
+
+class EmailCode(models.Model):
+    LIFETIME = timedelta(minutes=5)
+    MAX_ATTEMPTS = 5
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() &gt; self.created_at + self.LIFETIME</code></pre></div>
+</div>
+    <div class="fd !p-5">
+      <div class="fd-title mb-3"><i class="fas fa-database mr-2"></i>Jadvalda nima turadi?</div>
+      <div class="mono text-xs">
+        <div class="grid grid-cols-4 gap-2 text-slate-400 font-bold pb-2 border-b border-slate-700"><span>user</span><span>code</span><span>attempts</span><span>created_at</span></div>
+        <div class="grid grid-cols-4 gap-2 py-2 text-amber-300 blink-soft"><span>ali@…</span><span>482913</span><span>0</span><span>14:05:12</span></div>
+        <div class="grid grid-cols-4 gap-2 py-2 text-slate-300"><span>vali@…</span><span>730154</span><span>2</span><span>14:03:40</span></div>
+      </div>
+      <div class="mt-5 rounded-2xl bg-white/5 border border-white/10 p-4">
+        <div class="flex items-center justify-between mb-2"><span class="text-xs font-black uppercase tracking-widest text-slate-400">Kod muddati</span><span class="mono text-sm text-green-300">5:00 → 0:00</span></div>
+        <div class="timer"><i class="fas fa-hourglass-half text-amber-300"></i><div class="bar"><i></i></div></div>
+        <p class="text-xs text-slate-400 mt-2"><span class="mono">is_expired()</span> — hozirgi vaqt <span class="mono">created_at + 5 daqiqa</span> dan katta bo‘lsa, kod yaroqsiz.</p>
+      </div>
+      <div class="mt-4 rounded-2xl bg-white/5 border border-white/10 p-4">
+        <div class="flex items-center justify-between mb-2"><span class="text-xs font-black uppercase tracking-widest text-slate-400">Urinishlar</span><span class="mono text-sm text-rose-300">2 / 5</span></div>
+        <div class="dots"><i class="used"></i><i class="used"></i><i></i><i></i><i></i></div>
+        <p class="text-xs text-slate-400 mt-2">Har xato kiritishda <span class="mono">attempts += 1</span>. 5 tadan keyin kod bloklanadi — brute-force ishlamaydi.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-scale-balanced"></i> SAVOL</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">6 xonali kodni qayerda saqlash kerak?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Jadvalga yozish — yagona yo‘l emas. Mana 4 xil professional usul va ularning haqiqiy narxi.</p>
+</div>
+<div class="grid md:grid-cols-2 gap-5"><div class="glow-card pop-in d1">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#22c55e"><i class="fas fa-table"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">1. DB jadval</div><div class="text-xs text-gray-500 mono">EmailCode — biz qilgan yo‘l</div></div>
+<span class="tag-chip bg-green-100 text-green-700 ml-auto !text-[10px] !py-1">TAVSIYA · shu darsda</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Qo‘shimcha dastur kerak emas — sqlite/postgres yetarli</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Kodni admin panelda ko‘rish mumkin (dars uchun qulay)</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Urinishlar va muddat oddiy maydonlarda turadi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Eskirgan yozuvlarni vaqti-vaqti bilan tozalash kerak</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Har tekshiruvda bazaga bitta so‘rov</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> O‘quv loyihasi, kichik va o‘rta loyihalar</div>
+</div><div class="glow-card pop-in d2">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#8b5cf6"><i class="fas fa-key"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">2. DB + hash</div><div class="text-xs text-gray-500 mono">make_password(code)</div></div>
+<span class="tag-chip bg-violet-100 text-violet-700 ml-auto !text-[10px] !py-1">IXTIYORIY</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Baza o‘g‘irlansa ham kod ochiq turmaydi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>6 xonali kodni hash’dan topish sekundlar ishi — himoya ko‘rinishi kuchli, aslida kuchsiz</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Kod bilan solishtirish sekinlashadi</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> Uzun (16+ belgili) token saqlaganda ma’noli</div>
+</div><div class="glow-card pop-in d3">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#0ea5e9"><i class="fas fa-bolt"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">3. Cache (Redis) + TTL</div><div class="text-xs text-gray-500 mono">cache.set(..., 300)</div></div>
+<span class="tag-chip bg-sky-100 text-sky-700 ml-auto !text-[10px] !py-1">PRODUCTION</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Muddat <b>o‘z-o‘zidan</b> tugaydi — <span class='mono'>is_expired()</span> ham, tozalash ham kerak emas</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Jadval va migratsiya yo‘q</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Bazaga tegmaydi, juda tez</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Redis (yoki Memcached) o‘rnatilgan bo‘lishi kerak</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Server qayta yuklansa kodlar yo‘qoladi — user qayta so‘raydi, xolos</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> Production, ko‘p foydalanuvchili loyihalar</div>
+</div><div class="glow-card pop-in d4">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#f59e0b"><i class="fas fa-clock"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">4. TOTP (pyotp)</div><div class="text-xs text-gray-500 mono">vaqtdan hisoblanadigan kod</div></div>
+<span class="tag-chip bg-amber-100 text-amber-700 ml-auto !text-[10px] !py-1">BOSHQA VAZIFA</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Kod umuman saqlanmaydi — vaqt va maxfiy kalitdan hisoblanadi</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Google Authenticator shu tamoyilda ishlaydi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Email orqali yuborish uchun ortiqcha murakkab</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Urinishlar limitini baribir alohida saqlash kerak</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> 2FA, authenticator ilovalari</div>
+</div></div>
+<div class="dark-box p-5 mt-6">
+  <div class="flex flex-wrap items-center gap-3 mb-3"><span class="tag-chip bg-green-500/15 text-green-300"><i class="fas fa-gavel"></i> XULOSA</span>
+  <span class="text-sm">Kod <b>qayerda</b> turgani ikkinchi darajali. Asosiy himoya — <b>qisqa muddat</b> + <b>urinishlar limiti</b> + <b>kodni javobda qaytarmaslik</b>. Shu uchtasi bo‘lsa, DB ham, Redis ham bir xil xavfsiz.</span></div>
+  <div class="text-sm text-slate-300">Loyihangizda Redis bo‘lsa — 3-usul afzal: muddatni Redis o‘zi kuzatadi, jadval ham, tozalash kodi ham kerak bo‘lmaydi. Redis bo‘lmasa — biz yozgan jadval to‘liq yetarli.</div>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('cacheService')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services.py</span><span class="sub">Redis varianti (to‘liq almashtiradi)</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="cacheService">import secrets
+import time
+
+from django.conf import settings
+from django.core.cache import cache
+from django.core.mail import send_mail
+
+CODE_TTL = 300        # 5 daqiqa
+MAX_ATTEMPTS = 5
+
+
+def send_code(email):
+    code = f"{secrets.randbelow(1000000):06d}"
+    cache.set(
+        f"verify:{email}",
+        {"code": code, "attempts": 0, "expires": time.time() + CODE_TTL},
+        CODE_TTL,          # muddati tugagach Redis o'zi o'chiradi
+    )
+    send_mail("Tasdiqlash kodi", f"Kodingiz: {code}",
+              settings.DEFAULT_FROM_EMAIL, [email])
+
+
+def check_code(email, code):
+    data = cache.get(f"verify:{email}")
+    if data is None:
+        return "expired"
+    if data["attempts"] &gt;= MAX_ATTEMPTS:
+        return "blocked"
+    if data["code"] != code:
+        data["attempts"] += 1
+        cache.set(f"verify:{email}", data, int(data["expires"] - time.time()))
+        return "wrong"
+    cache.delete(f"verify:{email}")
+    return "ok"</code></pre></div>
+</div>
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('cacheSettings')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">Redis ulash</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="cacheSettings">CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}</code></pre></div>
+</div>
+    <div class="glow-card pop-in d1 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-shuffle text-sky-600 mr-2"></i>Almashtirish oson</div><p class="text-sm text-gray-600 mt-1">View’lardagi mantiq o‘zgarmaydi: <span class="mono">send_code(email)</span> va <span class="mono">check_code(email, code)</span> chaqiriladi, javob esa <span class="mono">"ok" / "wrong" / "expired" / "blocked"</span>.</p></div>
+    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-broom text-amber-600 mr-2"></i>DB variantida tozalash</div><p class="text-sm text-gray-600 mt-1">Eskirgan kodlarni haftada bir marta o‘chirib turing:</p><div class="mono text-xs bg-white rounded-xl p-2 mt-2 border border-amber-100">EmailCode.objects.filter(<br/>&nbsp;&nbsp;created_at__lt=timezone.now() - timedelta(days=1)<br/>).delete()</div></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-violet-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-gears"></i> 3-QADAM · accounts/services.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Kod yasash va jo‘natish — bitta funksiya</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Bu kod <b>ikki joyda</b> kerak bo‘ladi: register’da va “qayta yuborish”da. Shuning uchun uni view ichiga emas, alohida <b>services.py</b> fayliga yozamiz — professional loyihalarda shunday qilinadi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('serviceCode')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services.py</span><span class="sub">send_verification_code</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="serviceCode">import secrets
+
+from django.conf import settings
+from django.core.mail import send_mail
+
+from .models import EmailCode
+
+
+def send_verification_code(user):
+    code = f"{secrets.randbelow(1000000):06d}"
+
+    EmailCode.objects.filter(user=user).delete()
+    EmailCode.objects.create(user=user, code=code)
+
+    send_mail(
+        subject="Tasdiqlash kodi",
+        message=f"Tasdiqlash kodingiz: {code}\nKod 5 daqiqa amal qiladi.",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )</code></pre></div>
+</div>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="glow-card !p-4 pop-in d1"><div class="font-black text-pdp-dark text-sm mono">secrets</div><p class="text-xs text-gray-600 mt-1"><span class="mono">random</span> emas! <span class="mono">secrets</span> — xavfsizlik uchun mo‘ljallangan, kodni oldindan topib bo‘lmaydi.</p></div>
+      <div class="glow-card !p-4 pop-in d2"><div class="font-black text-pdp-dark text-sm mono">:06d</div><p class="text-xs text-gray-600 mt-1">7 raqami <b>000007</b> bo‘lib chiqadi — har doim 6 xona.</p></div>
+      <div class="glow-card !p-4 pop-in d3"><div class="font-black text-pdp-dark text-sm mono">.delete()</div><p class="text-xs text-gray-600 mt-1">Eski kod o‘chadi: faqat <b>oxirgi</b> kod ishlaydi.</p></div>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div class="text-xs uppercase tracking-widest text-slate-500 font-black">User pochtasida shunday ko‘rinadi</div>
+    <div class="mailcard pop-in d1">
+      <div class="mh"><div class="av">P</div><div><div class="font-black text-pdp-dark text-sm">PDP Junior</div><div class="text-xs text-gray-500">noreply@example.com</div></div><div class="ml-auto text-xs text-gray-400">hozir</div></div>
+      <div class="mb">
+        <div class="font-black text-pdp-dark text-base mb-1">Tasdiqlash kodi</div>
+        Assalomu alaykum!<br/>Ro‘yxatdan o‘tishni yakunlash uchun quyidagi kodni kiriting:
+        <div class="code">482913</div>
+        <div class="text-xs text-gray-500">Kod 5 daqiqa amal qiladi. Agar bu siz bo‘lmasangiz, xatni e’tiborsiz qoldiring.</div>
+      </div>
+    </div>
+    <div class="otp mt-2"><span>4</span><span>8</span><span>2</span><span>9</span><span>1</span><span>3</span></div>
+    <div class="rounded-2xl bg-sky-50 border border-sky-100 p-4 text-sm text-sky-900"><i class="fas fa-circle-info mr-1"></i> <b>Muhim:</b> kod faqat <b>emailga</b> ketadi. API javobida hech qachon qaytarilmaydi — aks holda tasdiqlashning ma’nosi qolmaydi.</div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-filter"></i> 4-QADAM · accounts/serializers.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Uchta kichik serializer</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Bittasi user yaratadi (lekin <b>faol qilmaydi</b>), ikkitasi esa shunchaki kelgan ma’lumot to‘g‘ri shaklda ekanini tekshiradi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('serializerCode2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">3 ta serializer</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="serializerCode2">class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "password"]
+        extra_kwargs = {"password": {"write_only": True, "min_length": 8}}
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(min_length=6, max_length=6)
+
+
+class ResendCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField()</code></pre></div>
+</div>
+  <div class="space-y-3">
+    <div class="glow-card pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark"><i class="fas fa-user-plus text-green-600 mr-2"></i>RegisterSerializer</div><p class="text-sm text-gray-600 mt-1">1-qismdagidek qoladi — <b>hech narsa qo‘shilmaydi</b>. User baribir faol bo‘lmay yaratiladi, chunki buni <span class="mono">models.py</span> dagi <span class="mono">is_active</span> default’i hal qildi.</p></div>
+    <div class="glow-card pop-in d2 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-hashtag text-sky-600 mr-2"></i>VerifyEmailSerializer</div><p class="text-sm text-gray-600 mt-1"><span class="mono">min_length=6, max_length=6</span> — 5 yoki 7 xonali kod umuman bazagacha yetib bormaydi.</p></div>
+    <div class="glow-card pop-in d3 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-rotate text-violet-600 mr-2"></i>ResendCodeSerializer</div><p class="text-sm text-gray-600 mt-1">Faqat email so‘raydi. Swagger’da maydon chiqishi uchun ham kerak.</p></div>
+    <div class="dark-box p-4 text-sm"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><b>Qoida:</b> serializer — <b>shaklni</b> tekshiradi (email to‘g‘rimi, kod 6 xonalimi). Kod <b>to‘g‘ri yoki eskirganini</b> esa view tekshiradi, chunki u bazaga qaraydi.</div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-door-open"></i> 5-QADAM · accounts/views.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Register, Verify va Resend</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Eng muhim qism — <b>VerifyEmailView</b>. U kodni <b>5 ta elakdan</b> o‘tkazadi va faqat hammasidan o‘tsa userni faollashtiradi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('viewsCode2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">register + verify</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="viewsCode2">class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_verification_code(user)
+
+
+class VerifyEmailView(generics.GenericAPIView):
+    serializer_class = VerifyEmailSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = User.objects.filter(
+            email=serializer.validated_data["email"], is_active=False
+        ).first()
+        record = EmailCode.objects.filter(user=user).first()
+
+        if record is None or record.is_expired():
+            return Response({"detail": "Kod topilmadi yoki muddati tugagan"}, status=400)
+
+        if record.attempts &gt;= EmailCode.MAX_ATTEMPTS:
+            return Response({"detail": "Urinishlar tugadi, yangi kod so'rang"}, status=400)
+
+        if record.code != serializer.validated_data["code"]:
+            record.attempts += 1
+            record.save()
+            return Response({"detail": "Kod noto'g'ri"}, status=400)
+
+        user.is_active = True
+        user.save()
+        record.delete()
+        return Response({"detail": "Email tasdiqlandi. Endi login qiling."})</code></pre></div>
+</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('resendCode')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">resend</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="resendCode">RESEND_INTERVAL = timedelta(seconds=60)
+
+
+class ResendCodeView(generics.GenericAPIView):
+    serializer_class = ResendCodeSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = User.objects.filter(
+            email=serializer.validated_data["email"], is_active=False
+        ).first()
+
+        if user:
+            record = EmailCode.objects.filter(user=user).first()
+            if record and timezone.now() - record.created_at &lt; RESEND_INTERVAL:
+                return Response({"detail": "1 daqiqada faqat 1 marta"}, status=429)
+            send_verification_code(user)
+
+        return Response({"detail": "Agar bunday email ro'yxatdan o'tgan bo'lsa, kod yuborildi"})</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card !p-5">
+      <div class="text-xs uppercase tracking-widest text-slate-500 font-black mb-3"><i class="fas fa-filter mr-1"></i> Verify — 5 ta elak</div>
+      <div class="gate" data-seq data-interval="2000"><div class="g" data-step><div class="ico bg-slate-700"><i class="fas fa-user"></i></div><div><b>1. User bormi?</b> — <span class="mono">is_active=False</span> user qidiriladi</div></div><div class="g" data-step><div class="ico bg-amber-500"><i class="fas fa-hourglass-half"></i></div><div><b>2. Muddati o‘tmaganmi?</b> — <span class="mono">is_expired()</span> → 400</div></div><div class="g" data-step><div class="ico bg-rose-500"><i class="fas fa-shield-halved"></i></div><div><b>3. Urinishlar qolganmi?</b> — 5 tadan ko‘p bo‘lsa → 400</div></div><div class="g" data-step><div class="ico bg-sky-500"><i class="fas fa-equals"></i></div><div><b>4. Kod mos keldimi?</b> — xato bo‘lsa <span class="mono">attempts += 1</span> → 400</div></div><div class="g" data-step><div class="ico bg-green-500"><i class="fas fa-circle-check"></i></div><div><b>5. Hammasi joyida</b> — <span class="mono">is_active = True</span>, kod o‘chadi → 200</div></div><div class="fd-bar"><i></i></div></div>
+    </div>
+    <div class="glow-card pop-in d1 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-user-secret text-violet-600 mr-2"></i>Nega resend har doim bir xil javob beradi?</div><p class="text-sm text-gray-600 mt-1">“Bunday email yo‘q” desak, begona odam <b>kim ro‘yxatdan o‘tganini</b> bilib oladi. Shuning uchun javob doim bir xil.</p></div>
+    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-stopwatch text-amber-600 mr-2"></i>60 soniya cooldown</div><p class="text-sm text-gray-600 mt-1">Aks holda tugmani 50 marta bosib, pochtani 50 ta xat bilan to‘ldirish mumkin.</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-signs-post"></i> 6-QADAM · accounts/urls.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Endpointlar xaritasi — 3 tasi yangi</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">1-qismdagi 5 ta manzil o‘z joyida qoldi, ustiga <b>3 ta yangi</b> qo‘shildi. Login va qolganlari umuman o‘zgarmaydi.</p>
+</div>
+<div data-seq data-interval="1900" class="space-y-3 max-w-4xl mx-auto">
+  <div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#4ade80">POST</span> /api/register/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-green-100 text-green-800">RegisterView</div><div class="ar"></div><div class="p bg-green-50 text-green-700">201 + 📧 kod</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#7dd3fc">POST</span> /api/verify-email/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-sky-100 text-sky-800">VerifyEmailView</div><div class="ar"></div><div class="p bg-sky-50 text-sky-700">is_active = True</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#c084fc">POST</span> /api/resend-code/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-violet-100 text-violet-800">ResendCodeView</div><div class="ar"></div><div class="p bg-violet-50 text-violet-700">yangi kod</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#60a5fa">POST</span> /api/login/</div><div class="ar"></div><div class="p bg-blue-100 text-blue-800">TokenObtainPairView</div><div class="ar"></div><div class="p bg-blue-50 text-blue-700">access + refresh</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#fbbf24">POST</span> /api/refresh/</div><div class="ar"></div><div class="p bg-amber-100 text-amber-800">TokenRefreshView</div><div class="ar"></div><div class="p bg-amber-50 text-amber-700">yangi access</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#cbd5e1">GET</span> /api/me/ <i class="fas fa-lock text-xs ml-1"></i></div><div class="ar"></div><div class="p bg-slate-200 text-slate-800">MeView</div><div class="ar"></div><div class="p bg-slate-50 text-slate-700">user JSON</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#fb7185">POST</span> /api/logout/ <i class="fas fa-lock text-xs ml-1"></i></div><div class="ar"></div><div class="p bg-rose-100 text-rose-800">LogoutView</div><div class="ar"></div><div class="p bg-rose-50 text-rose-700">205 · blacklist</div></div>
+  <div class="fd-bar"><i></i></div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-7 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('urlsCode2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/urls.py</span><span class="sub">7 ta endpoint</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="urlsCode2">urlpatterns = [
+    path("register/", RegisterView.as_view()),
+    path("verify-email/", VerifyEmailView.as_view()),
+    path("resend-code/", ResendCodeView.as_view()),
+    path("login/", TokenObtainPairView.as_view()),
+    path("refresh/", TokenRefreshView.as_view()),
+    path("logout/", LogoutView.as_view()),
+    path("me/", MeView.as_view()),
+]</code></pre></div>
+</div>
+  <div class="space-y-3">
+    <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-layer-group text-sky-500 mr-2"></i>Tartib muhim emas</div><p class="text-sm text-gray-600 mt-1">Ular bir-biriga xalaqit bermaydi. Muhimi — <b>oqim</b>: register → verify → login.</p></div>
+    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-book-open text-green-500 mr-2"></i>Swagger</div><p class="text-sm text-gray-600 mt-1">Uchala yangi endpoint Swagger’da avtomatik paydo bo‘ladi, chunki ularning <span class="mono">serializer_class</span> i bor.</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-vial-circle-check"></i> SINAB KO‘RAMIZ</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">7 ta qadam — Swagger yoki Postman’da</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Aynan shu tartibda yuboring. E’tibor bering: kod <b>hech qachon</b> API javobida qaytmaydi — uni faqat pochtadan (darsda terminaldan) olasiz.</p>
+</div>
+<div class="fd" data-seq data-interval="3600">
+ <div class="fd-top"><div class="fd-title"><i class="fas fa-paper-plane mr-2"></i>Jonli sinov</div><div class="fd-btns"><button data-act="prev"><i class="fas fa-backward-step"></i></button><button data-act="toggle"><i class="fas fa-pause"></i></button><button data-act="next"><i class="fas fa-forward-step"></i></button></div></div>
+ <div class="grid lg:grid-cols-[.55fr_1.45fr] gap-5 items-start">
+   <div class="fd-steps !mt-0"><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#22c55e"><i class="fas fa-user-plus"></i></span><div><b>1. Register</b><div class="mono text-xs text-slate-400">POST /api/register/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#64748b"><i class="fas fa-terminal"></i></span><div><b>2. Terminal</b><div class="mono text-xs text-slate-400">— runserver oynasi</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#f43f5e"><i class="fas fa-ban"></i></span><div><b>3. Login (erta)</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#fb923c"><i class="fas fa-xmark"></i></span><div><b>4. Verify (xato)</b><div class="mono text-xs text-slate-400">POST /api/verify-email/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#0ea5e9"><i class="fas fa-circle-check"></i></span><div><b>5. Verify (to‘g‘ri)</b><div class="mono text-xs text-slate-400">POST /api/verify-email/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#3b82f6"><i class="fas fa-key"></i></span><div><b>6. Login</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#8b5cf6"><i class="fas fa-rotate"></i></span><div><b>7. Resend</b><div class="mono text-xs text-slate-400">POST /api/resend-code/</div></div></div></div>
+   <div><div class="pm hide-off" data-show="0-0">
+<div class="pm-bar"><span class="pm-m" style="background:#22c55e">POST</span><span>/api/register/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;password&quot;: &quot;12345678&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">201 Created</span></div><span style="color:#4ade80">{
+  &quot;id&quot;: 1,
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;first_name&quot;: &quot;&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>User yaratildi, lekin <b>is_active = False</b>. Javobda kod yo‘q!</div>
+</div><div class="pm hide-off" data-show="1-1">
+<div class="pm-bar"><span class="pm-m" style="background:#64748b">—</span><span>runserver oynasi</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>(bu request emas — terminalga qarang)</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">Email chiqdi</span></div><span style="color:#4ade80">Subject: Tasdiqlash kodi
+To: test@gmail.com
+
+Tasdiqlash kodingiz: 482913</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Console backend xatni terminalga chiqaradi. Kodni shu yerdan olamiz.</div>
+</div><div class="pm hide-off" data-show="2-2">
+<div class="pm-bar"><span class="pm-m" style="background:#f43f5e">POST</span><span>/api/login/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;password&quot;: &quot;12345678&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">401 Unauthorized</span></div><span style="color:#fb7185">{
+  &quot;detail&quot;: &quot;No active account found with the given credentials&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Tasdiqlanmagan user login qila olmaydi — biz xohlagan narsa shu.</div>
+</div><div class="pm hide-off" data-show="3-3">
+<div class="pm-bar"><span class="pm-m" style="background:#fb923c">POST</span><span>/api/verify-email/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;code&quot;: &quot;000000&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">400 Bad Request</span></div><span style="color:#fb7185">{
+  &quot;detail&quot;: &quot;Kod noto&#x27;g&#x27;ri&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><span class='mono'>attempts</span> 1 ga oshdi. 5 tadan keyin kod bloklanadi.</div>
+</div><div class="pm hide-off" data-show="4-4">
+<div class="pm-bar"><span class="pm-m" style="background:#0ea5e9">POST</span><span>/api/verify-email/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;code&quot;: &quot;482913&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">200 OK</span></div><span style="color:#4ade80">{
+  &quot;detail&quot;: &quot;Email tasdiqlandi. Endi login qiling.&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><span class='mono'>is_active = True</span>, kod bazadan o‘chdi.</div>
+</div><div class="pm hide-off" data-show="5-5">
+<div class="pm-bar"><span class="pm-m" style="background:#3b82f6">POST</span><span>/api/login/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;test@gmail.com&quot;,
+  &quot;password&quot;: &quot;12345678&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">200 OK</span></div><span style="color:#4ade80">{
+  &quot;refresh&quot;: &quot;eyJ…&quot;,
+  &quot;access&quot;: &quot;eyJ…&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Mana endi JWT keldi — 1-qismdagi hamma narsa ishlayveradi.</div>
+</div><div class="pm hide-off" data-show="6-6">
+<div class="pm-bar"><span class="pm-m" style="background:#8b5cf6">POST</span><span>/api/resend-code/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="grid md:grid-cols-2">
+<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
+  &quot;email&quot;: &quot;boshqa@gmail.com&quot;
+}</div>
+<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">429 Too Many Requests</span></div><span style="color:#fb7185">{
+  &quot;detail&quot;: &quot;1 daqiqada faqat 1 marta&quot;
+}</span></div>
+</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Yangi kod so‘ralgach 60 soniya kutish kerak.</div>
+</div></div>
+ </div>
+ <div class="fd-bar"><i></i></div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-user-shield"></i> PROFESSIONAL YONDASHUV</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">6 ta qoida — ishlaydigan tizimdan xavfsiz tizimgacha</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Kod yuborish oson. Uni <b>to‘g‘ri</b> yuborish — mana shu 6 ta qoidada.</p>
+</div>
+<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-5"><div class="glow-card pop-in d1"><div class="gi" style="background:#f43f5e"><i class="fas fa-eye-slash"></i></div><div class="font-black text-pdp-dark">Kodni javobda qaytarmang</div><p class="text-sm text-gray-600 mt-1">API javobida kod chiqsa, emailni ochmasdan ham tasdiqlash mumkin bo‘ladi — butun himoya bekor bo‘ladi.</p></div><div class="glow-card pop-in d2"><div class="gi" style="background:#f59e0b"><i class="fas fa-hourglass-half"></i></div><div class="font-black text-pdp-dark">Qisqa muddat</div><p class="text-sm text-gray-600 mt-1">5 daqiqa — standart. Ko‘pi bilan 10 daqiqa. Muddati yo‘q kod — ochiq eshik.</p></div><div class="glow-card pop-in d3"><div class="gi" style="background:#8b5cf6"><i class="fas fa-shield-halved"></i></div><div class="font-black text-pdp-dark">Urinishlar limiti</div><p class="text-sm text-gray-600 mt-1">6 xonali kodni 1 000 000 marta sinab ko‘rish mumkin. 5 ta urinish limiti buni to‘xtatadi.</p></div><div class="glow-card pop-in d4"><div class="gi" style="background:#0ea5e9"><i class="fas fa-stopwatch"></i></div><div class="font-black text-pdp-dark">Resend cooldown</div><p class="text-sm text-gray-600 mt-1">60 soniya. Aks holda pochta spamga to‘ladi va SMTP limitingiz tugaydi.</p></div><div class="glow-card pop-in d5"><div class="gi" style="background:#64748b"><i class="fas fa-user-secret"></i></div><div class="font-black text-pdp-dark">Email’ni oshkor qilmang</div><p class="text-sm text-gray-600 mt-1">“Bunday user yo‘q” degan javob — begonaga ma’lumot. Javob har doim bir xil bo‘lsin.</p></div><div class="glow-card pop-in d6"><div class="gi" style="background:#22c55e"><i class="fas fa-bolt"></i></div><div class="font-black text-pdp-dark">Emailni fonda yuboring</div><p class="text-sm text-gray-600 mt-1">send_mail request’ni 1–2 soniya ushlab turadi. Katta loyihada bu ish <b>Celery</b> ga beriladi.</p></div></div>
+<div class="dark-box p-5 mt-6 grid md:grid-cols-3 gap-4 text-sm">
+  <div><div class="text-xs uppercase tracking-widest text-sky-300 font-black mb-1">Keyingi bosqich</div>Kodni bazada <b>hash</b> holatda saqlash (xuddi parol kabi).</div>
+  <div><div class="text-xs uppercase tracking-widest text-violet-300 font-black mb-1">Kengaytirish</div>Xuddi shu mexanizm bilan <b>parolni tiklash</b> va <b>emailni almashtirish</b>.</div>
+  <div><div class="text-xs uppercase tracking-widest text-green-300 font-black mb-1">SMS varianti</div>Email o‘rniga telefon: <b>Eskiz.uz</b> yoki <b>Play Mobile</b> API — mantiq <b>aynan bir xil</b>.</div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-amber-500 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-unlock-keyhole"></i> MUSTAQIL ISH · 30 daqiqa</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Parolni tiklash (forgot password)</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Bugun o‘rgangan mexanizmni <b>o‘zingiz</b> qayta ishlatasiz: kod yuborish → kodni tekshirish → parolni almashtirish. Bajargan qadamni bosib belgilang ✓</p>
+</div>
+<div class="fd" data-seq data-interval="2400">
+<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>Parolni tiklash oqimi</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
+
+<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:10%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb"></div></div><div class="fd-node" style="left:50%;--nc:#fbbf24"><div class="ic"><i class="fas fa-envelope" style="color:#fbbf24"></i></div><div class="nm">Email</div><div class="sb"></div></div><div class="fd-node" style="left:90%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">API + DB</div><div class="sb"></div></div><div class="fd-packet"></div></div>
+
+<div class="fd-steps cols2"><div class="fd-step" data-step data-hl="0,2" data-from="10" data-to="90" data-packet="POST /password-reset/  {email}" data-color="#38BDF8" ><span class="k">1</span><div>User parolini unutdi.</div></div><div class="fd-step" data-step data-hl="2,1" data-from="90" data-to="50" data-packet="📧 kod: 731905" data-color="#fbbf24" ><span class="k">2</span><div>Xuddi register’dagidek kod yuboriladi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="50" data-to="10" data-packet="user kodni oladi" data-color="#4ade80" ><span class="k">3</span><div>Pochtadan (darsda — terminaldan).</div></div><div class="fd-step" data-step data-hl="0,2" data-from="10" data-to="90" data-packet="{email, code, new_password}" data-color="#c084fc" ><span class="k">4</span><div>Kod va yangi parol yuboriladi.</div></div><div class="fd-step" data-step data-hl="2" data-from="90" data-to="90" data-packet="set_password(new_password)" data-color="#4ade80" ><span class="k">5</span><div>Parol almashadi va hash holatda saqlanadi.</div></div><div class="fd-step" data-step data-hl="2,0" data-from="90" data-to="10" data-packet="200 · Parol yangilandi" data-color="#4ade80" ><span class="k">6</span><div>Endi yangi parol bilan login.</div></div></div>
+<div class="fd-bar"><i></i></div>
+</div>
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="space-y-3">
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#0ea5e9">1</div><div class="ck"><i class="fas fa-check"></i></div><h4>Ikkita serializer yozing</h4><p><code>PasswordResetRequestSerializer</code> (email) va <code>PasswordResetConfirmSerializer</code> (email, code, new_password — <code>min_length=8</code>)</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#8b5cf6">2</div><div class="ck"><i class="fas fa-check"></i></div><h4>Kodni qayta ishlating</h4><p><code>send_verification_code(user)</code> funksiyasini o‘zgartirmasdan chaqiring — u allaqachon tayyor.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#10b981">3</div><div class="ck"><i class="fas fa-check"></i></div><h4>Ikkita view yozing</h4><p><code>/password-reset/</code> va <code>/password-reset/confirm/</code>. Tekshiruvlar <b>VerifyEmailView</b> dagidek: muddat, urinish, kod.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#f59e0b">4</div><div class="ck"><i class="fas fa-check"></i></div><h4>Parolni to‘g‘ri almashtiring</h4><p><code>user.set_password(new_password)</code> → <code>user.save()</code> → kodni <code>delete()</code>.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#ef4444">5</div><div class="ck"><i class="fas fa-check"></i></div><h4>Sinang</h4><p>Eski parol bilan login → <b>401</b>, yangi parol bilan → <b>200</b>.</p></div>
+  </div>
+  <div class="space-y-4">
+    <div class="dark-box p-5">
+      <div class="flex items-center justify-between mb-3"><div class="text-xs uppercase tracking-widest text-amber-300 font-black">Kutilgan natija</div><div class="tag-chip bg-green-500/15 text-green-300" data-mcount>0 / 5 bajarildi</div></div>
+      <div class="expect text-slate-200">
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/password-reset/</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">confirm/ — kod xato</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">confirm/ — kod to‘g‘ri</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — eski parol</span><span class="st bg-red-500/20 text-red-300">401</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — yangi parol</span><span class="st bg-green-500/20 text-green-300">200</span>
+      </div>
+    </div>
+    <div class="glow-card bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-star text-violet-500 mr-2"></i>Bonus</div><p class="text-sm text-gray-600 mt-1">Parol almashgach, barcha eski <b>refresh</b> tokenlarni blacklist qiling — o‘g‘ri kirgan bo‘lsa, chiqib ketadi.</p></div>
+    <div class="glow-card bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-circle-question text-sky-500 mr-2"></i>O‘ylab ko‘ring</div><p class="text-sm text-gray-600 mt-1">Nega <b>parolni tiklash</b> so‘ralganda ham “Agar bunday email bo‘lsa, kod yuborildi” deymiz?</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-slate-900 text-white relative hero-grid custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.6rem;">
+<div class="w-full max-w-6xl mx-auto relative z-10">
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-amber-400/15 text-amber-300 border border-amber-300/20 px-5 py-2 rounded-full font-black mb-4"><i class="fas fa-house-laptop"></i> UYGA VAZIFA</div>
+<h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-3">Email tasdiqlashni 2 marta yozing</h2>
+<p class="text-gray-300 max-w-3xl mx-auto">Yo‘l bir xil: 6 ta fayl → 7 ta test → zip. Birinchi marta slaydga qarab, ikkinchi marta <b>yoddan</b>.</p>
+</div>
+<div class="slide22-shell mb-6">
+  <div class="road"><div class="road-line"><i></i></div><div class="road-pts"><div class="road-pt"><div class="c" style="animation-delay:0s"><i class="fas fa-sliders text-sky-300"></i></div><div class="l">settings.py</div><div class="s">EMAIL backend</div></div><div class="road-pt"><div class="c" style="animation-delay:1s"><i class="fas fa-table text-sky-300"></i></div><div class="l">models.py</div><div class="s">EmailCode</div></div><div class="road-pt"><div class="c" style="animation-delay:2s"><i class="fas fa-gears text-sky-300"></i></div><div class="l">services.py</div><div class="s">kod + send_mail</div></div><div class="road-pt"><div class="c" style="animation-delay:3s"><i class="fas fa-filter text-sky-300"></i></div><div class="l">serializers</div><div class="s">3 ta</div></div><div class="road-pt"><div class="c" style="animation-delay:4s"><i class="fas fa-door-open text-sky-300"></i></div><div class="l">views.py</div><div class="s">register/verify/resend</div></div><div class="road-pt"><div class="c" style="animation-delay:5s"><i class="fas fa-signs-post text-sky-300"></i></div><div class="l">urls.py</div><div class="s">7 endpoint</div></div><div class="road-pt"><div class="c" style="animation-delay:6s"><i class="fas fa-file-zipper text-sky-300"></i></div><div class="l">Zip</div><div class="s">ustozga</div></div></div></div>
+</div>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+  <div class="lap pop-in d1"><div class="big text-green-300">1</div><div class="font-black text-lg mt-2">Slaydga qarab</div><p class="text-sm text-slate-300 mt-1">Har qatorni tushunib tering. Console backend bilan ishlating.</p><div class="zipname">email_1_Ism.zip</div></div>
+  <div class="lap pop-in d2"><div class="big text-sky-300">2</div><div class="font-black text-lg mt-2">Yoddan</div><p class="text-sm text-slate-300 mt-1">Slaydsiz yozing. Xato chiqsa — “Xatolar” betiga qarang.</p><div class="zipname">email_2_Ism.zip</div></div>
+  <div class="lap pop-in d3"><div class="big text-amber-300">★</div><div class="font-black text-lg mt-2">Bonus</div><p class="text-sm text-slate-300 mt-1">Haqiqiy Gmail App password bilan <b>o‘z pochtangizga</b> kod yuboring va skrinshot oling.</p><div class="zipname">bonus_screenshot.png</div></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-5">
+  <div class="slide22-task">
+    <div class="text-sm uppercase tracking-widest text-blue-700 font-black mb-3"><i class="fas fa-vial-circle-check mr-1"></i> 7 ta test</div>
+    <div class="expect text-slate-700">
+      <span class="st bg-green-100 text-green-700">POST</span><span class="mono text-xs">/api/register/</span><span class="st bg-green-100 text-green-700">201</span>
+      <span class="st bg-slate-100 text-slate-700">—</span><span class="mono text-xs">terminalda kod chiqdi</span><span class="st bg-green-100 text-green-700">✓</span>
+      <span class="st bg-rose-100 text-rose-700">POST</span><span class="mono text-xs">/api/login/ (tasdiqsiz)</span><span class="st bg-rose-100 text-rose-700">401</span>
+      <span class="st bg-orange-100 text-orange-700">POST</span><span class="mono text-xs">/api/verify-email/ (xato kod)</span><span class="st bg-rose-100 text-rose-700">400</span>
+      <span class="st bg-sky-100 text-sky-700">POST</span><span class="mono text-xs">/api/verify-email/ (to‘g‘ri)</span><span class="st bg-green-100 text-green-700">200</span>
+      <span class="st bg-blue-100 text-blue-700">POST</span><span class="mono text-xs">/api/login/ → access + refresh</span><span class="st bg-green-100 text-green-700">200</span>
+      <span class="st bg-violet-100 text-violet-700">POST</span><span class="mono text-xs">/api/resend-code/ (darrov)</span><span class="st bg-rose-100 text-rose-700">429</span>
+    </div>
+  </div>
+  <div class="slide22-task bg-gradient-to-br from-amber-50 to-white border-amber-100">
+    <div class="text-sm uppercase tracking-widest text-amber-700 font-black mb-3"><i class="fas fa-paper-plane mr-1"></i> Topshirish</div>
+    <ul class="space-y-2 text-sm text-gray-700">
+      <li><i class="fas fa-check text-green-500 mr-2"></i>Har urinishdan keyin zip → jami <b>2 ta zip</b>.</li>
+      <li><i class="fas fa-check text-green-500 mr-2"></i>Zip ichida <span class="mono">venv</span>, <span class="mono">db.sqlite3</span> va <span class="mono">.env</span> <b>bo‘lmasin</b>.</li>
+      <li><i class="fas fa-check text-green-500 mr-2"></i>7 ta test natijasining skrinshoti.</li>
+      <li><i class="fas fa-star text-amber-500 mr-2"></i>Mustaqil ishdagi <b>parolni tiklash</b> ham qo‘shilsa — alohida ball.</li>
+    </ul>
+  </div>
+</div>
+</div>
+</section>
+<section class="slide bg-slate-900 text-white relative hero-grid">
+<div class="absolute inset-0 flex justify-center items-center opacity-20 blur-3xl"><div class="w-[34rem] h-[34rem] bg-front-blue rounded-full"></div></div>
+<div class="lesson6-end-wrap relative z-10">
+<div class="flex justify-center items-center gap-6 mb-8">
+<div class="lesson6-end-icon alt animate-float"><i class="fas fa-envelope-circle-check text-6xl text-front-blue"></i></div>
+<div class="lesson6-end-icon animate-float" style="animation-delay:.8s"><i class="fas fa-user-shield text-6xl text-django-light"></i></div>
+</div>
+<div class="text-front-blue font-black tracking-[0.2em] uppercase text-xl mb-4">Xulosa</div>
+<h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-2">Endi tizimingiz to‘liq</h2>
+<h3 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-front-blue via-django-light to-yellow-300 mb-6">register → 📧 kod → verify<br/>→ login → JWT</h3>
+<p class="text-xl text-slate-300 max-w-5xl mx-auto leading-relaxed">Email tasdiqlash — bu shunchaki “qo‘shimcha imkoniyat” emas. Bu real loyihaning eng birinchi talabi: <b>foydalanuvchi haqiqiy ekanini bilish</b>.</p>
+<a href="index.html" class="inline-flex items-center gap-2 mt-8 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-arrow-left"></i> 1-qism: JWT register / login</a>
+<a href="sms-verify.html" class="inline-flex items-center gap-2 mt-8 ml-3 bg-front-blue text-slate-900 hover:opacity-90 px-5 py-3 rounded-full font-black text-sm"><i class="fas fa-comment-sms"></i> 3-qism: SMS kod</a>
+</div>
+</section></div>
+</main>
+<script>
+    hljs.highlightAll();
+    const slidesWrapper = document.getElementById('slidesWrapper');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('slide-counter');
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+    const touchArea = document.getElementById('touchArea');
+    let currentSlide = 0;
+
+    function updateSlider() {
+      slidesWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+      counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === slides.length - 1;
+      prevBtn.classList.toggle('opacity-40', currentSlide === 0);
+      nextBtn.classList.toggle('opacity-40', currentSlide === slides.length - 1);
+      slides.forEach((s, i) => { s.classList.toggle('is-active', i === currentSlide); if (i === currentSlide) s.scrollTop = 0; });
+    }
+    function go(d) { const n = currentSlide + d; if (n >= 0 && n < slides.length) { currentSlide = n; updateSlider(); } }
+    prevBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => go(1));
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === 'ArrowLeft') go(-1);
+    });
+    touchArea.addEventListener('scroll', () => { if (touchArea.scrollLeft) touchArea.scrollLeft = 0; });
+    let startX = 0;
+    touchArea.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    touchArea.addEventListener('touchend', e => {
+      const diff = e.changedTouches[0].clientX - startX;
+      if (diff < -50) go(1);
+      if (diff > 50) go(-1);
+    }, { passive: true });
+
+    function showToast() {
+      const toast = document.getElementById('copyToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1300);
+    }
+    async function copyById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      try { await navigator.clipboard.writeText(el.innerText); } catch (e) {
+        const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand('copy'); s.removeAllRanges();
+      }
+      showToast();
+    }
+
+    /* ===== Animatsion sequencer ===== */
+    function inRange(spec, k) {
+      const p = String(spec).split('-');
+      const a = +p[0];
+      const b = p.length === 1 ? a : (p[1] === '' ? 999 : +p[1]);
+      return k >= a && k <= b;
+    }
+    function initSeq(el) {
+      const steps = Array.from(el.querySelectorAll('[data-step]'));
+      if (!steps.length) return;
+      const nodes = Array.from(el.querySelectorAll('.fd-node'));
+      const packet = el.querySelector('.fd-packet');
+      const bar = el.querySelector(':scope > .fd-bar i, .fd-bar i');
+      const iv = +el.dataset.interval || 2400;
+      const slide = el.closest('.slide');
+      let i = -1, paused = false, timer = null, typeTimer = null;
+      const toggleBtn = el.querySelector('[data-act="toggle"]');
+
+      function typeInto(t) {
+        clearInterval(typeTimer);
+        const full = t.dataset.type; let n = 0; t.textContent = '';
+        typeTimer = setInterval(() => { n += 3; t.textContent = full.slice(0, n); if (n >= full.length) clearInterval(typeTimer); }, 30);
+      }
+      function show(k) {
+        i = k;
+        steps.forEach((s, j) => { s.classList.toggle('on', j === k); s.classList.toggle('done', j < k); });
+        const s = steps[k];
+        const hl = (s.dataset.hl || '').split(',');
+        nodes.forEach((n, j) => n.classList.toggle('hl', hl.includes(String(j))));
+        if (packet) {
+          if (s.dataset.packet) {
+            const from = +s.dataset.from, to = +s.dataset.to;
+            const tx = v => v < 25 ? '-12%' : (v > 75 ? '-88%' : '-50%');
+            packet.style.transition = 'none';
+            packet.style.left = from + '%';
+            packet.style.transform = `translateX(${tx(from)})`;
+            packet.textContent = s.dataset.packet;
+            packet.style.setProperty('--pc', s.dataset.color || '#38BDF8');
+            packet.style.opacity = 1;
+            void packet.offsetWidth;
+            packet.style.transition = '';
+            packet.style.transition = 'left 1.15s cubic-bezier(.65,0,.35,1), transform 1.15s cubic-bezier(.65,0,.35,1), opacity .3s';
+            packet.style.left = to + '%';
+            packet.style.transform = `translateX(${tx(to)})`;
+          } else packet.style.opacity = 0;
+        }
+        el.querySelectorAll('[data-show]').forEach(x => {
+          const was = x.classList.contains('vis');
+          const now = inRange(x.dataset.show, k);
+          x.classList.toggle('vis', now);
+          if (now && !was && x.dataset.type) typeInto(x);
+        });
+        el.querySelectorAll('[data-lit]').forEach(x => x.classList.toggle('lit', inRange(x.dataset.lit, k)));
+        if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; void bar.offsetWidth; if (!paused) { bar.style.transition = `width ${iv}ms linear`; bar.style.width = '100%'; } }
+      }
+      function restart() { clearInterval(timer); timer = setInterval(tick, iv); }
+      function tick() {
+        if (slide && !slide.classList.contains('is-active')) { i = -1; return; }
+        if (paused) return;
+        show((i + 1) % steps.length);
+      }
+      steps.forEach((s, j) => s.addEventListener('click', () => { show(j); restart(); }));
+      el.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const act = b.dataset.act;
+        if (act === 'prev') { show((Math.max(i, 0) - 1 + steps.length) % steps.length); restart(); }
+        if (act === 'next') { show((i + 1) % steps.length); restart(); }
+        if (act === 'toggle') {
+          paused = !paused;
+          b.innerHTML = paused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+          if (!paused && i >= 0) show(i);
+          else if (bar) { bar.style.transition = 'none'; }
+        }
+      }));
+      new MutationObserver(() => {
+        if (!slide.classList.contains('is-active')) { i = -1; return; }
+        if (i === -1 && !paused) { show(0); restart(); }
+      }).observe(slide, { attributes: true, attributeFilter: ['class'] });
+      restart();
+    }
+    document.querySelectorAll('[data-seq]').forEach(initSeq);
+
+    /* Base64 jonli misol */
+    function b64upd() {
+      const u = document.getElementById('b64u').value, p = document.getElementById('b64p').value;
+      const raw = u + ':' + p;
+      let enc = '';
+      try { enc = btoa(unescape(encodeURIComponent(raw))); } catch (e) { enc = '?'; }
+      document.getElementById('b64o').textContent = enc;
+      document.getElementById('b64d').textContent = raw;
+    }
+
+    /* Mustaqil ish belgilash */
+    function toggleMission(m) {
+      m.classList.toggle('ok');
+      const sec = m.closest('.slide');
+      const all = sec.querySelectorAll('.mission').length, ok = sec.querySelectorAll('.mission.ok').length;
+      const c = sec.querySelector('[data-mcount]');
+      if (c) c.textContent = `${ok} / ${all} bajarildi`;
+    }
+
+    /* Token vs JWT hisoblagich */
+    (function () {
+      const el = document.getElementById('raceCount'); if (!el) return;
+      let n = 0; const sl = el.closest('.slide');
+      setInterval(() => {
+        if (!sl.classList.contains('is-active')) { n = 0; el.textContent = '0'; return; }
+        n = n >= 1000 ? 0 : n + 100; el.textContent = n;
+      }, 240);
+    })();
+
+    updateSlider();
+  </script>
+</body>
+</html>
