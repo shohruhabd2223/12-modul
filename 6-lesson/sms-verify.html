@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>PDP Junior - 6-dars (3-qism) — Telefon raqamni SMS kod bilan tasdiqlash</title>
+<title>PDP Junior - 6-dars (davomi) — SMS orqali tasdiqlash kodi (OTP)</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -286,7 +286,7 @@
     .code-card pre{margin:0}
     .code-card .copy-btn{top:9px;right:10px;width:34px;height:34px;border-radius:10px}
     .code-card .code-wrap{max-height:none}
-    .code-card .hljs{border-radius:0;padding:1rem 1.1rem !important;font-size:13.5px;line-height:1.6}
+    .code-card .hljs{border-radius:0;padding:1rem 1.1rem !important;font-size:12.5px;line-height:1.55}
 
     /* 2-bet: darvoza */
     .gate-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
@@ -433,7 +433,7 @@
     .jwt-dec > div{cursor:pointer}
     .code-card pre,.code-card code{white-space:pre-wrap !important;word-break:break-word;overflow-wrap:anywhere}
 
-    /* ===== email tasdiqlash darsi uchun qo'shimcha ===== */
+    /* ===== tasdiqlash darsi uchun qo'shimcha ===== */
     .otp{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
     .otp span{width:52px;height:64px;border-radius:14px;background:#0b1220;border:2px solid #334155;display:flex;align-items:center;justify-content:center;font:900 26px 'Fira Code',monospace;color:#7dd3fc;animation:otpPop .5s both}
     @keyframes otpPop{from{opacity:0;transform:translateY(14px) scale(.8)}to{opacity:1;transform:none}}
@@ -460,37 +460,6 @@
     .toggle-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     @media (max-width:1024px){.toggle-row{grid-template-columns:1fr}}
     .code-card code.hljs{display:block}
-
-    /* ===== SMS darsi uchun qo'shimcha ===== */
-    .phone{width:250px;margin:0 auto;border-radius:34px;border:9px solid #0f172a;background:#0b1220;padding:14px 12px 18px;box-shadow:0 22px 46px rgba(15,23,42,.35);position:relative}
-    .phone::before{content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);width:76px;height:6px;border-radius:99px;background:#1e293b}
-    .phone .status{display:flex;justify-content:space-between;font-size:10px;color:#94a3b8;font-family:'Fira Code',monospace;margin:6px 2px 12px}
-    .sms{background:#1e293b;border:1px solid #334155;border-radius:18px;border-bottom-left-radius:6px;padding:10px 12px;color:#e2e8f0;font-size:13px;line-height:1.5;animation:smsIn .6s cubic-bezier(.2,.9,.3,1.3) both}
-    .sms + .sms{margin-top:10px}
-    @keyframes smsIn{from{opacity:0;transform:translateY(16px) scale(.9)}to{opacity:1;transform:none}}
-    .sms .from{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7dd3fc;margin-bottom:4px}
-    .sms .big{font-family:'Fira Code',monospace;font-weight:900;font-size:22px;letter-spacing:.22em;color:#fff;display:block;margin:6px 0}
-    .sms .t{font-size:10px;color:#64748b;text-align:right;margin-top:4px}
-    .prov{border-radius:26px;border:2px solid #e5e7eb;background:#fff;padding:18px;box-shadow:0 12px 28px rgba(15,23,42,.06);transition:all .3s}
-    .prov:hover{transform:translateY(-4px)}
-    .prov.best{border-color:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.14),0 18px 36px rgba(15,23,42,.10)}
-    .prov .ph{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-    .prov .pi{width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex:none}
-    .prov table{width:100%;font-size:13px;border-collapse:collapse}
-    .prov td{padding:5px 0;vertical-align:top;color:#475569}
-    .prov td:first-child{color:#94a3b8;font-weight:700;width:38%;white-space:nowrap}
-    .tokenstep{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:13.5px;line-height:1.5;color:#cbd5e1}
-    .tokenstep .n{width:28px;height:28px;border-radius:9px;background:#38BDF8;color:#0f172a;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
-    .tokenstep b{color:#fff}
-    .phnorm input{background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:12px 14px;font-family:'Fira Code',monospace;font-size:16px;width:100%;outline:none;text-align:center}
-    .phnorm input:focus{border-color:#38BDF8}
-    .phnorm .out{font-family:'Fira Code',monospace;font-size:18px;font-weight:900;border-radius:14px;padding:12px 14px;text-align:center;margin-top:10px}
-    .phnorm .ok{background:#0f172a;color:#4ade80}
-    .phnorm .bad{background:#1f0f14;color:#fda4af}
-    .samples{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
-    .samples span{font-family:'Fira Code',monospace;font-size:11px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:99px;padding:4px 10px;cursor:pointer;color:#475569}
-    .samples span:hover{background:#e0f2fe;border-color:#7dd3fc}
-    .env{word-break:break-all}
 </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden">
@@ -510,58 +479,66 @@
 <div class="slides-wrapper" id="slidesWrapper">
 <section class="slide bg-slate-900 text-white relative hero-grid">
 <div class="max-w-5xl text-center relative z-10">
-<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[30rem] h-[30rem] bg-django-light rounded-full"></div></div>
-<span class="block text-front-blue font-black tracking-widest uppercase mb-2 relative z-10">6-DARS · 3-QISM</span>
+<div class="absolute inset-0 flex justify-center items-center opacity-10 blur-3xl"><div class="w-[30rem] h-[30rem] bg-front-blue rounded-full"></div></div>
+<span class="block text-django-light font-black tracking-widest uppercase mb-2 relative z-10">6-DARS · DAVOMI</span>
 <div class="inline-block mb-6 relative z-10">
-<i class="fas fa-mobile-screen-button text-8xl text-django-light animate-float mr-4"></i>
-<i class="fas fa-comment-sms text-7xl text-front-blue animate-float" style="animation-delay:.6s"></i>
-<i class="fas fa-shield-halved text-7xl text-yellow-300 animate-float ml-4" style="animation-delay:1s"></i>
+<i class="fas fa-comment-sms text-8xl text-front-blue animate-float mr-4"></i>
+<i class="fas fa-shield-halved text-7xl text-django-light animate-float" style="animation-delay:.6s"></i>
+<i class="fas fa-key text-7xl text-yellow-300 animate-float ml-4" style="animation-delay:1s"></i>
 </div>
-<h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 relative z-10">Telefon raqamni <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-django-light via-front-blue to-yellow-300">SMS kod bilan tasdiqlash</span></h1>
-<p class="text-xl text-gray-300 font-medium mt-6 relative z-10 max-w-4xl mx-auto">O‘zbekistonda odamlar emailni emas, <b>telefon raqamini</b> yaxshi eslaydi. Shuning uchun ko‘p loyihada login ham, tasdiqlash ham <b>+998</b> bilan boshlanadi. Mantiq email darsi bilan bir xil — faqat kod <b>SMS orqali</b> yuboriladi.</p>
-<div class="flex flex-wrap justify-center gap-3 mt-8 relative z-10">
-<a href="index.html" class="inline-flex items-center gap-2 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-arrow-left"></i> 1-qism: JWT</a>
-<a href="email-verify.html" class="inline-flex items-center gap-2 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-envelope"></i> 2-qism: Email kod</a>
-</div>
+<h1 class="text-5xl md:text-7xl font-black tracking-tighter mb-4 relative z-10">Telefonga tasdiqlash kodi <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-front-blue via-django-light to-yellow-300">(SMS OTP) yuborish</span></h1>
+<p class="text-xl text-gray-300 font-medium mt-6 relative z-10 max-w-4xl mx-auto">Login maydoni endi <b>telefon raqam</b>. Ro‘yxatdan o‘tgan odam <b>haqiqatan ham shu raqam egasi</b> ekanini tekshiramiz: raqamga SMS bilan 6 xonali kod yuboramiz va faqat kod tasdiqlangach login’ga ruxsat beramiz. Tuzilishi email darsi bilan <b>aynan bir xil</b>.</p>
+<a href="index.html" class="inline-flex items-center gap-2 mt-8 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm relative z-10"><i class="fas fa-arrow-left"></i> 1-qismga qaytish (JWT register / login)</a>
+<a href="email-verify.html" class="inline-flex items-center gap-2 mt-8 ml-3 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm relative z-10"><i class="fas fa-envelope"></i> Email varianti</a>
 </div>
 </section>
 <section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-right-left"></i> NIMA O‘ZGARADI?</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Email darsidan farqi — atigi bitta qadam</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Butun mantiq <b>aynan o‘sha</b>: kod yaratiladi → yuboriladi → tekshiriladi → user faollashadi. Faqat <b>yuborish kanali</b> almashadi.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-circle-question"></i> MUAMMO VA YECHIM</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Nega telefon raqamni tasdiqlash kerak?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Hozirgi tizimda istalgan odam <span class='mono'>998000000000</span> deb yozib, darrov login qilib ketadi. Raqam haqiqiymi — hech kim bilmaydi.</p>
 </div>
-<div class="grid lg:grid-cols-2 gap-6">
-  <div class="glow-card pop-in d1 bg-sky-50 border-sky-100">
-    <div class="tag-chip bg-sky-500 text-white mb-3"><i class="fas fa-envelope"></i> 2-QISM · EMAIL</div>
-    <div class="space-y-2 text-sm text-slate-700 mono">
-      <div>login maydoni: <b>email</b></div>
-      <div>yuborish: <b>send_mail()</b> (Django ichida)</div>
-      <div>sozlash: EMAIL_HOST, App password</div>
-      <div>narxi: <b>bepul</b></div>
-      <div>yetib borishi: 1–10 soniya</div>
+<div class="grid lg:grid-cols-2 gap-6 items-stretch">
+  <div class="glow-card pop-in d1 !border-rose-200 bg-rose-50">
+    <div class="tag-chip bg-rose-500 text-white mb-3"><i class="fas fa-xmark"></i> OLDIN</div>
+    <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700">
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">register</span><i class="fas fa-arrow-right text-rose-400"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">login</span><i class="fas fa-arrow-right text-rose-400"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-rose-100">JWT</span>
     </div>
+    <ul class="text-sm text-gray-700 mt-4 space-y-2">
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Soxta raqam bilan ham akkaunt ochiladi</li>
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Bot bir daqiqada 100 ta user yaratadi</li>
+      <li><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Parol unutilsa — tiklab bo‘lmaydi</li>
+    </ul>
   </div>
-  <div class="glow-card pop-in d2 bg-green-50 border-green-100">
-    <div class="tag-chip bg-green-600 text-white mb-3"><i class="fas fa-comment-sms"></i> 3-QISM · SMS</div>
-    <div class="space-y-2 text-sm text-slate-700 mono">
-      <div>login maydoni: <b>phone</b> (998901234567)</div>
-      <div>yuborish: <b>tashqi provayder API</b> (HTTP so‘rov)</div>
-      <div>sozlash: provayder <b>tokeni</b></div>
-      <div>narxi: <b>pullik</b> (test uchun bepul yo‘llari bor)</div>
-      <div>yetib borishi: 2–30 soniya</div>
+  <div class="glow-card pop-in d2 !border-green-200 bg-green-50">
+    <div class="tag-chip bg-green-600 text-white mb-3"><i class="fas fa-check"></i> ENDI</div>
+    <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700">
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">register</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">📱 SMS kod</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">verify</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">login</span><i class="fas fa-arrow-right text-green-500"></i>
+      <span class="bg-white rounded-xl px-3 py-2 border border-green-100">JWT</span>
     </div>
+    <ul class="text-sm text-gray-700 mt-4 space-y-2">
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Raqam egasi ekani isbotlanadi</li>
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Tasdiqlanmagan user <span class="mono">is_active = False</span> — login qila olmaydi</li>
+      <li><i class="fas fa-circle-check text-green-600 mr-2"></i>Keyinchalik parolni tiklash ham shu yo‘l bilan ishlaydi</li>
+    </ul>
   </div>
 </div>
 <div class="grid md:grid-cols-4 gap-4 mt-6">
-  <div class="glow-card pop-in d1"><div class="gi bg-green-500"><i class="fas fa-id-card"></i></div><div class="font-black text-pdp-dark">Raqam = shaxs</div><p class="text-sm text-gray-600 mt-1">Bizda telefon raqam eng ishonchli identifikator: u pasportga bog‘langan.</p></div>
-  <div class="glow-card pop-in d2"><div class="gi bg-sky-500"><i class="fas fa-keyboard"></i></div><div class="font-black text-pdp-dark">Kiritish oson</div><p class="text-sm text-gray-600 mt-1">Email’da xato yozish oson, raqamni esa hamma yoddan biladi.</p></div>
-  <div class="glow-card pop-in d3"><div class="gi bg-amber-500"><i class="fas fa-money-bill-wave"></i></div><div class="font-black text-pdp-dark">Lekin pullik</div><p class="text-sm text-gray-600 mt-1">Har SMS pul turadi — shuning uchun <b>cooldown</b> va <b>limit</b> email’dagidan ham muhimroq.</p></div>
-  <div class="glow-card pop-in d4"><div class="gi bg-violet-500"><i class="fas fa-plug"></i></div><div class="font-black text-pdp-dark">Tashqi API</div><p class="text-sm text-gray-600 mt-1">Django o‘zi SMS yubora olmaydi — provayderga HTTP so‘rov yuboramiz.</p></div>
+  <div class="glow-card pop-in d1"><div class="gi bg-sky-500"><i class="fas fa-user-check"></i></div><div class="font-black text-pdp-dark">Haqiqiy user</div><p class="text-sm text-gray-600 mt-1">Telefoni qo‘lida bor odamgina ro‘yxatdan o‘tadi.</p></div>
+  <div class="glow-card pop-in d2"><div class="gi bg-violet-500"><i class="fas fa-robot"></i></div><div class="font-black text-pdp-dark">Botlarga to‘siq</div><p class="text-sm text-gray-600 mt-1">Soxta raqamlar hech qachon faollashmaydi.</p></div>
+  <div class="glow-card pop-in d3"><div class="gi bg-amber-500"><i class="fas fa-unlock-keyhole"></i></div><div class="font-black text-pdp-dark">Parolni tiklash</div><p class="text-sm text-gray-600 mt-1">Aynan shu kod mexanizmi qayta ishlatiladi.</p></div>
+  <div class="glow-card pop-in d4"><div class="gi bg-green-500"><i class="fas fa-bell"></i></div><div class="font-black text-pdp-dark">Aloqa kanali</div><p class="text-sm text-gray-600 mt-1">Buyurtma, to‘lov, ogohlantirish — hammasi shu raqamga SMS bo‘lib boradi.</p></div>
 </div>
-<div class="dark-box p-5 mt-6 text-sm"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Kodni tekshirish qismi (<span class="mono">PhoneCode</span>, muddat, urinishlar, cooldown) email darsidan <b>o‘zgarishsiz</b> ko‘chiriladi. Yangi narsa faqat <b>yuborish</b> funksiyasi.</div>
+<div class="dark-box p-5 mt-6 text-sm flex flex-wrap items-center gap-3">
+  <i class="fas fa-lightbulb text-yellow-300"></i><b>Bu texnika OTP deb ataladi</b> — One Time Password, ya’ni bir martalik kod. Telegram, Instagram, bank ilovalari — hammasi shu tamoyilda ishlaydi. <b>Email darsidan farqi</b> shuki: kod <b>emailga</b> emas, <b>telefonga SMS</b> bilan boradi, login maydoni esa <span class="mono">phone</span>. Qolgan hamma narsa — bir xil tuzilma.
+</div>
 
 </div>
 </section>
@@ -570,29 +547,21 @@
 
 <div class="text-center mb-7">
 <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-route"></i> TO‘LIQ OQIM</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">SMS kod qayerdan qayerga boradi?</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Email darsidagi zanjirning o‘zi, faqat o‘rtada <b>tashqi provayder</b> paydo bo‘ldi. Animatsiyani kuzating.</p>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Kod qayerda tug‘iladi va qayerda tekshiriladi?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Butun jarayon <b>4 ta ishtirokchi</b> orasida kechadi: Client, Django API, SMS xizmati va Database. Animatsiyani kuzating — har qadam alohida yoritiladi.</p>
 </div>
 <div class="fd" data-seq data-interval="2400">
-<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>register → SMS → verify → login</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
+<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>register → kod → SMS → verify → login</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
 
-<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:8%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb">Swagger</div></div><div class="fd-node" style="left:36%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">Django API</div><div class="sb">accounts</div></div><div class="fd-node" style="left:64%;--nc:#fbbf24"><div class="ic"><i class="fas fa-tower-cell" style="color:#fbbf24"></i></div><div class="nm">SMS provayder</div><div class="sb">Telegram / Eskiz</div></div><div class="fd-node" style="left:92%;--nc:#c084fc"><div class="ic"><i class="fas fa-mobile-screen" style="color:#c084fc"></i></div><div class="nm">Telefon</div><div class="sb">+998 90 …</div></div><div class="fd-packet"></div></div>
+<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:8%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb">Swagger</div></div><div class="fd-node" style="left:36%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">Django API</div><div class="sb">accounts</div></div><div class="fd-node" style="left:64%;--nc:#fbbf24"><div class="ic"><i class="fas fa-comment-sms" style="color:#fbbf24"></i></div><div class="nm">SMS</div><div class="sb">Eskiz / console</div></div><div class="fd-node" style="left:92%;--nc:#c084fc"><div class="ic"><i class="fas fa-database" style="color:#c084fc"></i></div><div class="nm">Database</div><div class="sb">User + PhoneCode</div></div><div class="fd-packet"></div></div>
 
-<div class="fd-steps cols2"><div class="grid gap-2 content-start"><div class="fd-group text-green-300"><i class="fas fa-user-plus mr-1"></i> Register va SMS</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /register/  {phone, password}" data-color="#38BDF8" ><span class="k">1</span><div>Raqam <b>998901234567</b> ko‘rinishiga keltiriladi.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="36" data-packet="create_user() → is_active = False" data-color="#c084fc" ><span class="k">2</span><div>User yaratiladi, lekin faol emas.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="36" data-packet="secrets → 482913  +  PhoneCode" data-color="#fbbf24" ><span class="k">3</span><div>Kod yaratilib, bazaga yoziladi.</div></div><div class="fd-step" data-step data-hl="1,2" data-from="36" data-to="64" data-packet="HTTP POST  {phone, code}" data-color="#38BDF8" ><span class="k">4</span><div>Provayder API’siga so‘rov ketadi (token bilan).</div></div><div class="fd-step" data-step data-hl="2,3" data-from="64" data-to="92" data-packet="📩 Tasdiqlash kodingiz: 482913" data-color="#4ade80" ><span class="k">5</span><div>SMS telefonga tushadi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="201 Created" data-color="#4ade80" ><span class="k">6</span><div>Javobda <b>kod yo‘q</b> — faqat “kod yuborildi”.</div></div></div><div class="grid gap-2 content-start"><div class="fd-group text-sky-300"><i class="fas fa-shield-halved mr-1"></i> Tasdiqlash va login</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /verify-phone/  {phone, code}" data-color="#38BDF8" ><span class="k">7</span><div>User kodni kiritadi.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="36" data-packet="kod ✓  muddat ✓  urinish ✓" data-color="#fbbf24" ><span class="k">8</span><div>Uchta tekshiruv — email darsidagidek.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="200 · Raqam tasdiqlandi" data-color="#4ade80" ><span class="k">9</span><div><span class='mono'>is_active = True</span>, kod o‘chadi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /login/  {phone, password}" data-color="#38BDF8" ><span class="k">10</span><div>Endi login mumkin.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="{&quot;access&quot;: &quot;eyJ…&quot;, &quot;refresh&quot;: &quot;eyJ…&quot;}" data-color="#4ade80" ><span class="k">11</span><div>JWT keldi — 1-qismdagi tizim davom etadi.</div></div><div class="fd-step" data-step data-hl="1,2" data-from="36" data-to="64" data-packet="provayder javob bermadi ✗" data-color="#fb7185" ><span class="k">12</span><div>Agar SMS ketmasa…</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="503 · SMS yuborib bo‘lmadi" data-color="#fb7185" ><span class="k">13</span><div>User <b>o‘chiriladi</b> — yarim qolgan akkaunt qolmaydi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /resend-code/  {phone}" data-color="#c084fc" ><span class="k">14</span><div>Kod kelmasa — qayta yuborish (60 soniyada 1 marta).</div></div></div></div>
+<div class="fd-steps cols2"><div class="grid gap-2 content-start"><div class="fd-group text-green-300"><i class="fas fa-user-plus mr-1"></i> Register va kod yuborish</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /register/  {phone, password}" data-color="#38BDF8" ><span class="k">1</span><div>User ro‘yxatdan o‘tmoqchi.</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="create_user() → is_active = False" data-color="#c084fc" ><span class="k">2</span><div>User yaratiladi, lekin <b>faol emas</b> (model default’i) — login qila olmaydi.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="36" data-packet="random → 482913" data-color="#fbbf24" ><span class="k">3</span><div>Server 6 xonali <b>tasodifiy</b> kod yaratadi.</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="PhoneCode: kod + created_at" data-color="#c084fc" ><span class="k">4</span><div>Kod bazaga yoziladi (muddat hisoblash uchun vaqti bilan).</div></div><div class="fd-step" data-step data-hl="1,2" data-from="36" data-to="64" data-packet="send_sms(user.phone, code)" data-color="#38BDF8" ><span class="k">5</span><div>Kod SMS bilan jo‘natiladi, <b>pre_token</b> esa register javobida qaytadi.</div></div><div class="fd-step" data-step data-hl="2,0" data-from="64" data-to="8" data-packet="📱 Tasdiqlash kodingiz: 482913" data-color="#4ade80" ><span class="k">6</span><div>User telefoniga SMS keladi.</div></div></div><div class="grid gap-2 content-start"><div class="fd-group text-sky-300"><i class="fas fa-shield-halved mr-1"></i> Tasdiqlash va login</div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /verify-phone/  {pre_token, code}" data-color="#38BDF8" ><span class="k">7</span><div>User kodni kiritadi (<b>pre_token</b> bilan birga).</div></div><div class="fd-step" data-step data-hl="1,3" data-from="36" data-to="92" data-packet="kod ✓  muddat ✓  urinish ✓" data-color="#fbbf24" ><span class="k">8</span><div>3 ta tekshiruv: kod to‘g‘rimi, 5 daqiqa o‘tmaganmi, urinishlar tugamaganmi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="200 · Raqam tasdiqlandi" data-color="#4ade80" ><span class="k">9</span><div><span class='mono'>is_active = True</span>, kod bazadan o‘chiriladi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /login/  {phone, password}" data-color="#38BDF8" ><span class="k">10</span><div>Endi login mumkin.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="36" data-to="8" data-packet="{&quot;access&quot;: &quot;eyJ…&quot;, &quot;refresh&quot;: &quot;eyJ…&quot;}" data-color="#4ade80" ><span class="k">11</span><div>JWT keldi — 1-qismdagi tizim davom etadi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /verify-phone/  {pre_token, code: &quot;000000&quot;}" data-color="#fb7185" ><span class="k">12</span><div>Kod xato kiritilsa…</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="8" data-packet="400 · Kod noto‘g‘ri (urinish +1)" data-color="#fb7185" ><span class="k">13</span><div>5 marta xato → yangi kod so‘rash kerak.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="8" data-to="36" data-packet="POST /resend-code/  {pre_token}" data-color="#c084fc" ><span class="k">14</span><div>Kod kelmasa — qayta yuborish.</div></div><div class="fd-step" data-step data-hl="1" data-from="36" data-to="8" data-packet="429 · 1 daqiqada faqat 1 marta" data-color="#fb923c" ><span class="k">15</span><div>Ketma-ket bosishning oldini olamiz (cooldown).</div></div></div></div>
 <div class="fd-bar"><i></i></div>
 </div>
-<div class="grid lg:grid-cols-[.4fr_.6fr] gap-6 mt-6 items-start">
-  <div class="phone">
-    <div class="status"><span>09:41</span><span>📶 🔋</span></div>
-    <div class="sms"><div class="from">4546</div>Tasdiqlash kodingiz:<span class="big">482913</span>Kod 5 daqiqa amal qiladi.<div class="t">hozir</div></div>
-    <div class="sms" style="animation-delay:1.2s"><div class="from">Telegram</div>Verification code:<span class="big">301774</span><div class="t">1 daqiqa oldin</div></div>
-  </div>
-  <div class="grid sm:grid-cols-2 gap-4">
-    <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-phone text-green-500 mr-2"></i>Raqam formati</div><p class="text-sm text-gray-600 mt-1">Bazada faqat <span class="mono">998901234567</span> saqlanadi. User qanday yozsa ham, biz tozalaymiz.</p></div>
-    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-trash text-rose-500 mr-2"></i>SMS ketmasa</div><p class="text-sm text-gray-600 mt-1">User yaratilib, keyin SMS ketmasa — uni <b>o‘chiramiz</b>. Aks holda raqam band bo‘lib qoladi.</p></div>
-    <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-coins text-amber-500 mr-2"></i>Har SMS = pul</div><p class="text-sm text-gray-600 mt-1">Cooldown va urinish limiti bu yerda <b>byudjetni</b> ham himoya qiladi.</p></div>
-    <div class="glow-card pop-in d4"><div class="font-black text-pdp-dark"><i class="fas fa-eye-slash text-violet-500 mr-2"></i>Kod javobda yo‘q</div><p class="text-sm text-gray-600 mt-1">API javobi: “kod yuborildi”. Kodning o‘zi faqat telefonda.</p></div>
-  </div>
+<div class="grid md:grid-cols-3 gap-4 mt-6">
+  <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-user-slash text-rose-500 mr-2"></i>is_active = False</div><p class="text-sm text-gray-600 mt-1">Tasdiqlanmagan user uchun login <b>401</b> qaytaradi — qo‘shimcha kod yozmaymiz, Django o‘zi tekshiradi.</p></div>
+  <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-hourglass-half text-amber-500 mr-2"></i>5 daqiqa</div><p class="text-sm text-gray-600 mt-1">Kod qisqa yashaydi. O‘g‘irlansa ham foydasi bo‘lmaydi.</p></div>
+  <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-trash text-slate-500 mr-2"></i>1 user = 1 kod</div><p class="text-sm text-gray-600 mt-1">Yangi kod yuborilganda eskisi o‘chiriladi — chalkashlik bo‘lmaydi.</p></div>
 </div>
 
 </div>
@@ -601,174 +570,47 @@
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-key"></i> PROVAYDER VA TOKEN</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Qaysi xizmatni tanlaymiz va tokenni qayerdan olamiz?</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Uchta yo‘l bor va <b>kodimiz uchalasi bilan ham ishlaydi</b> — settings’da bitta so‘z almashadi. Tanlov: darsda console, testda Telegram Gateway, real loyihada Eskiz.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-sliders"></i> 1-QADAM · settings.py va sms.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Django’ni SMS yuborishga o‘rgatamiz</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Darsda <b>console</b> rejimi: SMS jo‘natilmaydi, kod terminalga chiqadi — tekshirish tez va bepul. Internetga chiqqanda esa <b>bitta so‘z</b> almashadi: <span class="mono">SMS_BACKEND = "eskiz"</span>.</p>
 </div>
-<div class="grid md:grid-cols-3 gap-5"><div class="prov ">
-<div class="ph"><div class="pi" style="background:#64748b"><i class="fas fa-terminal"></i></div><div><div class="font-black text-pdp-dark text-lg leading-tight">Console (dev)</div><div class="text-xs text-gray-500">hech qanday tashqi xizmat</div></div>
-<span class="tag-chip bg-slate-200 text-slate-700 ml-auto !text-[10px] !py-1">DARSDA</span></div>
-<table><tbody><tr><td>Narxi</td><td>bepul, cheksiz</td></tr><tr><td>Sozlash</td><td>0 daqiqa</td></tr><tr><td>Kod qayerda</td><td>terminalda chiqadi</td></tr><tr><td>Kamchiligi</td><td>haqiqiy SMS emas</td></tr><tr><td>Qachon</td><td>dars, test yozish, CI</td></tr></tbody></table></div><div class="prov best">
-<div class="ph"><div class="pi" style="background:#0ea5e9"><i class="fas fa-paper-plane"></i></div><div><div class="font-black text-pdp-dark text-lg leading-tight">Telegram Gateway</div><div class="text-xs text-gray-500">gatewayapi.telegram.org</div></div>
-<span class="tag-chip bg-sky-100 text-sky-700 ml-auto !text-[10px] !py-1">TEST UCHUN ENG QULAY</span></div>
-<table><tbody><tr><td>Narxi</td><td><b>o‘z raqamingizga — bepul, cheksiz</b>; boshqalarga — pullik</td></tr><tr><td>Sozlash</td><td>2 daqiqa, hujjat kerak emas</td></tr><tr><td>Yetib borishi</td><td>Telegram ilovasiga (SMS emas)</td></tr><tr><td>Kamchiligi</td><td>userda Telegram bo‘lishi shart</td></tr><tr><td>Qachon</td><td>o‘qish/test, prototip</td></tr></tbody></table></div><div class="prov ">
-<div class="ph"><div class="pi" style="background:#22c55e"><i class="fas fa-tower-cell"></i></div><div><div class="font-black text-pdp-dark text-lg leading-tight">Eskiz.uz</div><div class="text-xs text-gray-500">notify.eskiz.uz</div></div>
-<span class="tag-chip bg-green-100 text-green-700 ml-auto !text-[10px] !py-1">REAL SMS</span></div>
-<table><tbody><tr><td>Narxi</td><td>ro‘yxatdan o‘tganda <b>100 ta bepul test SMS</b>, keyin pullik</td></tr><tr><td>Sozlash</td><td>email + parol → token</td></tr><tr><td>Yetib borishi</td><td>haqiqiy SMS, UZ raqamlariga</td></tr><tr><td>Kamchiligi</td><td>faqat yuridik shaxslarga; o‘z nomingiz (alfa-nom) 1–2 oy tasdiqlanadi — dotda <span class='mono'>4546</span> dan keladi</td></tr><tr><td>Qachon</td><td>real loyiha, production</td></tr></tbody></table></div></div>
-<div class="grid lg:grid-cols-2 gap-6 mt-7 items-start">
-  <div class="fd !p-6">
-    <div class="fd-title mb-4"><i class="fas fa-paper-plane mr-2"></i>Telegram Gateway — token 2 daqiqada</div>
-    <div class="space-y-3">
-      <div class="tokenstep"><span class="n">1</span><div><b>gateway.telegram.org</b> saytini oching va Telegram akkauntingiz bilan kiring (telefon raqam + Telegram’dagi kod).</div></div>
-      <div class="tokenstep"><span class="n">2</span><div><b>API</b> bo‘limiga o‘ting: <span class="mono">gateway.telegram.org/account/api</span></div></div>
-      <div class="tokenstep"><span class="n">3</span><div><b>Copy token</b> tugmasini bosing — tayyor. Uni <span class="mono">.env</span> ga <span class="mono">TELEGRAM_GATEWAY_TOKEN</span> deb yozasiz.</div></div>
-      <div class="tokenstep"><span class="n">4</span><div>Sinash: <b>o‘zingizning raqamingizga</b> kod yuboring — bu <b>bepul</b> va cheksiz. Kod Telegram’dagi “Verification Codes” chatiga tushadi.</div></div>
-    </div>
-    <div class="mt-4 rounded-2xl bg-white/5 border border-white/10 p-4 text-sm text-slate-300"><i class="fas fa-circle-info text-sky-300 mr-1"></i> Boshqa odamning raqamiga yuborish uchun hisobni to‘ldirish kerak. Dars va mustaqil ish uchun o‘z raqamingiz yetarli.</div>
-  </div>
-  <div class="fd !p-6">
-    <div class="fd-title mb-4"><i class="fas fa-tower-cell mr-2"></i>Eskiz.uz — real SMS uchun</div>
-    <div class="space-y-3">
-      <div class="tokenstep"><span class="n">1</span><div><b>my.eskiz.uz</b> da ro‘yxatdan o‘ting (yuridik shaxs ma’lumotlari bilan).</div></div>
-      <div class="tokenstep"><span class="n">2</span><div>Ro‘yxatdan o‘tgach <b>100 ta bepul test SMS</b> beriladi.</div></div>
-      <div class="tokenstep"><span class="n">3</span><div>Kodda email va parolingizdan <b>token</b> olinadi: <span class="mono">POST /api/auth/login</span> → token ~30 kun yashaydi.</div></div>
-      <div class="tokenstep"><span class="n">4</span><div>SMS <span class="mono">from=4546</span> nomidan ketadi. O‘z nomingiz (alfa-nom) operatorlarda <b>1–2 oy</b> tasdiqlanadi.</div></div>
-    </div>
-    <div class="mt-4 rounded-2xl bg-amber-500/10 border border-amber-400/20 p-4 text-sm text-amber-200"><i class="fas fa-triangle-exclamation mr-1"></i> Token va parolni <b>kodga yozmang</b> — faqat <span class="mono">.env</span>. GitHub’ga tushsa, balansingiz begonalar hisobiga sarflanadi.</div>
-  </div>
-</div>
-<div class="dark-box p-5 mt-6 text-sm"><i class="fas fa-user-shield text-green-300 mr-2"></i><b>Muhim:</b> tokenni har kim <b>o‘zi</b> oladi — u shaxsiy akkauntga bog‘lanadi va boshqa odamning tokeni bilan ishlash mumkin emas (balans ham, javobgarlik ham egasiniki). Yuqoridagi 4 qadam — hammasi shu.</div>
-
-</div>
-</section>
-<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
-<div class="w-full max-w-6xl mx-auto">
-
-<div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-user-gear"></i> 1-QADAM · accounts/models.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Endi login maydoni — telefon</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Email darsidagi model bilan bir xil, faqat <span class='mono'>USERNAME_FIELD</span> endi <b>phone</b>. Email ixtiyoriy bo‘lib qoladi.</p>
-</div>
-<div class="grid lg:grid-cols-2 gap-6 items-start [&>*]:min-w-0">
-  <div class="space-y-4">
+<div class="toggle-row">
+  <div class="pop-in d1">
+    <div class="tag-chip bg-sky-100 text-sky-700 mb-3"><i class="fas fa-laptop-code"></i> DARSDA / DEV</div>
     <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsModels')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">User + PhoneCode</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsModels">class User(AbstractUser):
-    username = None
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=12, unique=True)   # 998901234567
-    is_active = models.BooleanField(default=False)
-
-    objects = UserManager()
-
-    USERNAME_FIELD = "phone"
-    REQUIRED_FIELDS = []
-
-
-class PhoneCode(models.Model):
-    LIFETIME = timedelta(minutes=5)
-    MAX_ATTEMPTS = 5
-
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    code = models.CharField(max_length=6)
-    attempts = models.PositiveSmallIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def is_expired(self):
-        return timezone.now() &gt; self.created_at + self.LIFETIME</code></pre></div>
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsDev')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">console</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="smsDev"># DEV — kod terminalda (konsolda) chiqadi
+SMS_BACKEND = "console"</code></pre></div>
 </div>
-    <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsManager')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">UserManager</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsManager">class UserManager(BaseUserManager):
-    def create_user(self, phone, password=None, **extra_fields):
-        user = self.model(phone=phone, **extra_fields)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_superuser(self, phone, password=None, **extra_fields):
-        extra_fields.update(is_staff=True, is_superuser=True, is_active=True)
-        return self.create_user(phone, password, **extra_fields)</code></pre></div>
-</div>
-  </div>
-  <div class="space-y-4">
-    <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-hashtag text-sky-500 mr-2"></i>Nega <span class="mono">max_length=12</span>?</div><p class="text-sm text-gray-600 mt-1">Bazada faqat toza raqam turadi: <span class="mono">998</span> + 9 ta raqam = 12 belgi. Probel, qavs va <span class="mono">+</span> saqlanmaydi.</p></div>
-    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-fingerprint text-violet-500 mr-2"></i><span class="mono">unique=True</span></div><p class="text-sm text-gray-600 mt-1">Bitta raqam — bitta akkaunt. Ikkinchi marta ro‘yxatdan o‘tmoqchi bo‘lsa, serializer o‘zi 400 qaytaradi.</p></div>
-    <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-envelope text-slate-500 mr-2"></i>Email nega qoldi?</div><p class="text-sm text-gray-600 mt-1"><span class="mono">blank=True</span> — user xohlasa keyinroq qo‘shadi. Chek, hisobot yuborish uchun asqotadi.</p></div>
-    <div class="glow-card pop-in d4"><div class="font-black text-pdp-dark"><i class="fas fa-terminal text-green-600 mr-2"></i>Superuser</div><p class="text-sm text-gray-600 mt-1"><span class="mono">createsuperuser</span> endi <b>telefon</b> so‘raydi va u darhol faol bo‘ladi (<span class="mono">is_active=True</span>).</p></div>
-    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900"><i class="fas fa-circle-info mr-1"></i> <span class="mono">makemigrations</span> → <span class="mono">migrate</span>. Bu model ham loyiha <b>boshida</b> yoziladi.</div>
-  </div>
-</div>
-
-</div>
-</section>
-<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
-<div class="w-full max-w-6xl mx-auto">
-
-<div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-violet-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-broom"></i> 2-QADAM · accounts/phone.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Raqamni tozalash — eng ko‘p xato shu yerda</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">User <b>+998 (90) 123-45-67</b> deb yozadi, provayder esa <b>998901234567</b> kutadi. Ikkovini bog‘laydigan 10 qatorlik funksiya.</p>
-</div>
-<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 items-start [&>*]:min-w-0">
-  <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('phoneCode')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/phone.py</span><span class="sub">normalize_phone</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="phoneCode">import re
-
-from rest_framework import serializers
-
-
-def normalize_phone(raw):
-    digits = re.sub(r"\D", "", str(raw))        # faqat raqamlar qoladi
-
-    if len(digits) == 9:                        # 901234567 → 998901234567
-        digits = "998" + digits
-
-    if not re.fullmatch(r"998\d{9}", digits):
-        raise serializers.ValidationError(
-            "Raqam +998 XX XXX XX XX ko'rinishida bo'lishi kerak"
-        )
-    return digits</code></pre></div>
-</div>
-  <div class="space-y-4">
-    <div class="glow-card phnorm pop-in d1">
-      <div class="text-xs uppercase tracking-widest text-violet-600 font-black mb-2"><i class="fas fa-flask mr-1"></i> Jonli misol — yozib ko‘ring</div>
-      <input id="phIn" value="+998 (90) 123-45-67" oninput="phNorm()" aria-label="telefon"/>
-      <div class="out ok" id="phOut">998901234567</div>
-      <div class="samples">
-        <span onclick="phSet('901234567')">901234567</span>
-        <span onclick="phSet('+998901234567')">+998901234567</span>
-        <span onclick="phSet('998 90 123 45 67')">998 90 123 45 67</span>
-        <span onclick="phSet('90-123-45-67')">90-123-45-67</span>
-        <span onclick="phSet('+7 900 000 00 00')">+7 900 000 00 00</span>
-        <span onclick="phSet('12345')">12345</span>
-      </div>
+    <div class="dark-box p-4 mt-3 mono text-xs leading-relaxed">
+      <span class="text-slate-500">runserver terminalida shunday chiqadi:</span><br/>
+      <span class="text-green-300">[SMS] 998901234567 -&gt; Tasdiqlash kodingiz: 482913</span>
     </div>
-    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-code text-sky-500 mr-2"></i><span class="mono">re.sub(r"\D", "", raw)</span></div><p class="text-sm text-gray-600 mt-1"><span class="mono">\D</span> — raqam bo‘lmagan har qanday belgi. Ya’ni probel, qavs, chiziqcha va <span class="mono">+</span> o‘chadi.</p></div>
-    <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-check-double text-green-600 mr-2"></i>Ikki joyda ishlatiladi</div><p class="text-sm text-gray-600 mt-1">Register’da ham, verify va resend’da ham. Shuning uchun alohida faylda turadi — takrorlanmaydi.</p></div>
-    <div class="glow-card pop-in d4 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>Tozalamasangiz nima bo‘ladi?</div><p class="text-sm text-gray-600 mt-1">Bir user <span class="mono">+998901234567</span>, boshqasi <span class="mono">998901234567</span> bo‘lib yoziladi — <b>bitta odam ikkita akkaunt</b>. Provayder esa “+” bilan kelgan raqamni rad etishi mumkin.</p></div>
+  </div>
+  <div class="pop-in d2">
+    <div class="tag-chip bg-green-100 text-green-700 mb-3"><i class="fas fa-globe"></i> REAL LOYIHADA / PROD</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsProd')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">eskiz</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="smsProd"># PRODUCTION — haqiqiy SMS (Eskiz.uz)
+SMS_BACKEND = "eskiz"
+ESKIZ_EMAIL = os.getenv("ESKIZ_EMAIL")
+ESKIZ_PASSWORD = os.getenv("ESKIZ_PASSWORD")</code></pre></div>
+</div>
+    <div class="env mt-3">
+      <span class="text-slate-500"># .env fayl (git’ga qo‘shilmaydi!)</span><br/>
+      <b>ESKIZ_EMAIL</b>=mening.pochtam@gmail.com<br/>
+      <b>ESKIZ_PASSWORD</b>=maxfiy_parol
+    </div>
   </div>
 </div>
-
-</div>
-</section>
-<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
-<div class="w-full max-w-6xl mx-auto">
-
-<div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-plug"></i> 3-QADAM · accounts/sms.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Bitta funksiya — uchta provayder</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Butun loyiha faqat <span class='mono'>send_code(phone, code)</span> ni biladi. Qaysi xizmat ishlashini <span class='mono'>settings.SMS_BACKEND</span> hal qiladi — provayderni almashtirish uchun <b>bitta so‘z</b> yetadi.</p>
-</div>
-<div class="grid lg:grid-cols-2 gap-6 items-start [&>*]:min-w-0">
-  <div class="space-y-4">
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-8 items-start [&>*]:min-w-0">
+  <div>
     <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsMain')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/sms.py</span><span class="sub">asosiy qism</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsMain">import logging
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsPy1')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/sms.py</span><span class="sub">1/2 · send_sms</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="smsPy1">import logging
 
 import requests
 from django.conf import settings
@@ -783,46 +625,37 @@ class SmsError(APIException):
     default_detail = "SMS yuborib bo'lmadi. Birozdan keyin urinib ko'ring."
 
 
-def send_code(phone, code):
-    backend = settings.SMS_BACKEND
-
-    if backend == "console":
+def send_sms(phone, code):
+    if settings.SMS_BACKEND == "console":
         print(f"[SMS] {phone} -&gt; Tasdiqlash kodingiz: {code}")
-    elif backend == "telegram":
-        _telegram(phone, code)
-    elif backend == "eskiz":
-        _eskiz(phone, code)
     else:
-        raise SmsError(f"Noma'lum SMS_BACKEND: {backend}")</code></pre></div>
-</div>
-    <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsTg')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/sms.py</span><span class="sub">Telegram Gateway</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsTg">def _telegram(phone, code):
-    response = requests.post(
-        "https://gatewayapi.telegram.org/sendVerificationMessage",
-        headers={"Authorization": f"Bearer {settings.TELEGRAM_GATEWAY_TOKEN}"},
-        json={"phone_number": f"+{phone}", "code": code, "ttl": 300},
-        timeout=10,
-    )
-    data = response.json()
-    if not data.get("ok"):
-        logger.error("Telegram Gateway: %s", data.get("error"))
-        raise SmsError()</code></pre></div>
+        _eskiz(phone, code)</code></pre></div>
 </div>
   </div>
   <div class="space-y-4">
+    <div class="glow-card !p-4 pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-route text-green-600 mr-2"></i>Bitta funksiya — <span class="mono">send_sms(phone, code)</span></div>
+      <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-green-100">SMS_BACKEND</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">console → print</span><span class="text-slate-400">yoki</span><span class="bg-white rounded-xl px-3 py-2 border border-green-100">eskiz → real SMS</span></div>
+      <p class="text-xs text-gray-600 mt-2">Qolgan kod faqat <span class="mono">send_sms</span> ni chaqiradi — qaysi xizmat ishlayotganini <b>bilmaydi</b>.</p></div>
+    <div class="glow-card pop-in d3 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i>SMS ketmasa-chi?</div><p class="text-sm text-gray-600 mt-1">Xato <span class="mono">SmsError</span> (<b>503</b>) bo‘lib chiqadi — user tushunarli javob oladi, server <b>500</b> bilan qulamaydi. Sababi <span class="mono">logger</span> ga yoziladi.</p></div>
+    <div class="glow-card pop-in d4 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-paper-plane text-violet-500 mr-2"></i>Boshqa xizmatlar</div><p class="text-sm text-gray-600 mt-1"><b>Play Mobile</b>, <b>Twilio</b>, <b>Telegram Gateway</b> — har biri uchun <span class="mono">_eskiz</span> kabi bitta kichik funksiya qo‘shiladi, boshqa kod o‘zgarmaydi.</p></div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div>
     <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsEskiz')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/sms.py</span><span class="sub">Eskiz.uz</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsEskiz">def _eskiz_token():
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsPy2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/sms.py</span><span class="sub">2/2 · Eskiz</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="smsPy2">def _eskiz_token():
     token = cache.get("eskiz_token")
     if token:
         return token
 
     response = requests.post(
         "https://notify.eskiz.uz/api/auth/login",
-        data={"email": settings.ESKIZ_EMAIL, "password": settings.ESKIZ_PASSWORD},
+        data={
+            "email": settings.ESKIZ_EMAIL,
+            "password": settings.ESKIZ_PASSWORD,
+        },
         timeout=10,
     )
     token = response.json()["data"]["token"]
@@ -841,84 +674,30 @@ def _eskiz(phone, code):
         },
         timeout=10,
     )
-
     if response.status_code == 401:
-        cache.delete("eskiz_token")       # token eskirgan — keyingi safar yangilanadi
-        logger.error("Eskiz: token eskirgan")
-        raise SmsError()
+        cache.delete("eskiz_token")        # token eskirgan — yangilanadi
 
     if response.status_code &gt;= 400:
         logger.error("Eskiz: %s", response.text)
         raise SmsError()</code></pre></div>
 </div>
-    <div class="grid sm:grid-cols-2 gap-3">
-      <div class="glow-card !p-4 pop-in d1"><div class="font-black text-pdp-dark text-sm"><i class="fas fa-stopwatch text-amber-500 mr-2"></i><span class="mono">timeout=10</span></div><p class="text-xs text-gray-600 mt-1">Provayder javob bermasa, sayt 10 soniyada bo‘shaydi — abadiy kutib qolmaydi.</p></div>
-      <div class="glow-card !p-4 pop-in d2"><div class="font-black text-pdp-dark text-sm"><i class="fas fa-database text-sky-500 mr-2"></i>Token cache’da</div><p class="text-xs text-gray-600 mt-1">Eskiz tokeni ~30 kun yashaydi. Har SMS’da qayta login qilish — ortiqcha so‘rov.</p></div>
-      <div class="glow-card !p-4 pop-in d3"><div class="font-black text-pdp-dark text-sm"><i class="fas fa-triangle-exclamation text-rose-500 mr-2"></i><span class="mono">503</span></div><p class="text-xs text-gray-600 mt-1">Provayder xatosi userga ko‘rsatilmaydi — u <b>log</b>ga yoziladi, userga esa “keyinroq urinib ko‘ring”.</p></div>
-      <div class="glow-card !p-4 pop-in d4"><div class="font-black text-pdp-dark text-sm"><i class="fas fa-right-left text-violet-500 mr-2"></i>Almashtirish</div><p class="text-xs text-gray-600 mt-1"><span class="mono">SMS_BACKEND = "telegram"</span> → hamma joyda Telegram orqali ketadi. Boshqa kod tegilmaydi.</p></div>
-    </div>
-  </div>
-</div>
-
-</div>
-</section>
-<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
-<div class="w-full max-w-6xl mx-auto">
-
-<div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-sliders"></i> 4-QADAM · settings.py va services.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Sozlash va kod yaratish</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Provayder tanlovi — <span class='mono'>.env</span> da. Kod yaratish esa email darsidagi funksiyaning <b>aynan o‘zi</b>, faqat oxirgi qatori SMS yuboradi.</p>
-</div>
-<div class="grid lg:grid-cols-2 gap-6 items-start [&>*]:min-w-0">
-  <div class="space-y-4">
-    <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsSettings')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">provayder tanlovi</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsSettings">import os
-
-# "console" | "telegram" | "eskiz"
-SMS_BACKEND = os.getenv("SMS_BACKEND", "console")
-
-TELEGRAM_GATEWAY_TOKEN = os.getenv("TELEGRAM_GATEWAY_TOKEN")
-
-ESKIZ_EMAIL = os.getenv("ESKIZ_EMAIL")
-ESKIZ_PASSWORD = os.getenv("ESKIZ_PASSWORD")</code></pre></div>
-</div>
-    <div class="env">
-      <span class="text-slate-500"># .env — git'ga qo'shilmaydi</span><br/>
-      <b>SMS_BACKEND</b>=telegram<br/>
-      <b>TELEGRAM_GATEWAY_TOKEN</b>=AAxxxxxxxxxxxxxxxxxxxxxxxx<br/><br/>
-      <span class="text-slate-500"># Eskiz ishlatilsa:</span><br/>
-      <b>SMS_BACKEND</b>=eskiz<br/>
-      <b>ESKIZ_EMAIL</b>=mening@pochtam.uz<br/>
-      <b>ESKIZ_PASSWORD</b>=••••••••
-    </div>
-    <div class="rounded-2xl bg-sky-50 border border-sky-100 p-4 text-sm text-sky-900"><i class="fas fa-circle-info mr-1"></i> <span class="mono">python-dotenv</span> yoki <span class="mono">django-environ</span> bilan <span class="mono">.env</span> avtomatik o‘qiladi. Dars uchun <span class="mono">SMS_BACKEND=console</span> yetarli — hech narsa sozlamaysiz.</div>
   </div>
   <div class="space-y-4">
-    <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsService')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services.py</span><span class="sub">send_verification_code</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsService">import secrets
-
-from .models import PhoneCode
-from .sms import send_code
-
-
-def send_verification_code(user):
-    code = f"{secrets.randbelow(1000000):06d}"
-
-    PhoneCode.objects.filter(user=user).delete()
-    PhoneCode.objects.create(user=user, code=code)
-
-    send_code(user.phone, code)</code></pre></div>
-</div>
-    <div class="glow-card pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark"><i class="fas fa-copy text-green-600 mr-2"></i>Email darsi bilan solishtiring</div><p class="text-sm text-gray-600 mt-1">Faqat oxirgi qator o‘zgardi: <span class="mono">send_mail(...)</span> → <span class="mono">send_code(user.phone, code)</span>. Qolgan hammasi bir xil.</p></div>
-    <div class="dark-box p-4 mono text-xs leading-relaxed">
-      <span class="text-slate-500"># console rejimida terminalda shunday chiqadi:</span><br/>
-      <span class="text-green-300">[SMS] 998901234567 -&gt; Tasdiqlash kodingiz: 482913</span>
-    </div>
+    <div class="dark-box p-5 pop-in d1"><div class="text-xs uppercase tracking-widest text-sky-300 font-black mb-3"><i class="fas fa-tower-cell mr-1"></i> Eskiz qanday ishlaydi</div>
+      <div class="space-y-2 text-sm text-slate-200">
+        <div class="flex gap-3"><span class="mono text-sky-300">1</span><span><span class="mono">auth/login</span> — email + parol bilan <b>token</b> olinadi</span></div>
+        <div class="flex gap-3"><span class="mono text-sky-300">2</span><span>Token <span class="mono">cache</span> da ~20 kun saqlanadi</span></div>
+        <div class="flex gap-3"><span class="mono text-sky-300">3</span><span><span class="mono">sms/send</span> — token bilan raqam va matn yuboriladi</span></div>
+        <div class="flex gap-3"><span class="mono text-rose-300">4</span><span><b>401</b> bo‘lsa — token o‘chadi, keyingisida yangilanadi</span></div>
+      </div></div>
+    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-key text-amber-500 mr-2"></i>Nega token cache’da?</div><p class="text-sm text-gray-600 mt-1">Eskiz tokeni ~30 kun yashaydi. Har SMS oldidan login qilmaymiz — bu ham sekin, ham ortiqcha so‘rov.</p></div>
+    <div class="glow-card pop-in d4 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-vial text-violet-500 mr-2"></i>Qaysi rejim ishlayapti?</div>
+      <div class="space-y-2 text-sm text-gray-700">
+        <div class="bg-white rounded-xl px-3 py-2 border border-violet-100"><span class="mono">console</span> → kod <b>terminalda</b> chiqadi</div>
+        <div class="bg-white rounded-xl px-3 py-2 border border-violet-100"><span class="mono">eskiz</span> → kod <b>telefoningizga</b> SMS bo‘lib keladi</div>
+      </div></div>
+    <div class="glow-card pop-in d4 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-circle-info text-amber-500 mr-2"></i>Eskiz’da test rejimi</div><p class="text-sm text-gray-600 mt-1">Yangi akkauntda SMS matni va jo‘natuvchi nomi cheklangan bo‘lishi mumkin. Shuning uchun o‘rganishda <span class="mono">console</span>, real loyihada tasdiqlangan akkaunt ishlatiladi.</p></div>
+    <div class="glow-card pop-in d3 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-clock text-sky-500 mr-2"></i><span class="mono">timeout=10</span></div><p class="text-sm text-gray-600 mt-1">Tashqi xizmat javob bermasa, so‘rov <b>abadiy</b> osilib qolmasin — 10 soniyadan keyin xato beriladi.</p></div>
   </div>
 </div>
 
@@ -928,47 +707,99 @@ def send_verification_code(user):
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-filter"></i> 5-QADAM · accounts/serializers.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Uchala serializer ham raqamni tozalaydi</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Har bir <span class='mono'>validate_phone</span> — bitta qator. Shu sabab API’ga raqam qanday shaklda kelsa ham, ichkariga <b>faqat toza</b> raqam kiradi.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-table"></i> 2-QADAM · accounts/models.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">models.py — telefon va kod jadvali</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Birinchisi: user <b>telefon bilan kiradi</b> va o‘zi faol bo‘lmaydi. Ikkinchisi: kodni saqlaydigan kichik jadval.</p>
 </div>
-<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 items-start [&>*]:min-w-0">
-  <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsSerializers')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">3 ta serializer</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsSerializers">class RegisterSerializer(serializers.ModelSerializer):
-    phone = serializers.CharField(max_length=20)   # "+998 90 123 45 67" ham sig'sin
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="tag-chip bg-rose-100 text-rose-700"><i class="fas fa-1"></i> User: login maydoni — phone</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('userDefaultActive')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">phone + is_active</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="userDefaultActive">class User(AbstractUser):
+    username = None
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=12, unique=True)   # 998901234567
+    is_active = models.BooleanField(default=False)   # &lt;-- yangi qator
 
-    class Meta:
-        model = User
-        fields = ["id", "phone", "first_name", "password"]
-        extra_kwargs = {"password": {"write_only": True, "min_length": 8}}
+    objects = UserManager()
 
-    def validate_phone(self, value):
-        return normalize_phone(value)
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
-
-
-class VerifyPhoneSerializer(serializers.Serializer):
-    phone = serializers.CharField()
-    code = serializers.CharField(min_length=6, max_length=6)
-
-    def validate_phone(self, value):
-        return normalize_phone(value)
-
-
-class ResendCodeSerializer(serializers.Serializer):
-    phone = serializers.CharField()
-
-    def validate_phone(self, value):
-        return normalize_phone(value)</code></pre></div>
+    USERNAME_FIELD = "phone"
+    REQUIRED_FIELDS = []</code></pre></div>
 </div>
-  <div class="space-y-3">
-    <div class="glow-card pop-in d1 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-bug text-rose-500 mr-2"></i>Tuzoq: <span class="mono">max_length</span></div><p class="text-sm text-gray-600 mt-1">Modelda maydon 12 belgi. Agar serializer’da <span class="mono">phone</span> ni qayta e’lon qilmasangiz, <b>“+998 90 …”</b> (17 belgi) hatto <span class="mono">validate_phone</span> gacha yetib bormaydi — DRF uni darrov 400 bilan rad etadi.</p></div>
-    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-arrow-down-1-9 text-sky-500 mr-2"></i>Tartib muhim</div><p class="text-sm text-gray-600 mt-1">DRF avval maydon turini tekshiradi, keyin <span class="mono">validate_&lt;field&gt;</span> ni chaqiradi. Ya’ni tozalash — tekshiruvdan <b>keyin</b>, bazaga yozishdan <b>oldin</b>.</p></div>
-    <div class="glow-card pop-in d3"><div class="font-black text-pdp-dark"><i class="fas fa-fingerprint text-violet-500 mr-2"></i>Takroriy raqam</div><p class="text-sm text-gray-600 mt-1"><span class="mono">unique=True</span> tufayli ikkinchi marta shu raqam yuborilsa: <span class="mono">{"phone": ["user with this phone already exists."]}</span></p></div>
+    <div class="glow-card !p-5 pop-in d1">
+      <div class="font-black text-pdp-dark mb-2"><i class="fas fa-circle-question text-sky-500 mr-2"></i>Nega <span class="mono">is_active</span> default’i <span class="mono">models.py</span> da?</div>
+      <ul class="text-sm text-gray-600 space-y-2">
+        <li><i class="fas fa-shield-halved text-green-600 mr-2"></i><b>Qoida bitta joyda.</b> User qayerda yaratilmasin — serializer, admin, shell — hammasi <b>tasdiqlanmagan</b> holda tug‘iladi.</li>
+        <li><i class="fas fa-code text-violet-500 mr-2"></i><b>Kod toza.</b> Serializer’da oddiy <span class="mono">create_user(**validated_data)</span> qoladi.</li>
+      </ul>
+    </div>
+    <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-sm text-red-900 pop-in d2">
+      <b><i class="fas fa-triangle-exclamation mr-1"></i> Diqqat — superuser ham o‘chib qoladi!</b>
+      <p class="mt-1">Manager <b>phone</b> bilan ishlaydi, <span class="mono">createsuperuser</span> esa <span class="mono">is_active=True</span> bo‘lishi uchun alohida qator kerak:</p>
+      <div class="mt-2"><div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsManager')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">UserManager</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="smsManager">class UserManager(BaseUserManager):
+    def create_user(self, phone, password=None, **extra_fields):
+        user = self.model(phone=phone, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, phone, password=None, **extra_fields):
+        extra_fields.update(is_staff=True, is_superuser=True, is_active=True)
+        return self.create_user(phone, password, **extra_fields)</code></pre></div>
+</div></div>
+    </div>
+    <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
+      <i class="fas fa-circle-info mr-1"></i> Keyin: <span class="mono">makemigrations</span> → <span class="mono">migrate</span>. <span class="mono">phone</span> — 12 belgi: <span class="mono">998901234567</span> (+ va bo‘sh joylarsiz).
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div class="tag-chip bg-sky-100 text-sky-700"><i class="fas fa-2"></i> Kod uchun kichik jadval</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('phoneCodeModel')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/models.py</span><span class="sub">PhoneCode</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="phoneCodeModel">from datetime import timedelta
+
+from django.conf import settings
+from django.db import models
+from django.utils import timezone
+
+
+class PhoneCode(models.Model):
+    LIFETIME = timedelta(minutes=5)
+    MAX_ATTEMPTS = 5
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    is_confirmed = models.BooleanField(default=False)     # kod to'g'ri kiritildimi
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() &gt; self.created_at + self.LIFETIME</code></pre></div>
+</div>
+    <div class="fd !p-5">
+      <div class="fd-title mb-3"><i class="fas fa-database mr-2"></i>Jadvalda nima turadi?</div>
+      <div class="mono text-xs">
+        <div class="grid grid-cols-5 gap-2 text-slate-400 font-bold pb-2 border-b border-slate-700"><span>user</span><span>code</span><span>attempts</span><span>confirmed</span><span>created_at</span></div>
+        <div class="grid grid-cols-5 gap-2 py-2 text-amber-300 blink-soft"><span>99890…</span><span>482913</span><span>0</span><span>False</span><span>14:05:12</span></div>
+        <div class="grid grid-cols-5 gap-2 py-2 text-slate-300"><span>99891…</span><span>730154</span><span>2</span><span>False</span><span>14:03:40</span></div>
+      </div>
+      <div class="mt-5 rounded-2xl bg-white/5 border border-white/10 p-4">
+        <div class="flex items-center justify-between mb-2"><span class="text-xs font-black uppercase tracking-widest text-slate-400">Kod muddati</span><span class="mono text-sm text-green-300">5:00 → 0:00</span></div>
+        <div class="timer"><i class="fas fa-hourglass-half text-amber-300"></i><div class="bar"><i></i></div></div>
+        <p class="text-xs text-slate-400 mt-2"><span class="mono">is_expired()</span> — hozirgi vaqt <span class="mono">created_at + 5 daqiqa</span> dan katta bo‘lsa, kod yaroqsiz.</p>
+      </div>
+      <div class="mt-4 rounded-2xl bg-white/5 border border-white/10 p-4">
+        <div class="flex items-center justify-between mb-2"><span class="text-xs font-black uppercase tracking-widest text-slate-400">Urinishlar</span><span class="mono text-sm text-rose-300">2 / 5</span></div>
+        <div class="dots"><i class="used"></i><i class="used"></i><i></i><i></i><i></i></div>
+        <p class="text-xs text-slate-400 mt-2">Har xato kiritishda <span class="mono">attempts += 1</span>. 5 tadan keyin kod bloklanadi — brute-force ishlamaydi.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -978,26 +809,441 @@ class ResendCodeSerializer(serializers.Serializer):
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-door-open"></i> 6-QADAM · accounts/views.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Register, Verify va Resend</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Email darsidagi view’lar bilan deyarli bir xil. Yangi narsa — <b>SMS ketmasa userni o‘chirish</b>.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-scale-balanced"></i> SAVOL</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">6 xonali kodni qayerda saqlash kerak?</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Jadvalga yozish — yagona yo‘l emas. Mana 4 xil professional usul va ularning haqiqiy narxi.</p>
 </div>
-<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 items-start [&>*]:min-w-0">
+<div class="grid md:grid-cols-2 gap-5"><div class="glow-card pop-in d1">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#22c55e"><i class="fas fa-table"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">1. DB jadval</div><div class="text-xs text-gray-500 mono">PhoneCode — biz qilgan yo‘l</div></div>
+<span class="tag-chip bg-green-100 text-green-700 ml-auto !text-[10px] !py-1">TAVSIYA · shu darsda</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Qo‘shimcha dastur kerak emas — sqlite/postgres yetarli</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Kodni admin panelda ko‘rish mumkin (dars uchun qulay)</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Urinishlar va muddat oddiy maydonlarda turadi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Eskirgan yozuvlarni vaqti-vaqti bilan tozalash kerak</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Har tekshiruvda bazaga bitta so‘rov</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> O‘quv loyihasi, kichik va o‘rta loyihalar</div>
+</div><div class="glow-card pop-in d2">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#8b5cf6"><i class="fas fa-key"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">2. DB + hash</div><div class="text-xs text-gray-500 mono">make_password(code)</div></div>
+<span class="tag-chip bg-violet-100 text-violet-700 ml-auto !text-[10px] !py-1">IXTIYORIY</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Baza o‘g‘irlansa ham kod ochiq turmaydi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>6 xonali kodni hash’dan topish sekundlar ishi — himoya ko‘rinishi kuchli, aslida kuchsiz</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Kod bilan solishtirish sekinlashadi</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> Uzun (16+ belgili) token saqlaganda ma’noli</div>
+</div><div class="glow-card pop-in d3">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#0ea5e9"><i class="fas fa-bolt"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">3. Cache (Redis) + TTL</div><div class="text-xs text-gray-500 mono">cache.set(..., 300)</div></div>
+<span class="tag-chip bg-sky-100 text-sky-700 ml-auto !text-[10px] !py-1">PRODUCTION</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Muddat <b>o‘z-o‘zidan</b> tugaydi — <span class='mono'>is_expired()</span> ham, tozalash ham kerak emas</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Jadval va migratsiya yo‘q</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Bazaga tegmaydi, juda tez</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Redis (yoki Memcached) o‘rnatilgan bo‘lishi kerak</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Server qayta yuklansa kodlar yo‘qoladi — user qayta so‘raydi, xolos</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> Production, ko‘p foydalanuvchili loyihalar</div>
+</div><div class="glow-card pop-in d4">
+<div class="flex items-start gap-3 mb-2"><div class="gi !mb-0" style="background:#f59e0b"><i class="fas fa-clock"></i></div>
+<div><div class="font-black text-pdp-dark text-lg leading-tight">4. TOTP (pyotp)</div><div class="text-xs text-gray-500 mono">vaqtdan hisoblanadigan kod</div></div>
+<span class="tag-chip bg-amber-100 text-amber-700 ml-auto !text-[10px] !py-1">BOSHQA VAZIFA</span></div>
+<ul class="text-sm text-gray-600 space-y-1.5 mt-2"><li><i class="fas fa-plus text-green-600 mr-2"></i>Kod umuman saqlanmaydi — vaqt va maxfiy kalitdan hisoblanadi</li><li><i class="fas fa-plus text-green-600 mr-2"></i>Google Authenticator shu tamoyilda ishlaydi</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>SMS orqali yuborish uchun ortiqcha murakkab</li><li><i class="fas fa-minus text-rose-500 mr-2"></i>Urinishlar limitini baribir alohida saqlash kerak</li></ul>
+<div class="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100"><b>Kim uchun:</b> 2FA, authenticator ilovalari</div>
+</div></div>
+<div class="dark-box p-5 mt-6">
+  <div class="flex flex-wrap items-center gap-3 mb-3"><span class="tag-chip bg-green-500/15 text-green-300"><i class="fas fa-gavel"></i> XULOSA</span>
+  <span class="text-sm">Kod <b>qayerda</b> turgani ikkinchi darajali. Asosiy himoya — <b>qisqa muddat</b> + <b>urinishlar limiti</b> + <b>kodni javobda qaytarmaslik</b>. Shu uchtasi bo‘lsa, DB ham, Redis ham bir xil xavfsiz.</span></div>
+  <div class="text-sm text-slate-300">Loyihangizda Redis bo‘lsa — 3-usul afzal: muddatni Redis o‘zi kuzatadi, jadval ham, tozalash kodi ham kerak bo‘lmaydi. Redis bo‘lmasa — biz yozgan jadval to‘liq yetarli.</div>
+</div>
+<div class="mt-8">
+  <div class="text-center mb-5">
+    <div class="inline-flex items-center gap-2 bg-sky-600 text-white px-4 py-1.5 rounded-full font-black text-sm mb-3 shadow-md"><i class="fas fa-bolt"></i> REDIS NIMA?</div>
+    <h3 class="text-2xl md:text-3xl font-black text-pdp-dark tracking-tight">Redis — “o‘zi yo‘qoladigan yopishqoq qog‘oz”</h3>
+    <p class="text-gray-500 max-w-3xl mx-auto mt-2 text-sm leading-relaxed">Kod faqat <b>5 daqiqa</b> kerak. Shuncha vaqtlik narsani doimiy jadvalga yozish — vaqtinchalik eslatmani kitobga yozib qo‘yish bilan bir xil.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-5 [&>*]:min-w-0">
+    <div class="glow-card !p-5 bg-amber-50 border-amber-100">
+      <div class="flex items-center gap-3 mb-4"><div class="gi !mb-0" style="background:#f59e0b"><i class="fas fa-book"></i></div>
+        <div><div class="font-black text-pdp-dark text-lg leading-tight">Jadval = daftar</div><div class="text-xs text-gray-500">yozdingmi — o‘zing o‘chirmaguncha turadi</div></div></div>
+      <div class="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-1">Kod hayoti (5 daqiqa)</div>
+      <div class="flex h-9 rounded-xl overflow-hidden text-xs font-black text-white mb-1">
+        <div class="bg-green-500 flex items-center justify-center" style="width:35%">amal qiladi</div>
+        <div class="bg-rose-400 flex items-center justify-center text-center leading-tight" style="width:65%">muddati tugagan, lekin hali bazada yotibdi</div>
+      </div>
+      <div class="flex justify-between mono text-[11px] text-slate-500 mb-4"><span>0:00 yuborildi</span><span>5:00 muddat tugadi</span><span>→ ∞</span></div>
+      <div class="space-y-2 text-sm">
+        <div class="bg-white rounded-xl px-3 py-2 border border-amber-100"><i class="fas fa-question text-amber-600 mr-2"></i>Har safar <span class="mono">is_expired()</span> bilan tekshirish kerak</div>
+        <div class="bg-white rounded-xl px-3 py-2 border border-amber-100"><i class="fas fa-broom text-amber-600 mr-2"></i>Eskilarini ba’zan o‘zingiz tozalaysiz</div>
+      </div>
+    </div>
+
+    <div class="glow-card !p-5 bg-sky-50 border-sky-100">
+      <div class="flex items-center gap-3 mb-4"><div class="gi !mb-0" style="background:#0ea5e9"><i class="fas fa-note-sticky"></i></div>
+        <div><div class="font-black text-pdp-dark text-lg leading-tight">Redis = o‘zi yo‘qoladigan stiker</div><div class="text-xs text-gray-500">yozasan, vaqt qo‘yasan — keyin o‘zi o‘chadi</div></div></div>
+      <div class="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-1">Kod hayoti (5 daqiqa)</div>
+      <div class="flex h-9 rounded-xl overflow-hidden text-xs font-black text-white mb-1">
+        <div class="bg-green-500 flex items-center justify-center" style="width:65%">amal qiladi</div>
+        <div class="bg-slate-300 text-slate-600 flex items-center justify-center" style="width:35%"><i class="fas fa-wind mr-1"></i> yo‘q</div>
+      </div>
+      <div class="flex justify-between mono text-[11px] text-slate-500 mb-4"><span>0:00 cache.set(…, 300)</span><span>5:00 Redis o‘zi o‘chirdi</span></div>
+      <div class="space-y-2 text-sm">
+        <div class="bg-white rounded-xl px-3 py-2 border border-sky-100"><i class="fas fa-check text-green-600 mr-2"></i>Bor bo‘lsa — kod amal qiladi, yo‘q bo‘lsa — tugagan</div>
+        <div class="bg-white rounded-xl px-3 py-2 border border-sky-100"><i class="fas fa-check text-green-600 mr-2"></i>Tozalash va <span class="mono">is_expired()</span> kerak emas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-4 mt-5 [&>*]:min-w-0">
+    <div class="glow-card !p-4"><div class="font-black text-pdp-dark mb-1"><i class="fas fa-memory text-sky-600 mr-2"></i>Redis nima?</div><p class="text-sm text-gray-600">Xotirada (RAM) ishlaydigan tezkor lug‘at: <span class="mono">kalit → qiymat</span>. Django’da <span class="mono">cache.get / cache.set</span> orqali ishlatiladi.</p></div>
+    <div class="glow-card !p-4"><div class="font-black text-pdp-dark mb-1"><i class="fas fa-hourglass-half text-sky-600 mr-2"></i>TTL nima?</div><p class="text-sm text-gray-600">“Yashash vaqti” — taymer. <span class="mono">300</span> desangiz, 300 soniyadan keyin yozuv o‘zi yo‘qoladi.</p></div>
+    <div class="glow-card !p-4"><div class="font-black text-pdp-dark mb-1"><i class="fas fa-bullseye text-sky-600 mr-2"></i>Nega aynan kodga mos?</div><p class="text-sm text-gray-600">Kod — vaqtinchalik ma’lumot: 5 daqiqa kerak, keyin hech kimga kerak emas. Doimiy saqlash shart emas.</p></div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 mt-8 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('cacheService')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/redis_service.py</span><span class="sub">Redis varianti</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="cacheService">import random
+
+from django.core.cache import cache
+from rest_framework.serializers import ValidationError
+
+from .sms import send_sms
+
+ERROR = "Kod topilmadi, muddati tugagan yoki urinishlar tugagan"
+NOT_CONFIRMED = "Avval kodni tasdiqlang yoki kod muddati tugagan"
+
+
+def send_verification_code(user):
+    code = str(random.randint(100000, 999999))
+    data = {"code": code, "tries": 0}
+    cache.set(f"verify:{user.id}", data, 300)     # 5 daqiqa
+
+    send_sms(user.phone, code)
+
+
+def confirm_code(user, code):
+    key = f"verify:{user.id}"
+    data = cache.get(key)
+    if data is None or data["tries"] &gt;= 5:
+        raise ValidationError({"detail": ERROR})
+
+    if data["code"] != code:
+        data["tries"] += 1
+        cache.set(key, data, 300)
+        raise ValidationError({"detail": "Kod noto'g'ri"})
+
+    data["confirmed"] = True
+    cache.set(key, data, 300)
+
+
+def finish_code(user):
+    key = f"verify:{user.id}"
+    data = cache.get(key)
+    if data is None or not data.get("confirmed"):
+        raise ValidationError({"detail": NOT_CONFIRMED})
+
+    cache.delete(key)</code></pre></div>
+</div>
   <div class="space-y-4">
     <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsViews')"><i class="fas fa-copy"></i></button>
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('cacheSettings')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">settings.py</span><span class="sub">Redis ulash</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="cacheSettings">CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}</code></pre></div>
+</div>
+    <div class="glow-card pop-in d1 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-shuffle text-sky-600 mr-2"></i>Almashtirish oson</div><p class="text-sm text-gray-600 mt-1">Ikkala fayldagi funksiya nomlari <b>bir xil</b>: <span class="mono">send_verification_code</span>, <span class="mono">confirm_code</span>, <span class="mono">finish_code</span>. View’lar <b>o‘zgarmaydi</b> — faqat <span class="mono">services/__init__.py</span> dagi import qatori almashadi (Resend’dagi cooldown Redis’da <span class="mono">cache.add</span> bilan yoziladi).</p></div>
+    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-broom text-amber-600 mr-2"></i>DB variantida tozalash</div><p class="text-sm text-gray-600 mt-1">Eskirgan kodlarni haftada bir marta o‘chirib turing:</p><div class="mono text-xs bg-white rounded-xl p-2 mt-2 border border-amber-100">PhoneCode.objects.filter(<br/>&nbsp;&nbsp;created_at__lt=timezone.now() - timedelta(days=1)<br/>).delete()</div></div>
+    <div class="dark-box p-5 pop-in d3"><div class="text-xs uppercase tracking-widest text-sky-300 font-black mb-3"><i class="fas fa-bolt mr-1"></i> Redis’da yozuv shunday turadi</div>
+      <div class="mono text-xs"><div class="grid grid-cols-[1fr_2fr_.7fr] gap-2 text-slate-400 font-bold pb-2 border-b border-slate-700"><span>kalit</span><span>qiymat</span><span>TTL</span></div>
+      <div class="grid grid-cols-[1fr_2fr_.7fr] gap-2 py-2 text-amber-300"><span>verify:5</span><span>code 482913 · tries 0</span><span>300s</span></div>
+      <div class="grid grid-cols-[1fr_2fr_.7fr] gap-2 py-2 text-slate-300"><span>verify:7</span><span>code 730154 · tries 2</span><span>120s</span></div></div>
+      <p class="text-xs text-slate-400 mt-3">TTL tugagach Redis yozuvni <b>o‘zi</b> o‘chiradi — <span class="mono">is_expired()</span> va tozalash kerak emas.</p></div>
+    <div class="glow-card !p-4 pop-in d4 bg-green-50 border-green-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-route text-green-600 mr-2"></i>Redis oqimi</div>
+      <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-green-100">cache.set(…, 300)</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">confirm: tries += 1</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">confirmed = True</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">cache.delete</span></div>
+      <p class="text-xs text-gray-600 mt-2">Funksiyalar DB variantidagi bilan bir xil: <b>tasdiqla → ishingni qil → yop</b>.</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-violet-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-gears"></i> 3-QADAM · accounts/services/</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Ikkita funksiya: yuborish va tekshirish</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Hamma “aqlli” ish shu yerda: <b>send_verification_code(user)</b> kod yuboradi; <b>confirm_code(user, code)</b> kodni tekshirib “tasdiqlandi” deb belgilaydi (xato bo‘lsa 400); <b>finish_code(user)</b> ish tugagach yozuvni yopadi. Tartib doim bir xil: <b>tasdiqla → ishingni qil → yop</b>. Userni so‘rovdan topish uchun esa <b>pre_token.py</b> bor. Papka qilib ochamiz: <b>phone_service.py</b> (baza), <b>redis_service.py</b> (Redis) — bittasini tanlaysiz.</p>
+</div>
+
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 items-start [&>*]:min-w-0">
+  <div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('serviceCode')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/phone_service.py</span><span class="sub">yuborish + tekshirish</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="serviceCode">import random
+
+from rest_framework.serializers import ValidationError
+
+from ..models import PhoneCode
+from .sms import send_sms
+
+ERROR = "Kod topilmadi, muddati tugagan yoki urinishlar tugagan"
+NOT_CONFIRMED = "Avval kodni tasdiqlang yoki kod muddati tugagan"
+
+
+def send_verification_code(user):
+    code = str(random.randint(100000, 999999))    # 6 xonali kod
+
+    # faqat oxirgi kod ishlaydi
+    PhoneCode.objects.filter(user=user).delete()
+    PhoneCode.objects.create(user=user, code=code)
+
+    send_sms(user.phone, code)
+
+
+def confirm_code(user, code):
+    record = PhoneCode.objects.filter(user=user).first()
+
+    if record is None or record.is_expired():
+        raise ValidationError({"detail": ERROR})
+    if record.attempts &gt;= PhoneCode.MAX_ATTEMPTS:
+        raise ValidationError({"detail": ERROR})
+
+    if record.code != code:
+        record.attempts += 1
+        record.save()
+        raise ValidationError({"detail": "Kod noto'g'ri"})
+
+    record.is_confirmed = True
+    record.save()
+
+
+def finish_code(user):
+    record = PhoneCode.objects.filter(
+        user=user, is_confirmed=True
+    ).first()
+
+    if record is None or record.is_expired():
+        raise ValidationError({"detail": NOT_CONFIRMED})
+
+    record.delete()</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card !p-4 pop-in d1 bg-green-50 border-green-100">
+      <div class="font-black text-pdp-dark mb-2"><i class="fas fa-route text-green-600 mr-2"></i>Tartib doim bir xil</div>
+      <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-green-100">1. tasdiqla</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">2. ishingni qil</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">3. yop</span></div>
+      <p class="text-xs text-gray-600 mt-2"><span class="mono">confirm_code</span> → <span class="mono">is_active = True</span> yoki <span class="mono">set_password()</span> → <span class="mono">finish_code</span></p>
+    </div>
+    <div class="space-y-3">
+      <div class="dark-box p-4 mono text-xs leading-relaxed">
+        <span class="text-slate-500">accounts/</span><br/>├── models.py<br/>├── views.py<br/>└── <span class="text-green-300">services/</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-sky-300">__init__.py</span> <span class="text-slate-500"># qaysi variant</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-amber-300">phone_service.py</span> <span class="text-slate-500"># baza</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-violet-300">redis_service.py</span> <span class="text-slate-500"># redis</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-rose-300">sms.py</span> <span class="text-slate-500"># SMS yuborish</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-sky-300">phone.py</span> <span class="text-slate-500"># raqam tozalash</span><br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="text-green-300">pre_token.py</span> <span class="text-slate-500"># pre_token</span>
+      </div>
+      <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('servicesInit')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">services/__init__.py</span><span class="sub">variant tanlash</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="servicesInit"># Baza varianti (darsda)
+from .phone_service import (
+    send_verification_code, confirm_code, finish_code,
+)
+
+# Redis (production) — buni yoqing, tepadagini o'chiring
+# from .redis_service import (
+#     send_verification_code, confirm_code, finish_code,
+# )</code></pre></div>
+</div>
+    </div>
+    <div class="glow-card !p-4 pop-in d2"><div class="font-black text-pdp-dark text-sm mono mb-1">send_verification_code(user)</div>
+      <ul class="text-sm text-gray-600 space-y-1"><li><span class="mono">random.randint(100000, 999999)</span> — har doim aniq 6 xonali son (production’da <span class="mono">secrets</span> modulini ishlating)</li><li><span class="mono">.delete()</span> — eski kod o‘chadi: faqat <b>oxirgi</b> kod ishlaydi</li></ul></div>
+    <div class="glow-card !p-4 pop-in d3"><div class="font-black text-pdp-dark text-sm mono mb-1">confirm_code(user, code)</div>
+      <p class="text-sm text-gray-600">Elaklar: yozuv bormi → muddati o‘tmaganmi → urinishlar qolganmi → kod mosmi. Xato bo‘lsa <b>400</b>, hammasi joyida bo‘lsa <span class="mono">is_confirmed = True</span>.</p></div>
+    <div class="glow-card !p-4 pop-in d4"><div class="font-black text-pdp-dark text-sm mono mb-1">finish_code(user)</div>
+      <p class="text-sm text-gray-600">Faqat <b>tasdiqlangan</b> kod uchun ishlaydi va yozuvni o‘chiradi — kodni ikkinchi marta ishlatib bo‘lmaydi.</p></div>
+  </div>
+</div>
+<div class="glow-card !p-5 mt-6 bg-violet-50 border-violet-100">
+  <div class="font-black text-pdp-dark text-lg mb-1"><i class="fas fa-shuffle text-violet-600 mr-2"></i>Nega bir xil kod ikki marta yozilgan?</div>
+  <p class="text-sm text-gray-600 mb-4">Bu <b>ikki nusxa emas</b>, bitta ishning <b>ikki variantidan biri</b>: <span class="mono">phone_service.py</span> (6-betdagi Redis o‘rniga baza) yoki <span class="mono">redis_service.py</span>. Siz faqat bittasini tanlaysiz.</p>
+  <div class="grid md:grid-cols-[1fr_1fr] gap-5 items-center [&>*]:min-w-0">
+    <div class="flex items-center justify-center gap-3 text-sm font-black mono">
+      <span class="bg-white border border-violet-100 rounded-xl px-3 py-2">views.py</span><i class="fas fa-arrow-right text-violet-400"></i>
+      <span class="bg-violet-600 text-white rounded-xl px-3 py-2">__init__.py</span><i class="fas fa-arrow-right text-violet-400"></i>
+      <span class="flex flex-col gap-2"><span class="bg-amber-100 text-amber-800 rounded-xl px-3 py-1.5">phone_service</span><span class="bg-sky-100 text-sky-800 rounded-xl px-3 py-1.5">redis_service</span></span>
+    </div>
+    <div class="text-sm rounded-xl overflow-hidden border border-violet-100 bg-white">
+      <div class="grid grid-cols-[.6fr_2fr] gap-3 px-4 py-2.5 bg-green-50 text-green-800"><b>Bir xil</b><span>3 funksiya nomi, random, send_sms, xato matnlari</span></div>
+      <div class="grid grid-cols-[.6fr_2fr] gap-3 px-4 py-2.5 border-t border-violet-100"><b>Farq</b><span>faqat saqlash joyi: <span class="mono">PhoneCode.objects</span> yoki <span class="mono">cache.get/set</span></span></div>
+    </div>
+  </div>
+  <p class="text-xs text-gray-600 mt-4">View’lar farqni <b>ko‘rmaydi</b> — Redis kerak bo‘lsa, <span class="mono">__init__.py</span> dagi <b>bitta import</b> almashadi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('preTokenCode')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/pre_token.py</span><span class="sub">register ham, forgot ham</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="preTokenCode">from django.contrib.auth import get_user_model
+from django.core import signing
+from rest_framework.serializers import ValidationError
+
+User = get_user_model()
+SALT = "pre-token"
+ERROR = "pre_token yaroqsiz yoki muddati tugagan"
+
+
+def make_pre_token(user_id):
+    # SECRET_KEY bilan imzolanadi — soxtalab bo'lmaydi
+    return signing.dumps({"user_id": user_id}, salt=SALT)
+
+
+def get_user(pre_token):
+    try:
+        data = signing.loads(pre_token, salt=SALT, max_age=1800)
+        user_id = data["user_id"]            # 30 daqiqa yashaydi
+    except signing.BadSignature:
+        user_id = None
+
+    user = User.objects.filter(id=user_id).first()
+    if user is None:
+        raise ValidationError({"detail": ERROR})
+    return user</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="text-xs uppercase tracking-widest text-slate-500 font-black">User telefonida shunday ko‘rinadi</div>
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-lg overflow-hidden pop-in d1">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-100 bg-slate-50"><div class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center"><i class="fas fa-comment-sms"></i></div><div><div class="font-black text-pdp-dark text-sm">4546</div><div class="text-xs text-gray-500">SMS · hozir</div></div><div class="ml-auto text-xs text-gray-400">+998 90 123 45 67</div></div>
+      <div class="p-5"><div class="inline-block bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-700 leading-relaxed">Tasdiqlash kodingiz: <b class="mono tracking-widest text-pdp-dark text-lg">482913</b></div>
+      <div class="text-xs text-gray-500 mt-3">Kod 5 daqiqa amal qiladi. Hech kimga aytmang.</div></div>
+    </div>
+    <div class="otp mt-2"><span>4</span><span>8</span><span>2</span><span>9</span><span>1</span><span>3</span></div>
+    <div class="rounded-2xl bg-sky-50 border border-sky-100 p-4 text-sm text-sky-900"><i class="fas fa-circle-info mr-1"></i> <b>Muhim:</b> <b>kod</b> faqat SMS bilan ketadi, API javobida hech qachon qaytmaydi. Register javobida faqat <b>pre_token</b> qaytadi — u “kimning kodi” ekanini ko‘rsatadi, o‘zi hech narsaga ruxsat bermaydi.</div>
+    <div class="glow-card !p-4 pop-in d2"><div class="font-black text-pdp-dark text-sm mono mb-1">pre_token</div>
+      <p class="text-sm text-gray-600">Ichida <b>user id</b> bor, <span class="mono">SECRET_KEY</span> bilan imzolangan — soxtalab bo‘lmaydi. Bazaga yozilmaydi, 30 daqiqa yashaydi. <b>Register ham, parolni tiklash ham</b> shuni ishlatadi.</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-filter"></i> 4-QADAM · accounts/serializers.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Uchta kichik serializer</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Bittasi user yaratadi (lekin <b>faol qilmaydi</b>) va raqamni <b>tozalaydi</b>, ikkitasi esa shunchaki kelgan ma’lumot to‘g‘ri shaklda ekanini tekshiradi.</p>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('serializerCode2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">3 ta serializer</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="serializerCode2">class RegisterSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(max_length=20)   # "+998 90 123 45 67" ham sig'sin
+
+    class Meta:
+        model = User
+        fields = ["id", "phone", "first_name", "password"]
+        extra_kwargs = {"password": {"write_only": True, "min_length": 8}}
+
+    def validate_phone(self, value):
+        phone = normalize_phone(value)
+        if User.objects.filter(phone=phone).exists():
+            raise serializers.ValidationError("Bu raqam band")
+        return phone
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
+class VerifyPhoneSerializer(serializers.Serializer):
+    pre_token = serializers.CharField()
+    code = serializers.CharField(min_length=6, max_length=6)
+
+
+class ResendCodeSerializer(serializers.Serializer):
+    pre_token = serializers.CharField()</code></pre></div>
+</div>
+  <div class="space-y-3">
+    <div class="glow-card pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark"><i class="fas fa-user-plus text-green-600 mr-2"></i>RegisterSerializer</div><p class="text-sm text-gray-600 mt-1">Faqat <span class="mono">validate_phone</span> qo‘shildi: raqamni <span class="mono">normalize_phone</span> bilan tozalaydi va <b>band emasligini</b> tekshiradi. User baribir faol bo‘lmay yaratiladi — buni <span class="mono">models.py</span> hal qildi.</p></div>
+    <div class="glow-card pop-in d2 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-hashtag text-sky-600 mr-2"></i>VerifyPhoneSerializer</div><p class="text-sm text-gray-600 mt-1">Ikkita narsa so‘raydi: <span class="mono">pre_token</span> (register javobidan) va <span class="mono">code</span> (SMS’dan). <span class="mono">min_length=6, max_length=6</span> — 5 yoki 7 xonali kod bazagacha yetib bormaydi.</p></div>
+    <div class="glow-card pop-in d3 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-rotate text-violet-600 mr-2"></i>ResendCodeSerializer</div><p class="text-sm text-gray-600 mt-1">Faqat <span class="mono">pre_token</span> so‘raydi — raqam qayta yozilmaydi.</p></div>
+    <div class="glow-card pop-in d4 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-circle-question text-amber-600 mr-2"></i>Nega <span class="mono">exists()</span> kerak?</div><p class="text-sm text-gray-600 mt-1"><span class="mono">phone</span> maydonini o‘zimiz yozganimiz uchun Django unique tekshiruvini qo‘shib bermaydi. Tekshirmasak — takroriy raqamda <b>500</b> xato chiqadi.</p></div>
+    <div class="dark-box p-4 text-sm"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><b>Qoida:</b> serializer — <b>shaklni</b> tekshiradi (raqam to‘g‘rimi, kod 6 xonalimi). Kod <b>to‘g‘ri yoki eskirganini</b> esa <span class="mono">services/</span> tekshiradi, chunki u bazaga qaraydi.</div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-8 items-start [&>*]:min-w-0">
+  <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('phoneCode')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/services/phone.py</span><span class="sub">raqamni tozalash</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="phoneCode">import re
+
+from rest_framework.serializers import ValidationError
+
+
+def normalize_phone(raw):
+    digits = re.sub(r"\D", "", str(raw))     # faqat raqamlar qoladi
+
+    if len(digits) == 9:                     # 901234567 -&gt; 998901234567
+        digits = "998" + digits
+
+    if not re.fullmatch(r"998\d{9}", digits):
+        raise ValidationError("Raqam +998 XX XXX XX XX ko'rinishida bo'lsin")
+    return digits</code></pre></div>
+</div>
+  <div class="space-y-4">
+    <div class="glow-card !p-5 pop-in d1">
+      <div class="font-black text-pdp-dark mb-3"><i class="fas fa-broom text-sky-500 mr-2"></i>Raqam qanday tozalanadi?</div>
+      <div class="mono text-xs rounded-xl overflow-hidden border border-slate-100">
+        <div class="grid grid-cols-[1.3fr_1.2fr_.4fr] gap-2 px-3 py-2 bg-slate-50 text-slate-500 font-bold"><span>user yozdi</span><span>natija</span><span></span></div>
+        <div class="grid grid-cols-[1.3fr_1.2fr_.4fr] gap-2 px-3 py-2 border-t border-slate-100"><span>+998 90 123 45 67</span><span class="text-green-700">998901234567</span><span class="text-green-600"><i class="fas fa-check"></i></span></div>
+        <div class="grid grid-cols-[1.3fr_1.2fr_.4fr] gap-2 px-3 py-2 border-t border-slate-100"><span>90 123-45-67</span><span class="text-green-700">998901234567</span><span class="text-green-600"><i class="fas fa-check"></i></span></div>
+        <div class="grid grid-cols-[1.3fr_1.2fr_.4fr] gap-2 px-3 py-2 border-t border-slate-100"><span>901234567</span><span class="text-green-700">998901234567</span><span class="text-green-600"><i class="fas fa-check"></i></span></div>
+        <div class="grid grid-cols-[1.3fr_1.2fr_.4fr] gap-2 px-3 py-2 border-t border-slate-100"><span>12345</span><span class="text-rose-600">400 · noto‘g‘ri</span><span class="text-rose-500"><i class="fas fa-xmark"></i></span></div>
+      </div>
+    </div>
+    <div class="glow-card !p-4 pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-triangle-exclamation text-amber-600 mr-2"></i>Eng ko‘p xato shu yerda</div><p class="text-sm text-gray-600 mt-1">Tozalamasak, bitta raqam 3 xil yozilib, <b>3 ta akkaunt</b> ochardi, SMS esa noto‘g‘ri formatda ketib yo‘qolardi. Shuning uchun raqam <b>bazaga tushishidan oldin</b> bitta shaklga keltiriladi. <span class="mono">/login/</span> raqamni o‘zgartirmaydi — u <span class="mono">998901234567</span> ko‘rinishida yuboriladi.</p></div>
+  </div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-[#F8FAFC] custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-door-open"></i> 5-QADAM · accounts/views.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Register, Verify va Resend</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Register <b>pre_token</b> qaytaradi, Verify va Resend uni body’da kutadi. Kod <b>5 ta elakdan</b> o‘tadi (<span class="mono">services/</span> ichida). View’lar esa juda qisqa: <b>tasdiqla → ishingni qil → yop</b>.</p>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 items-start [&>*]:min-w-0">
+  <div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('viewsCode2')"><i class="fas fa-copy"></i></button>
 <div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">register + verify</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsViews">class RegisterView(generics.CreateAPIView):
+<div class="code-wrap"><pre><code class="language-python" id="viewsCode2">from .services import send_verification_code, confirm_code, finish_code
+from .services.pre_token import make_pre_token, get_user
+from .services.sms import SmsError
+
+
+class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         try:
             send_verification_code(user)
         except SmsError:
-            user.delete()      # SMS ketmadi — yarim qolgan akkaunt qolmasin
+            user.delete()        # SMS ketmadi — yarim akkaunt qolmasin
             raise
+        return Response(
+            {"phone": user.phone, "pre_token": make_pre_token(user.id)},
+            status=201,
+        )
 
 
 class VerifyPhoneView(generics.GenericAPIView):
@@ -1007,32 +1253,34 @@ class VerifyPhoneView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
 
-        user = User.objects.filter(
-            phone=serializer.validated_data["phone"], is_active=False
-        ).first()
-        record = PhoneCode.objects.filter(user=user).first()
-
-        if record is None or record.is_expired():
-            return Response({"detail": "Kod topilmadi yoki muddati tugagan"}, status=400)
-
-        if record.attempts &gt;= PhoneCode.MAX_ATTEMPTS:
-            return Response({"detail": "Urinishlar tugadi, yangi kod so'rang"}, status=400)
-
-        if record.code != serializer.validated_data["code"]:
-            record.attempts += 1
-            record.save()
-            return Response({"detail": "Kod noto'g'ri"}, status=400)
-
-        user.is_active = True
+        user = get_user(data["pre_token"])
+        confirm_code(user, data["code"])     # 1. tasdiqla
+        user.is_active = True                # 2. ishingni qil
         user.save()
-        record.delete()
-        return Response({"detail": "Raqam tasdiqlandi. Endi login qiling."})</code></pre></div>
+        finish_code(user)                    # 3. yop
+        return Response(
+            {"detail": "Raqam tasdiqlandi. Endi login qiling."}
+        )</code></pre></div>
 </div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card !p-5">
+      <div class="text-xs uppercase tracking-widest text-slate-500 font-black mb-3"><i class="fas fa-filter mr-1"></i> Verify — 5 ta elak</div>
+      <div class="gate" data-seq data-interval="2000"><div class="g" data-step><div class="ico bg-slate-700"><i class="fas fa-user"></i></div><div><b>1. Token bormi?</b> — <span class="mono">pre_token</span> orqali user topiladi, uning kodi qidiriladi</div></div><div class="g" data-step><div class="ico bg-amber-500"><i class="fas fa-hourglass-half"></i></div><div><b>2. Muddati o‘tmaganmi?</b> — <span class="mono">is_expired()</span> → 400</div></div><div class="g" data-step><div class="ico bg-rose-500"><i class="fas fa-shield-halved"></i></div><div><b>3. Urinishlar qolganmi?</b> — 5 tadan ko‘p bo‘lsa → 400</div></div><div class="g" data-step><div class="ico bg-sky-500"><i class="fas fa-equals"></i></div><div><b>4. Kod mos keldimi?</b> — xato bo‘lsa <span class="mono">attempts += 1</span> → 400</div></div><div class="g" data-step><div class="ico bg-green-500"><i class="fas fa-circle-check"></i></div><div><b>5. Hammasi joyida</b> — <span class="mono">is_active = True</span>, kod o‘chadi → 200</div></div><div class="fd-bar"><i></i></div></div>
+    </div>
+    <div class="glow-card !p-4 pop-in d2 bg-green-50 border-green-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-route text-green-600 mr-2"></i>Verify’ning 3 qadami</div><div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-green-100">1. confirm_code</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">2. is_active = True</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">3. finish_code</span></div><p class="text-xs text-gray-600 mt-2">Tasdiqla → ishingni qil → yop. Parolni tiklashda ham xuddi shunday, faqat 2-qadamda <span class="mono">set_password()</span>.</p></div>
+    <div class="glow-card pop-in d1 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-triangle-exclamation text-rose-600 mr-2"></i>SMS ketmasa-chi?</div><p class="text-sm text-gray-600 mt-1"><span class="mono">send_verification_code</span> xato bersa (<span class="mono">SmsError</span>), user <b>o‘chiriladi</b> va <b>503</b> qaytadi. Aks holda raqam “band” bo‘lib qolib, user qayta register qila olmasdi.</p></div>
+    <div class="glow-card pop-in d1 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-user-lock text-violet-600 mr-2"></i>Nega JWT access emas, pre_token?</div><p class="text-sm text-gray-600 mt-1">Access token — hisobga kirish kaliti: 30 kun yashaydi va hamma endpointda ishlaydi. <b>pre_token</b> esa faqat “bu kim” deydi, 30 daqiqa yashaydi va o‘zi hech narsaga kirita olmaydi. Shuning uchun <b>register ham, parolni tiklash ham</b> bir xil shuni ishlatadi.</p></div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.15fr_.85fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div>
     <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsResend')"><i class="fas fa-copy"></i></button>
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('resendCode')"><i class="fas fa-copy"></i></button>
 <div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">resend</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsResend">RESEND_INTERVAL = timedelta(seconds=60)
+<div class="code-wrap"><pre><code class="language-python" id="resendCode">RESEND_INTERVAL = timedelta(seconds=60)
 
 
 class ResendCodeView(generics.GenericAPIView):
@@ -1042,27 +1290,31 @@ class ResendCodeView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        user = get_user(serializer.validated_data["pre_token"])
 
-        user = User.objects.filter(
-            phone=serializer.validated_data["phone"], is_active=False
-        ).first()
+        record = PhoneCode.objects.filter(user=user).first()
+        now = timezone.now()
+        if record and now - record.created_at &lt; RESEND_INTERVAL:
+            return Response(
+                {"detail": "1 daqiqada faqat 1 marta"}, status=429
+            )
 
-        if user:
-            record = PhoneCode.objects.filter(user=user).first()
-            if record and timezone.now() - record.created_at &lt; RESEND_INTERVAL:
-                return Response({"detail": "1 daqiqada faqat 1 marta"}, status=429)
-            send_verification_code(user)
-
-        return Response({"detail": "Agar bunday raqam ro'yxatdan o'tgan bo'lsa, kod yuborildi"})</code></pre></div>
+        send_verification_code(user)
+        # yangi pre_token — yana 30 daqiqa
+        return Response({"pre_token": make_pre_token(user.id)})</code></pre></div>
 </div>
   </div>
   <div class="space-y-4">
-    <div class="glow-card !p-5">
-      <div class="text-xs uppercase tracking-widest text-slate-500 font-black mb-3"><i class="fas fa-filter mr-1"></i> Verify — 5 ta elak</div>
-      <div class="gate" data-seq data-interval="2000"><div class="g" data-step><div class="ico bg-slate-700"><i class="fas fa-user"></i></div><div><b>1. User bormi?</b> — <span class="mono">is_active=False</span> user qidiriladi</div></div><div class="g" data-step><div class="ico bg-amber-500"><i class="fas fa-hourglass-half"></i></div><div><b>2. Muddati o‘tmaganmi?</b> — 5 daqiqa → 400</div></div><div class="g" data-step><div class="ico bg-rose-500"><i class="fas fa-shield-halved"></i></div><div><b>3. Urinishlar qolganmi?</b> — 5 tadan ko‘p bo‘lsa → 400</div></div><div class="g" data-step><div class="ico bg-sky-500"><i class="fas fa-equals"></i></div><div><b>4. Kod mos keldimi?</b> — xato bo‘lsa <span class="mono">attempts += 1</span> → 400</div></div><div class="g" data-step><div class="ico bg-green-500"><i class="fas fa-circle-check"></i></div><div><b>5. Hammasi joyida</b> — <span class="mono">is_active = True</span>, kod o‘chadi → 200</div></div><div class="fd-bar"><i></i></div></div>
+    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-stopwatch text-amber-600 mr-2"></i>60 soniya cooldown</div><p class="text-sm text-gray-600 mt-1">Aks holda tugmani 50 marta bosib, 50 ta SMS yuborish mumkin — <b>har biri pul turadi</b>.</p></div>
+    <div class="glow-card !p-4 pop-in d3 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-rotate text-sky-600 mr-2"></i>Resend qadamlari</div><div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-sky-100">get_user</span><i class="fas fa-arrow-right text-sky-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-sky-100">60 soniya?</span><i class="fas fa-arrow-right text-sky-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-sky-100">yangi kod</span><i class="fas fa-arrow-right text-sky-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-sky-100">yangi pre_token</span></div><p class="text-xs text-gray-600 mt-2">Cooldown tugamagan bo‘lsa — <b>429</b>. Yangi <span class="mono">pre_token</span> yana 30 daqiqa yashaydi, shuning uchun user qotib qolmaydi. Forgot’da ham shu view ishlaydi.</p></div>
+    <div class="dark-box p-5">
+      <div class="text-xs uppercase tracking-widest text-amber-300 font-black mb-3">Resend sinovi</div>
+      <div class="expect text-slate-200">
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/resend-code/ — darrov</span><span class="st bg-red-500/20 text-red-300">429</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/resend-code/ — 60 soniyadan keyin</span><span class="st bg-green-500/20 text-green-300">200 · pre_token</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/resend-code/ — yaroqsiz token</span><span class="st bg-red-500/20 text-red-300">400</span>
+      </div>
     </div>
-    <div class="glow-card pop-in d1 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-rotate-left text-rose-500 mr-2"></i><span class="mono">user.delete()</span> nega kerak?</div><p class="text-sm text-gray-600 mt-1">User yaratildi, lekin SMS ketmadi. O‘chirmasak — raqam <b>band</b> bo‘lib qoladi va odam qayta ro‘yxatdan o‘ta olmaydi.</p></div>
-    <div class="glow-card pop-in d2 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-coins text-amber-600 mr-2"></i>60 soniya = pul tejash</div><p class="text-sm text-gray-600 mt-1">Cooldown bo‘lmasa, bitta odam tugmani 50 marta bosib balansingizni yeb qo‘yadi.</p></div>
   </div>
 </div>
 
@@ -1072,30 +1324,31 @@ class ResendCodeView(generics.GenericAPIView):
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-signs-post"></i> 7-QADAM · accounts/urls.py</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Endpointlar xaritasi</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Login endi <b>phone + password</b> qabul qiladi — chunki <span class='mono'>USERNAME_FIELD = &quot;phone&quot;</span>. Simple JWT buni o‘zi biladi, qo‘shimcha kod yozilmaydi.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-signs-post"></i> 6-QADAM · accounts/urls.py</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Endpointlar xaritasi — 3 tasi yangi</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">1-qismdagi 5 ta manzil o‘z joyida qoldi, ustiga <b>3 ta yangi</b> qo‘shildi. Login va qolganlari umuman o‘zgarmaydi.</p>
 </div>
 <div data-seq data-interval="1900" class="space-y-3 max-w-4xl mx-auto">
-  <div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#4ade80">POST</span> /api/register/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">SMS</span></div><div class="ar"></div><div class="p bg-green-100 text-green-800">RegisterView</div><div class="ar"></div><div class="p bg-green-50 text-green-700">201 + 📩 SMS</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#7dd3fc">POST</span> /api/verify-phone/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">SMS</span></div><div class="ar"></div><div class="p bg-sky-100 text-sky-800">VerifyPhoneView</div><div class="ar"></div><div class="p bg-sky-50 text-sky-700">is_active = True</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#c084fc">POST</span> /api/resend-code/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">SMS</span></div><div class="ar"></div><div class="p bg-violet-100 text-violet-800">ResendCodeView</div><div class="ar"></div><div class="p bg-violet-50 text-violet-700">yangi SMS</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#60a5fa">POST</span> /api/login/</div><div class="ar"></div><div class="p bg-blue-100 text-blue-800">TokenObtainPairView</div><div class="ar"></div><div class="p bg-blue-50 text-blue-700">access + refresh</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#fbbf24">POST</span> /api/refresh/</div><div class="ar"></div><div class="p bg-amber-100 text-amber-800">TokenRefreshView</div><div class="ar"></div><div class="p bg-amber-50 text-amber-700">yangi access</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#cbd5e1">GET</span> /api/me/ <i class="fas fa-lock text-xs ml-1"></i></div><div class="ar"></div><div class="p bg-slate-200 text-slate-800">MeView</div><div class="ar"></div><div class="p bg-slate-50 text-slate-700">user JSON</div></div>
+  <div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#4ade80">POST</span> /api/register/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-green-100 text-green-800">RegisterView</div><div class="ar"></div><div class="p bg-green-50 text-green-700">201 + pre_token + 📱 SMS</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#7dd3fc">POST</span> /api/verify-phone/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-sky-100 text-sky-800">VerifyPhoneView</div><div class="ar"></div><div class="p bg-sky-50 text-sky-700">is_active = True</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#c084fc">POST</span> /api/resend-code/<span class="tag-chip bg-yellow-300 text-slate-900 !text-[10px] !py-0.5 !px-2 ml-2">YANGI</span></div><div class="ar"></div><div class="p bg-violet-100 text-violet-800">ResendCodeView</div><div class="ar"></div><div class="p bg-violet-50 text-violet-700">yangi kod</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#60a5fa">POST</span> /api/login/</div><div class="ar"></div><div class="p bg-blue-100 text-blue-800">TokenObtainPairView</div><div class="ar"></div><div class="p bg-blue-50 text-blue-700">access + refresh</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#fbbf24">POST</span> /api/refresh/</div><div class="ar"></div><div class="p bg-amber-100 text-amber-800">TokenRefreshView</div><div class="ar"></div><div class="p bg-amber-50 text-amber-700">yangi access</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#cbd5e1">GET</span> /api/me/ <i class="fas fa-lock text-xs ml-1"></i></div><div class="ar"></div><div class="p bg-slate-200 text-slate-800">MeView</div><div class="ar"></div><div class="p bg-slate-50 text-slate-700">user JSON</div></div><div class="route" data-step><div class="p bg-slate-900 text-white"><span style="color:#fb7185">POST</span> /api/logout/ <i class="fas fa-lock text-xs ml-1"></i></div><div class="ar"></div><div class="p bg-rose-100 text-rose-800">LogoutView</div><div class="ar"></div><div class="p bg-rose-50 text-rose-700">205 · blacklist</div></div>
   <div class="fd-bar"><i></i></div>
 </div>
 <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-7 items-start [&>*]:min-w-0">
   <div class="code-card">
-<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('smsUrls')"><i class="fas fa-copy"></i></button>
-<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/urls.py</span><span class="sub">6 ta endpoint</span></div>
-<div class="code-wrap"><pre><code class="language-python" id="smsUrls">urlpatterns = [
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('urlsCode2')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/urls.py</span><span class="sub">7 ta endpoint</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="urlsCode2">urlpatterns = [
     path("register/", RegisterView.as_view()),
     path("verify-phone/", VerifyPhoneView.as_view()),
     path("resend-code/", ResendCodeView.as_view()),
     path("login/", TokenObtainPairView.as_view()),
     path("refresh/", TokenRefreshView.as_view()),
+    path("logout/", LogoutView.as_view()),
     path("me/", MeView.as_view()),
 ]</code></pre></div>
 </div>
   <div class="space-y-3">
-    <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-key text-blue-500 mr-2"></i>Login body</div><div class="mono text-xs bg-slate-900 text-green-300 rounded-xl p-3 mt-2">{<br/>&nbsp;&nbsp;"phone": "998901234567",<br/>&nbsp;&nbsp;"password": "12345678"<br/>}</div></div>
-    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-book-open text-green-500 mr-2"></i>Swagger</div><p class="text-sm text-gray-600 mt-1">Uchala yangi endpoint avtomatik chiqadi — hammasida <span class="mono">serializer_class</span> bor.</p></div>
+    <div class="glow-card pop-in d1"><div class="font-black text-pdp-dark"><i class="fas fa-layer-group text-sky-500 mr-2"></i>Tartib muhim emas</div><p class="text-sm text-gray-600 mt-1">Ular bir-biriga xalaqit bermaydi. Muhimi — <b>oqim</b>: register → verify → login.</p></div>
+    <div class="glow-card pop-in d2"><div class="font-black text-pdp-dark"><i class="fas fa-book-open text-green-500 mr-2"></i>Swagger</div><p class="text-sm text-gray-600 mt-1">Uchala yangi endpoint Swagger’da avtomatik paydo bo‘ladi, chunki ularning <span class="mono">serializer_class</span> i bor.</p></div>
   </div>
 </div>
 
@@ -1106,13 +1359,13 @@ class ResendCodeView(generics.GenericAPIView):
 
 <div class="text-center mb-7">
 <div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-vial-circle-check"></i> SINAB KO‘RAMIZ</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">8 ta qadam — console rejimida</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Avval <span class='mono'>SMS_BACKEND=console</span> bilan hamma narsani ishlatib ko‘ring. Keyin <span class='mono'>telegram</span> ga o‘tib, o‘z raqamingizga haqiqiy kod oling.</p>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">7 ta qadam — Swagger yoki Postman’da</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Aynan shu tartibda yuboring. E’tibor bering: kod <b>hech qachon</b> API javobida qaytmaydi — uni faqat SMS’dan (darsda terminaldan) olasiz.</p>
 </div>
 <div class="fd" data-seq data-interval="3600">
  <div class="fd-top"><div class="fd-title"><i class="fas fa-paper-plane mr-2"></i>Jonli sinov</div><div class="fd-btns"><button data-act="prev"><i class="fas fa-backward-step"></i></button><button data-act="toggle"><i class="fas fa-pause"></i></button><button data-act="next"><i class="fas fa-forward-step"></i></button></div></div>
  <div class="grid lg:grid-cols-[.55fr_1.45fr] gap-5 items-start">
-   <div class="fd-steps !mt-0"><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#22c55e"><i class="fas fa-user-plus"></i></span><div><b>1. Register</b><div class="mono text-xs text-slate-400">POST /api/register/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#64748b"><i class="fas fa-terminal"></i></span><div><b>2. Terminal / telefon</b><div class="mono text-xs text-slate-400">— console rejimi</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#f43f5e"><i class="fas fa-ban"></i></span><div><b>3. Login (erta)</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#fb923c"><i class="fas fa-xmark"></i></span><div><b>4. Xato kod</b><div class="mono text-xs text-slate-400">POST /api/verify-phone/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#0ea5e9"><i class="fas fa-circle-check"></i></span><div><b>5. Verify</b><div class="mono text-xs text-slate-400">POST /api/verify-phone/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#3b82f6"><i class="fas fa-key"></i></span><div><b>6. Login</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#8b5cf6"><i class="fas fa-rotate"></i></span><div><b>7. Resend</b><div class="mono text-xs text-slate-400">POST /api/resend-code/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#ef4444"><i class="fas fa-triangle-exclamation"></i></span><div><b>8. SMS ketmadi</b><div class="mono text-xs text-slate-400">POST /api/register/</div></div></div></div>
+   <div class="fd-steps !mt-0"><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#22c55e"><i class="fas fa-user-plus"></i></span><div><b>1. Register</b><div class="mono text-xs text-slate-400">POST /api/register/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#64748b"><i class="fas fa-terminal"></i></span><div><b>2. Terminal</b><div class="mono text-xs text-slate-400">— runserver oynasi</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#f43f5e"><i class="fas fa-ban"></i></span><div><b>3. Login (erta)</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#fb923c"><i class="fas fa-xmark"></i></span><div><b>4. Verify (xato)</b><div class="mono text-xs text-slate-400">POST /api/verify-phone/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#0ea5e9"><i class="fas fa-circle-check"></i></span><div><b>5. Verify (to‘g‘ri)</b><div class="mono text-xs text-slate-400">POST /api/verify-phone/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#3b82f6"><i class="fas fa-key"></i></span><div><b>6. Login</b><div class="mono text-xs text-slate-400">POST /api/login/</div></div></div><div class="fd-step" data-step style="align-items:center"><span class="k" style="background:#8b5cf6"><i class="fas fa-rotate"></i></span><div><b>7. Resend</b><div class="mono text-xs text-slate-400">POST /api/resend-code/</div></div></div></div>
    <div><div class="pm hide-off" data-show="0-0">
 <div class="pm-bar"><span class="pm-m" style="background:#22c55e">POST</span><span>/api/register/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
@@ -1121,19 +1374,18 @@ class ResendCodeView(generics.GenericAPIView):
   &quot;password&quot;: &quot;12345678&quot;
 }</div>
 <div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">201 Created</span></div><span style="color:#4ade80">{
-  &quot;id&quot;: 1,
   &quot;phone&quot;: &quot;998901234567&quot;,
-  &quot;first_name&quot;: &quot;&quot;
+  &quot;pre_token&quot;: &quot;eyJ1c2VyX2lkIjoxfQ:1vF2aB:7Zk…&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Raqam tozalanib saqlandi. Javobda kod yo‘q.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>User yaratildi, lekin <b>is_active = False</b>. Javobda kod yo‘q — faqat <b>pre_token</b>. Uni nusxalab oling!</div>
 </div><div class="pm hide-off" data-show="1-1">
-<div class="pm-bar"><span class="pm-m" style="background:#64748b">—</span><span>console rejimi</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
+<div class="pm-bar"><span class="pm-m" style="background:#64748b">—</span><span>runserver oynasi</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
 <div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>(bu request emas — terminalga qarang)</div>
 <div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">SMS chiqdi</span></div><span style="color:#4ade80">[SMS] 998901234567 -&gt; Tasdiqlash kodingiz: 482913</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Telegram rejimida esa kod Telegram’ga tushadi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Console rejimi SMS’ni terminalga chiqaradi. Kodni shu yerdan olamiz.</div>
 </div><div class="pm hide-off" data-show="2-2">
 <div class="pm-bar"><span class="pm-m" style="background:#f43f5e">POST</span><span>/api/login/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
@@ -1145,31 +1397,31 @@ class ResendCodeView(generics.GenericAPIView):
   &quot;detail&quot;: &quot;No active account found with the given credentials&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Tasdiqlanmagan user login qila olmaydi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Tasdiqlanmagan user login qila olmaydi — biz xohlagan narsa shu.</div>
 </div><div class="pm hide-off" data-show="3-3">
 <div class="pm-bar"><span class="pm-m" style="background:#fb923c">POST</span><span>/api/verify-phone/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
 <div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
-  &quot;phone&quot;: &quot;901234567&quot;,
+  &quot;pre_token&quot;: &quot;eyJ1c2VyX2lkIjoxfQ:1vF2aB:7Zk…&quot;,
   &quot;code&quot;: &quot;000000&quot;
 }</div>
 <div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">400 Bad Request</span></div><span style="color:#fb7185">{
   &quot;detail&quot;: &quot;Kod noto&#x27;g&#x27;ri&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Raqamni 9 xonali yozsa ham topdi — normalize ishladi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><span class='mono'>attempts</span> 1 ga oshdi. 5 tadan keyin kod bloklanadi.</div>
 </div><div class="pm hide-off" data-show="4-4">
 <div class="pm-bar"><span class="pm-m" style="background:#0ea5e9">POST</span><span>/api/verify-phone/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
 <div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
-  &quot;phone&quot;: &quot;+998901234567&quot;,
+  &quot;pre_token&quot;: &quot;eyJ1c2VyX2lkIjoxfQ:1vF2aB:7Zk…&quot;,
   &quot;code&quot;: &quot;482913&quot;
 }</div>
 <div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#4ade80">200 OK</span></div><span style="color:#4ade80">{
   &quot;detail&quot;: &quot;Raqam tasdiqlandi. Endi login qiling.&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><span class='mono'>is_active = True</span>, kod o‘chdi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i><span class='mono'>is_active = True</span>, kod bazadan o‘chdi.</div>
 </div><div class="pm hide-off" data-show="5-5">
 <div class="pm-bar"><span class="pm-m" style="background:#3b82f6">POST</span><span>/api/login/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
@@ -1182,30 +1434,18 @@ class ResendCodeView(generics.GenericAPIView):
   &quot;access&quot;: &quot;eyJ…&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>JWT keldi — 1-qismdagi hamma narsa ishlaydi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Mana endi JWT keldi — 1-qismdagi hamma narsa ishlayveradi.</div>
 </div><div class="pm hide-off" data-show="6-6">
 <div class="pm-bar"><span class="pm-m" style="background:#8b5cf6">POST</span><span>/api/resend-code/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
 <div class="grid md:grid-cols-2">
 <div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
-  &quot;phone&quot;: &quot;998901234567&quot;
+  &quot;pre_token&quot;: &quot;eyJ1c2VyX2lkIjoyfQ:1vF2cD:Qp3…&quot;
 }</div>
 <div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">429 Too Many Requests</span></div><span style="color:#fb7185">{
   &quot;detail&quot;: &quot;1 daqiqada faqat 1 marta&quot;
 }</span></div>
 </div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Byudjet va pochta himoyasi.</div>
-</div><div class="pm hide-off" data-show="7-7">
-<div class="pm-bar"><span class="pm-m" style="background:#ef4444">POST</span><span>/api/register/</span><span class="ml-auto text-xs px-3 py-1 rounded-lg bg-sky-500 text-white font-bold">Send</span></div>
-<div class="grid md:grid-cols-2">
-<div class="pm-sec md:border-r border-slate-800"><div class="pm-lbl">So‘rov</div>{
-  &quot;phone&quot;: &quot;998911112233&quot;,
-  &quot;password&quot;: &quot;12345678&quot;
-}</div>
-<div class="pm-sec"><div class="pm-lbl">Javob · <span style="color:#fb7185">503 Service Unavailable</span></div><span style="color:#fb7185">{
-  &quot;detail&quot;: &quot;SMS yuborib bo&#x27;lmadi. Birozdan keyin urinib ko&#x27;ring.&quot;
-}</span></div>
-</div>
-<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>User bazadan o‘chirildi — raqam bo‘sh qoldi.</div>
+<div class="px-4 py-3 border-t border-slate-800 text-sm text-slate-300"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Boshqa user hozirgina register qilgan — kod endi yuborilgan, 60 soniya kutish kerak.</div>
 </div></div>
  </div>
  <div class="fd-bar"><i></i></div>
@@ -1217,13 +1457,58 @@ class ResendCodeView(generics.GenericAPIView):
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-orange-500 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-bug"></i> XATOLAR</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">SMS darsida eng ko‘p uchraydigan 6 ta xato</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Provayder bilan ishlaganda xatolar <b>tashqarida</b> tug‘iladi — shuning uchun log o‘qishni odat qiling.</p>
+<div class="inline-flex items-center gap-3 bg-slate-900 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-user-shield"></i> PROFESSIONAL YONDASHUV</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">6 ta qoida — ishlaydigan tizimdan xavfsiz tizimgacha</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Kod yuborish oson. Uni <b>to‘g‘ri</b> yuborish — mana shu 6 ta qoidada.</p>
 </div>
-<div data-seq data-interval="2600">
-  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-5"><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">400</span>{&quot;phone&quot;: [&quot;Ensure this field has no more than 12 characters.&quot;]}</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Serializer’da <span class='mono'>phone</span> qayta e’lon qilinmagan — model uzunligi ishlayapti.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> <span class='mono'>phone = serializers.CharField(max_length=20)</span> qo‘shing.</div></div></div><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">503</span>{&quot;detail&quot;: &quot;SMS yuborib bo&#x27;lmadi...&quot;}</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Token noto‘g‘ri, balans tugagan yoki internet yo‘q. Aniq sababi <b>log</b>da.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> Terminaldagi <span class='mono'>logger.error</span> qatorini o‘qing; <span class='mono'>.env</span> dagi tokenni tekshiring.</div></div></div><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">401</span>{&quot;detail&quot;: &quot;No active account found with the given credentials&quot;}</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Raqam hali tasdiqlanmagan (<span class='mono'>is_active=False</span>) yoki raqam boshqa formatda yuborilgan.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> Avval <span class='mono'>/verify-phone/</span>; login’da ham toza raqam yuboring.</div></div></div><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">Eskiz</span>{&quot;message&quot;: &quot;Unauthorized&quot;}</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Token 30 kundan oshgan yoki email/parol noto‘g‘ri.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> Kod tokenni <span class='mono'>cache</span> dan o‘chirib qayta oladi — 2-urinishda ishlaydi.</div></div></div><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">Telegram</span>{&quot;ok&quot;: false, &quot;error&quot;: &quot;PHONE_NUMBER_INVALID&quot;}</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Raqam E.164 emas (<span class='mono'>+</span> yo‘q) yoki bu raqamda Telegram yo‘q.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> <span class='mono'>f&quot;+{phone}&quot;</span> ko‘rinishida yuboring; test uchun o‘z raqamingizni ishlating.</div></div></div><div class="bug" data-step><div class="err"><span class="inline-block bg-rose-500 text-white font-black rounded-md px-2 mr-2 text-xs">—</span>SMS kelmadi, lekin xato ham yo‘q</div><div class="bd"><div><b class="text-pdp-dark">Sabab:</b> Console rejimi yoqilgan yoki provayder navbatda ushlab turibdi.</div><div class="fix"><i class="fas fa-wrench mr-1"></i><b>Yechim:</b> Terminalga qarang; Eskiz’da <span class='mono'>status: waiting</span> — bir necha soniya kutiladi.</div></div></div></div>
-  <div class="fd-bar"><i></i></div>
+<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-5"><div class="glow-card pop-in d1"><div class="gi" style="background:#f43f5e"><i class="fas fa-eye-slash"></i></div><div class="font-black text-pdp-dark">Kodni javobda qaytarmang</div><p class="text-sm text-gray-600 mt-1">API javobida kod chiqsa, SMS’ni olmasdan ham tasdiqlash mumkin bo‘ladi — butun himoya bekor bo‘ladi.</p></div><div class="glow-card pop-in d2"><div class="gi" style="background:#f59e0b"><i class="fas fa-hourglass-half"></i></div><div class="font-black text-pdp-dark">Qisqa muddat</div><p class="text-sm text-gray-600 mt-1">5 daqiqa — standart. Ko‘pi bilan 10 daqiqa. Muddati yo‘q kod — ochiq eshik.</p></div><div class="glow-card pop-in d3"><div class="gi" style="background:#8b5cf6"><i class="fas fa-shield-halved"></i></div><div class="font-black text-pdp-dark">Urinishlar limiti</div><p class="text-sm text-gray-600 mt-1">6 xonali kodni 1 000 000 marta sinab ko‘rish mumkin. 5 ta urinish limiti buni to‘xtatadi.</p></div><div class="glow-card pop-in d4"><div class="gi" style="background:#0ea5e9"><i class="fas fa-stopwatch"></i></div><div class="font-black text-pdp-dark">Resend cooldown</div><p class="text-sm text-gray-600 mt-1">60 soniya. Har SMS pul turadi — cooldown bo‘lmasa, bot balansingizni bir kechada tugatadi.</p></div><div class="glow-card pop-in d5"><div class="gi" style="background:#64748b"><i class="fas fa-user-secret"></i></div><div class="font-black text-pdp-dark">Raqamni oshkor qilmang</div><p class="text-sm text-gray-600 mt-1">“Bunday user yo‘q” degan javob — begonaga ma’lumot. Javob har doim bir xil bo‘lsin.</p></div><div class="glow-card pop-in d6"><div class="gi" style="background:#22c55e"><i class="fas fa-bolt"></i></div><div class="font-black text-pdp-dark">SMS’ni fonda yuboring</div><p class="text-sm text-gray-600 mt-1">send_sms tashqi xizmatga so‘rov yuboradi va 1–3 soniya ushlab turadi. Katta loyihada bu ish <b>Celery</b> ga beriladi.</p></div></div>
+<div class="dark-box p-5 mt-6 grid md:grid-cols-3 gap-4 text-sm">
+  <div><div class="text-xs uppercase tracking-widest text-sky-300 font-black mb-1">Keyingi bosqich</div>Kodni bazada <b>hash</b> holatda saqlash (xuddi parol kabi).</div>
+  <div><div class="text-xs uppercase tracking-widest text-violet-300 font-black mb-1">Kengaytirish</div>Xuddi shu mexanizm bilan <b>parolni tiklash</b> va <b>raqamni almashtirish</b>.</div>
+  <div><div class="text-xs uppercase tracking-widest text-green-300 font-black mb-1">Email varianti</div>SMS o‘rniga pochta: <a href="email-verify.html" class="underline"><b>email-verify</b></a> darsi — mantiq <b>aynan bir xil</b>.</div>
+</div>
+
+</div>
+</section>
+<section class="slide bg-white custom-scrollbar" style="justify-content:flex-start; padding-top:2rem; padding-bottom:2.5rem;">
+<div class="w-full max-w-6xl mx-auto">
+
+<div class="text-center mb-7">
+<div class="inline-flex items-center gap-3 bg-amber-500 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-unlock-keyhole"></i> MUSTAQIL ISH · 30 daqiqa</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Parolni tiklash (forgot password)</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Bugun o‘rgangan mexanizmni <b>o‘zingiz</b> qayta ishlatasiz: kod yuborish → kodni tekshirish → parolni almashtirish. Bajargan qadamni bosib belgilang ✓</p>
+</div>
+<div class="fd" data-seq data-interval="2400">
+<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>Parolni tiklash oqimi</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
+
+<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:10%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb"></div></div><div class="fd-node" style="left:50%;--nc:#fbbf24"><div class="ic"><i class="fas fa-comment-sms" style="color:#fbbf24"></i></div><div class="nm">SMS</div><div class="sb"></div></div><div class="fd-node" style="left:90%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">API + DB</div><div class="sb"></div></div><div class="fd-packet"></div></div>
+
+<div class="fd-steps cols2"><div class="fd-step" data-step data-hl="0,2" data-from="10" data-to="90" data-packet="POST /forgot-password/  {phone}" data-color="#38BDF8" ><span class="k">1</span><div>User parolini unutdi.</div></div><div class="fd-step" data-step data-hl="2,1" data-from="90" data-to="50" data-packet="📱 SMS kod: 731905" data-color="#fbbf24" ><span class="k">2</span><div>Kod yuboriladi, javobda <b>pre_token</b> qaytadi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="50" data-to="10" data-packet="user kodni oladi" data-color="#4ade80" ><span class="k">3</span><div>SMS’dan (darsda — terminaldan).</div></div><div class="fd-step" data-step data-hl="0,2" data-from="10" data-to="90" data-packet="POST /confirm-password/  {pre_token, code}" data-color="#c084fc" ><span class="k">4</span><div>Kod <b>pre_token</b> bilan tasdiqlanadi.</div></div><div class="fd-step" data-step data-hl="2" data-from="90" data-to="90" data-packet="POST /reset-password/  {pre_token, new_password, confirm_password}" data-color="#4ade80" ><span class="k">5</span><div>Parollar mos bo‘lsa — parol almashadi va hash holatda saqlanadi.</div></div><div class="fd-step" data-step data-hl="2,0" data-from="90" data-to="10" data-packet="200 · Parol yangilandi" data-color="#4ade80" ><span class="k">6</span><div>Endi yangi parol bilan login.</div></div></div>
+<div class="fd-bar"><i></i></div>
+</div>
+<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="space-y-3">
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#0ea5e9">1</div><div class="ck"><i class="fas fa-check"></i></div><h4>Uchta serializer yozing</h4><p><code>ForgotPasswordSerializer</code> (phone — <code>normalize_phone</code> bilan), <code>ConfirmPasswordSerializer</code> (pre_token, code) va <code>ResetPasswordSerializer</code> (pre_token, new_password, confirm_password — ikkalasi bir xilmi <code>validate()</code> da tekshiring)</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#8b5cf6">2</div><div class="ck"><i class="fas fa-check"></i></div><h4>Kodni qayta ishlating</h4><p><code>send_verification_code(user)</code> funksiyasini o‘zgartirmasdan chaqiring — u allaqachon tayyor.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#10b981">3</div><div class="ck"><i class="fas fa-check"></i></div><h4>Uchta view yozing</h4><p><code>/forgot-password/</code>, <code>/confirm-password/</code>, <code>/reset-password/</code>. <b>pre_token</b> uchun register’dagi <code>make_pre_token</code> / <code>get_user</code> ni qayta ishlating. Tartib: <code>confirm_code</code> → <code>finish_code</code>.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#f59e0b">4</div><div class="ck"><i class="fas fa-check"></i></div><h4>Parolni to‘g‘ri almashtiring</h4><p><code>finish_code(user)</code> → <code>user.set_password(new_password)</code> → <code>user.save()</code>. Kod avval tasdiqlanmagan bo‘lsa — <b>400</b>.</p></div>
+    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#ef4444">5</div><div class="ck"><i class="fas fa-check"></i></div><h4>Sinang</h4><p>Eski parol bilan login → <b>401</b>, yangi parol bilan → <b>200</b>.</p></div>
+  </div>
+  <div class="space-y-4">
+    <div class="dark-box p-5">
+      <div class="flex items-center justify-between mb-3"><div class="text-xs uppercase tracking-widest text-amber-300 font-black">Kutilgan natija</div><div class="tag-chip bg-green-500/15 text-green-300" data-mcount>0 / 5 bajarildi</div></div>
+      <div class="expect text-slate-200">
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/forgot-password/</span><span class="st bg-green-500/20 text-green-300">200 · pre_token</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/confirm-password/ — kod xato</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/confirm-password/ — to‘g‘ri</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/reset-password/ — parollar har xil</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/reset-password/ — mos</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — eski → 401, yangi</span><span class="st bg-green-500/20 text-green-300">200</span>
+      </div>
+    </div>
+    <div class="glow-card bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-star text-violet-500 mr-2"></i>Bonus</div><p class="text-sm text-gray-600 mt-1">Parol almashgach, barcha eski <b>refresh</b> tokenlarni blacklist qiling — o‘g‘ri kirgan bo‘lsa, chiqib ketadi.</p></div>
+    <div class="glow-card bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-circle-question text-sky-500 mr-2"></i>O‘ylab ko‘ring</div><p class="text-sm text-gray-600 mt-1">Raqam bazada <b>yo‘q</b> bo‘lsa ham nega baribir <b>pre_token</b> qaytaramiz? Keyingi qadamda nima bo‘ladi?</p></div>
+  </div>
 </div>
 
 </div>
@@ -1232,38 +1517,154 @@ class ResendCodeView(generics.GenericAPIView):
 <div class="w-full max-w-6xl mx-auto">
 
 <div class="text-center mb-7">
-<div class="inline-flex items-center gap-3 bg-amber-500 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-user-shield"></i> MUSTAQIL ISH · 30 daqiqa</div>
-<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Login’ni 2 bosqichli qiling (2FA)</h2>
-<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Parol o‘g‘irlansa ham akkaunt ochilmasin: login’dan keyin <b>SMS kod</b> so‘raladi va faqat undan keyin JWT beriladi. Bugungi kodning deyarli hammasi qayta ishlatiladi.</p>
+<div class="inline-flex items-center gap-3 bg-green-600 text-white px-5 py-2 rounded-full font-black mb-4 shadow-md"><i class="fas fa-circle-check"></i> YECHIM · Parolni tiklash</div>
+<h2 class="text-4xl md:text-5xl font-black text-pdp-dark tracking-tight">Parolni tiklash — 3 qadam, registerdagi kod bilan</h2>
+<p class="text-gray-500 max-w-4xl mx-auto mt-3 leading-relaxed">Registerdagi <b>o‘sha funksiyalar</b> va <b>o‘sha pre_token</b>. Yangi mantiq yozilmaydi — faqat 3 ta serializer, 3 ta view va 3 ta URL.</p>
 </div>
-<div class="fd" data-seq data-interval="2400">
-<div class="fd-top"><div class="fd-title"><i class="fas fa-play mr-2"></i>2FA login oqimi</div><div class="fd-btns"><button data-act="prev" title="Oldingi"><i class="fas fa-backward-step"></i></button><button data-act="toggle" title="Pauza"><i class="fas fa-pause"></i></button><button data-act="next" title="Keyingi"><i class="fas fa-forward-step"></i></button></div></div>
-
-<div class="fd-stage"><div class="fd-track"></div><div class="fd-node" style="left:10%;--nc:#38BDF8"><div class="ic"><i class="fas fa-laptop-code" style="color:#38BDF8"></i></div><div class="nm">Client</div><div class="sb"></div></div><div class="fd-node" style="left:50%;--nc:#44B78B"><div class="ic"><i class="fas fa-server" style="color:#44B78B"></i></div><div class="nm">API</div><div class="sb"></div></div><div class="fd-node" style="left:90%;--nc:#c084fc"><div class="ic"><i class="fas fa-mobile-screen" style="color:#c084fc"></i></div><div class="nm">Telefon</div><div class="sb"></div></div><div class="fd-packet"></div></div>
-
-<div class="fd-steps cols2"><div class="fd-step" data-step data-hl="0,1" data-from="10" data-to="50" data-packet="POST /login/  {phone, password}" data-color="#38BDF8" ><span class="k">1</span><div>Parol to‘g‘ri, lekin <b>token darrov berilmaydi</b>.</div></div><div class="fd-step" data-step data-hl="1,2" data-from="50" data-to="90" data-packet="📩 Kirish kodi: 704512" data-color="#fbbf24" ><span class="k">2</span><div>Serverga kirish uchun SMS kod yuboriladi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="50" data-to="10" data-packet="200 {&quot;detail&quot;: &quot;Kod yuborildi&quot;}" data-color="#4ade80" ><span class="k">3</span><div>Client kod so‘raydigan oyna ochadi.</div></div><div class="fd-step" data-step data-hl="0,1" data-from="10" data-to="50" data-packet="POST /login/confirm/  {phone, code}" data-color="#38BDF8" ><span class="k">4</span><div>User kodni kiritadi.</div></div><div class="fd-step" data-step data-hl="1,0" data-from="50" data-to="10" data-packet="{&quot;access&quot;: &quot;eyJ…&quot;, &quot;refresh&quot;: &quot;eyJ…&quot;}" data-color="#4ade80" ><span class="k">5</span><div>Mana endi JWT beriladi — bu <b>2FA</b>.</div></div></div>
-<div class="fd-bar"><i></i></div>
+<div class="glow-card pop-in d1 !p-5 mb-6 bg-green-50 border-green-100">
+  <div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700">
+    <span class="bg-white rounded-xl px-3 py-2 border border-green-100">1. /forgot-password/ <span class="mono text-xs font-normal">{phone}</span></span><i class="fas fa-arrow-right text-green-500"></i>
+    <span class="bg-white rounded-xl px-3 py-2 border border-green-100">pre_token + 📱 SMS</span><i class="fas fa-arrow-right text-green-500"></i>
+    <span class="bg-white rounded-xl px-3 py-2 border border-green-100">2. /confirm-password/ <span class="mono text-xs font-normal">{pre_token, code}</span></span><i class="fas fa-arrow-right text-green-500"></i>
+    <span class="bg-white rounded-xl px-3 py-2 border border-green-100">3. /reset-password/ <span class="mono text-xs font-normal">{pre_token, new_password, confirm_password}</span></span>
+  </div>
 </div>
-<div class="grid lg:grid-cols-[1.05fr_.95fr] gap-6 mt-6 items-start [&>*]:min-w-0">
-  <div class="space-y-3">
-    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#0ea5e9">1</div><div class="ck"><i class="fas fa-check"></i></div><h4>LoginStep1View</h4><p><code>phone + password</code> ni <code>authenticate()</code> bilan tekshiring. To‘g‘ri bo‘lsa <code>send_verification_code(user)</code> chaqiring va <b>token bermang</b>.</p></div>
-    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#8b5cf6">2</div><div class="ck"><i class="fas fa-check"></i></div><h4>LoginConfirmView</h4><p><code>phone + code</code> ni <b>PhoneCode</b> orqali tekshiring (muddat, urinish — bugungi mantiq).</p></div>
-    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#10b981">3</div><div class="ck"><i class="fas fa-check"></i></div><h4>Token qaytarish</h4><p>Kod to‘g‘ri bo‘lsa: <code>RefreshToken.for_user(user)</code> → <code>access</code> va <code>refresh</code> qaytaring.</p></div>
-    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#f59e0b">4</div><div class="ck"><i class="fas fa-check"></i></div><h4>Ikkita endpoint</h4><p><code>/api/login/</code> va <code>/api/login/confirm/</code> qilib urls’ga ulang.</p></div>
-    <div class="mission" onclick="toggleMission(this)"><div class="n" style="background:#ef4444">5</div><div class="ck"><i class="fas fa-check"></i></div><h4>Sinang</h4><p>Parol xato → 401; parol to‘g‘ri → SMS; kod xato → 400; kod to‘g‘ri → token.</p></div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp1Ser')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">1-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp1Ser">class ForgotPasswordSerializer(serializers.Serializer):
+    phone = serializers.CharField()
+
+    def validate_phone(self, value):
+        return normalize_phone(value)</code></pre></div>
+</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp1View')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">1-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp1View">class ForgotPasswordView(generics.GenericAPIView):
+    serializer_class = ForgotPasswordSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        phone = serializer.validated_data["phone"]
+
+        user = User.objects.filter(phone=phone, is_active=True).first()
+        if user:
+            send_verification_code(user)   # register'dagi funksiya
+
+        # raqam yo'q bo'lsa ham javob bir xil (user_id=0)
+        user_id = user.id if user else 0
+        return Response({"pre_token": make_pre_token(user_id)})</code></pre></div>
+</div>
   </div>
   <div class="space-y-4">
+    <div class="glow-card pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark"><i class="fas fa-envelope text-green-600 mr-2"></i>1-qadam · /forgot-password/</div><p class="text-sm text-gray-600 mt-1">Faqat <b>telefon raqam</b> so‘raydi. User bor bo‘lsa — registerdagi <span class="mono">send_verification_code(user)</span> kod yuboradi. Javobda <b>pre_token</b> qaytadi.</p></div>
+    <div class="glow-card pop-in d1 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-user-secret text-amber-600 mr-2"></i>Raqam yo‘q bo‘lsa ham pre_token keladi</div><p class="text-sm text-gray-600 mt-1">Bazada bo‘lmagan raqam uchun ham token qaytadi (<span class="mono">user_id=0</span>). Begona odam <b>kim ro‘yxatdan o‘tganini</b> bilolmaydi; keyingi qadamda esa baribir 400 oladi.</p></div>
+    <div class="glow-card pop-in d1 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-ticket text-sky-600 mr-2"></i>Register va forgot — bir xil usul</div><p class="text-sm text-gray-600 mt-1">Ikkalasi ham <b>pre_token</b> qaytaradi (<span class="mono">make_pre_token</span>) va keyingi qadamda uni <span class="mono">get_user</span> bilan ochadi. Token o‘zi hech narsaga ruxsat bermaydi — baribir <b>kod</b> kerak.</p></div>
+    <div class="glow-card pop-in d1 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-rotate text-violet-600 mr-2"></i>Kod kelmadimi?</div><p class="text-sm text-gray-600 mt-1">Registerdagi <span class="mono">/resend-code/</span> bu yerda ham ishlaydi: <span class="mono">{pre_token}</span> yuborasiz — yangi kod va yangi <span class="mono">pre_token</span> olasiz (60 soniyada 1 marta).</p></div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp2Ser')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">2-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp2Ser">class ConfirmPasswordSerializer(serializers.Serializer):
+    pre_token = serializers.CharField()
+    code = serializers.CharField(min_length=6, max_length=6)</code></pre></div>
+</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp2View')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">2-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp2View">class ConfirmPasswordView(generics.GenericAPIView):
+    serializer_class = ConfirmPasswordSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        user = get_user(data["pre_token"])
+        confirm_code(user, data["code"])
+        return Response({"detail": "Kod to'g'ri. Yangi parol kiriting."})</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card pop-in d1 bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-hashtag text-sky-600 mr-2"></i>2-qadam · /confirm-password/</div><p class="text-sm text-gray-600 mt-1"><span class="mono">pre_token</span> → <span class="mono">get_user</span> → user. Keyin <span class="mono">confirm_code(user, code)</span>: muddat, urinishlar, kod tekshiriladi va yozuv “tasdiqlandi” deb belgilanadi.</p></div>
+    <div class="glow-card pop-in d1 bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-recycle text-violet-600 mr-2"></i>Nimani qayta ishladik?</div><ul class="text-sm text-gray-600 mt-2 space-y-1.5"><li><span class="mono">send_verification_code</span> — 1-qadam</li><li><span class="mono">confirm_code</span> — 2-qadam</li><li><span class="mono">finish_code</span> — 3-qadam</li><li><span class="mono">make_pre_token</span> / <span class="mono">get_user</span> — registerdagi <b>pre_token.py</b></li><li><span class="mono">PhoneCode</span> jadvali va <span class="mono">/resend-code/</span> — o‘zgarishsiz</li></ul></div>
+    <div class="glow-card pop-in d1 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-shield-halved text-rose-600 mr-2"></i>Nega 3 qadam, 2 emas?</div><p class="text-sm text-gray-600 mt-1">Avval kod tasdiqlanadi (<span class="mono">confirm</span>), keyin parol so‘raladi (<span class="mono">reset</span>). Kodni o‘tkazib yuborib to‘g‘ridan-to‘g‘ri <span class="mono">reset</span> ga kirib bo‘lmaydi.</p></div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp3Ser')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/serializers.py</span><span class="sub">3-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp3Ser">class ResetPasswordSerializer(serializers.Serializer):
+    pre_token = serializers.CharField()
+    new_password = serializers.CharField(min_length=8)
+    confirm_password = serializers.CharField()
+
+    def validate(self, data):
+        if data["new_password"] != data["confirm_password"]:
+            raise serializers.ValidationError(
+                {"confirm_password": "Parollar bir xil emas"}
+            )
+        return data</code></pre></div>
+</div>
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('fp3View')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/views.py</span><span class="sub">3-qadam</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="fp3View">class ResetPasswordView(generics.GenericAPIView):
+    serializer_class = ResetPasswordSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        user = get_user(data["pre_token"])
+        finish_code(user)          # kod tasdiqlanmagan bo'lsa — 400
+        user.set_password(data["new_password"])
+        user.save()
+        return Response({"detail": "Parol yangilandi."})</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card pop-in d1 bg-rose-50 border-rose-100"><div class="font-black text-pdp-dark"><i class="fas fa-shield-halved text-rose-600 mr-2"></i>3-qadam · /reset-password/</div><p class="text-sm text-gray-600 mt-1">Avval <span class="mono">finish_code(user)</span>: kod tasdiqlanmagan bo‘lsa — <b>400</b>. Keyin <span class="mono">set_password()</span> va <span class="mono">save()</span>. Parollar mosligini serializer <span class="mono">validate()</span> da tekshiramiz.</p></div>
     <div class="dark-box p-5">
-      <div class="flex items-center justify-between mb-3"><div class="text-xs uppercase tracking-widest text-amber-300 font-black">Kutilgan natija</div><div class="tag-chip bg-green-500/15 text-green-300" data-mcount>0 / 5 bajarildi</div></div>
+      <div class="text-xs uppercase tracking-widest text-amber-300 font-black mb-3">Sinab ko‘rish</div>
       <div class="expect text-slate-200">
-        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — parol xato</span><span class="st bg-red-500/20 text-red-300">401</span>
-        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — parol to‘g‘ri</span><span class="st bg-green-500/20 text-green-300">200 + SMS</span>
-        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/confirm/ — kod xato</span><span class="st bg-red-500/20 text-red-300">400</span>
-        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/confirm/ — kod to‘g‘ri</span><span class="st bg-green-500/20 text-green-300">200 + JWT</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/forgot-password/ {phone}</span><span class="st bg-green-500/20 text-green-300">200 · pre_token</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/reset-password/ — kodsiz</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/confirm-password/ — kod xato</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/confirm-password/ — to‘g‘ri</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/reset-password/ — parollar har xil</span><span class="st bg-red-500/20 text-red-300">400</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/reset-password/ — mos</span><span class="st bg-green-500/20 text-green-300">200</span>
+        <span class="st bg-slate-700">POST</span><span class="mono text-xs">/login/ — eski → 401, yangi</span><span class="st bg-green-500/20 text-green-300">200</span>
       </div>
     </div>
-    <div class="glow-card bg-sky-50 border-sky-100"><div class="font-black text-pdp-dark"><i class="fas fa-lightbulb text-sky-500 mr-2"></i>Maslahat</div><p class="text-sm text-gray-600 mt-1">Token yaratish uchun: <span class="mono">from rest_framework_simplejwt.tokens import RefreshToken</span> → <span class="mono">refresh = RefreshToken.for_user(user)</span> → <span class="mono">str(refresh.access_token)</span>.</p></div>
-    <div class="glow-card bg-violet-50 border-violet-100"><div class="font-black text-pdp-dark"><i class="fas fa-star text-violet-500 mr-2"></i>Bonus</div><p class="text-sm text-gray-600 mt-1">2FA ni ixtiyoriy qiling: <span class="mono">user.is_2fa_enabled</span> maydoni bo‘lsa — kod so‘ralsin, bo‘lmasa darrov token berilsin.</p></div>
+    <div class="glow-card pop-in d1 bg-amber-50 border-amber-100"><div class="font-black text-pdp-dark"><i class="fas fa-triangle-exclamation text-amber-600 mr-2"></i>Production uchun eslatma</div><p class="text-sm text-gray-600 mt-1"><span class="mono">/forgot-password/</span> ga <b>throttle</b> qo‘ying (masalan, 5 ta so‘rov/soat) — aks holda birovning raqamiga ketma-ket SMS yuborib bezovta qilish (va balansingizni tugatish) mumkin. Parol almashgach eski <b>refresh</b> tokenlarni blacklist qiling.</p></div>
+  </div>
+</div>
+<div class="grid lg:grid-cols-[1.1fr_.9fr] gap-6 mt-6 items-start [&>*]:min-w-0">
+  <div class="space-y-4">
+    <div class="code-card">
+<button class="copy-btn bg-white/10 hover:bg-white/20 text-white" onclick="copyById('forgotUrls')"><i class="fas fa-copy"></i></button>
+<div class="hd"><span class="dots"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></span><span class="fn">accounts/urls.py</span><span class="sub">+3 endpoint</span></div>
+<div class="code-wrap"><pre><code class="language-python" id="forgotUrls">    path("forgot-password/", ForgotPasswordView.as_view()),
+    path("confirm-password/", ConfirmPasswordView.as_view()),
+    path("reset-password/", ResetPasswordView.as_view()),</code></pre></div>
+</div>
+  </div>
+  <div class="space-y-4">
+    <div class="glow-card pop-in d1 bg-green-50 border-green-100"><div class="font-black text-pdp-dark mb-2"><i class="fas fa-flag-checkered text-green-600 mr-2"></i>Xulosa — 3 qadam</div><div class="flex flex-wrap items-center gap-2 text-sm font-black text-slate-700"><span class="bg-white rounded-xl px-3 py-2 border border-green-100">forgot → pre_token</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">confirm → tasdiqlandi</span><i class="fas fa-arrow-right text-green-500"></i><span class="bg-white rounded-xl px-3 py-2 border border-green-100">reset → yangi parol</span></div><p class="text-xs text-gray-600 mt-2">Hammasi registerdagi funksiyalar ustiga qurilgan: yangi mantiq yo‘q, faqat 3 ta view.</p></div>
   </div>
 </div>
 
@@ -1274,22 +1675,22 @@ class ResendCodeView(generics.GenericAPIView):
 <div class="text-center mb-7">
 <div class="inline-flex items-center gap-3 bg-amber-400/15 text-amber-300 border border-amber-300/20 px-5 py-2 rounded-full font-black mb-4"><i class="fas fa-house-laptop"></i> UYGA VAZIFA</div>
 <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-3">SMS tasdiqlashni 2 marta yozing</h2>
-<p class="text-gray-300 max-w-3xl mx-auto">Birinchi marta <b>console</b> bilan, ikkinchi marta <b>Telegram Gateway</b> bilan — o‘z raqamingizga haqiqiy kod keladi.</p>
+<p class="text-gray-300 max-w-3xl mx-auto">Yo‘l bir xil: 6 ta fayl → 7 ta test → zip. Birinchi marta slaydga qarab, ikkinchi marta <b>yoddan</b>.</p>
 </div>
 <div class="slide22-shell mb-6">
-  <div class="road"><div class="road-line"><i></i></div><div class="road-pts"><div class="road-pt"><div class="c" style="animation-delay:0s"><i class="fas fa-user-gear text-sky-300"></i></div><div class="l">models.py</div><div class="s">phone + PhoneCode</div></div><div class="road-pt"><div class="c" style="animation-delay:1s"><i class="fas fa-broom text-sky-300"></i></div><div class="l">phone.py</div><div class="s">normalize</div></div><div class="road-pt"><div class="c" style="animation-delay:2s"><i class="fas fa-plug text-sky-300"></i></div><div class="l">sms.py</div><div class="s">3 backend</div></div><div class="road-pt"><div class="c" style="animation-delay:3s"><i class="fas fa-gears text-sky-300"></i></div><div class="l">services.py</div><div class="s">kod</div></div><div class="road-pt"><div class="c" style="animation-delay:4s"><i class="fas fa-filter text-sky-300"></i></div><div class="l">serializers</div><div class="s">3 ta</div></div><div class="road-pt"><div class="c" style="animation-delay:5s"><i class="fas fa-door-open text-sky-300"></i></div><div class="l">views.py</div><div class="s">register/verify/resend</div></div><div class="road-pt"><div class="c" style="animation-delay:6s"><i class="fas fa-signs-post text-sky-300"></i></div><div class="l">urls.py</div><div class="s">6 endpoint</div></div></div></div>
+  <div class="road"><div class="road-line"><i></i></div><div class="road-pts"><div class="road-pt"><div class="c" style="animation-delay:0s"><i class="fas fa-sliders text-sky-300"></i></div><div class="l">settings.py</div><div class="s">SMS_BACKEND</div></div><div class="road-pt"><div class="c" style="animation-delay:1s"><i class="fas fa-table text-sky-300"></i></div><div class="l">models.py</div><div class="s">PhoneCode</div></div><div class="road-pt"><div class="c" style="animation-delay:2s"><i class="fas fa-gears text-sky-300"></i></div><div class="l">services/</div><div class="s">phone_service.py</div></div><div class="road-pt"><div class="c" style="animation-delay:3s"><i class="fas fa-filter text-sky-300"></i></div><div class="l">serializers</div><div class="s">3 ta</div></div><div class="road-pt"><div class="c" style="animation-delay:4s"><i class="fas fa-door-open text-sky-300"></i></div><div class="l">views.py</div><div class="s">register/verify/resend</div></div><div class="road-pt"><div class="c" style="animation-delay:5s"><i class="fas fa-signs-post text-sky-300"></i></div><div class="l">urls.py</div><div class="s">7 endpoint</div></div><div class="road-pt"><div class="c" style="animation-delay:6s"><i class="fas fa-file-zipper text-sky-300"></i></div><div class="l">Zip</div><div class="s">ustozga</div></div></div></div>
 </div>
 <div class="grid md:grid-cols-3 gap-4 mb-6">
-  <div class="lap pop-in d1"><div class="big text-green-300">1</div><div class="font-black text-lg mt-2">console</div><p class="text-sm text-slate-300 mt-1">Hech narsa sozlamasdan butun oqimni ishlating: kod terminalda chiqadi.</p><div class="zipname">sms_1_Ism.zip</div></div>
-  <div class="lap pop-in d2"><div class="big text-sky-300">2</div><div class="font-black text-lg mt-2">telegram</div><p class="text-sm text-slate-300 mt-1">Token oling, <span class="mono">.env</span> ga yozing va <b>o‘z raqamingizga</b> kod yuboring. Skrinshot oling.</p><div class="zipname">sms_2_Ism.zip</div></div>
-  <div class="lap pop-in d3"><div class="big text-amber-300">★</div><div class="font-black text-lg mt-2">Bonus</div><p class="text-sm text-slate-300 mt-1">Eskiz’da ro‘yxatdan o‘tib, 100 ta bepul test SMS’dan bittasini haqiqiy raqamga yuboring.</p><div class="zipname">bonus_eskiz.png</div></div>
+  <div class="lap pop-in d1"><div class="big text-green-300">1</div><div class="font-black text-lg mt-2">Slaydga qarab</div><p class="text-sm text-slate-300 mt-1">Har qatorni tushunib tering. Console rejimi bilan ishlating.</p><div class="zipname">sms_1_Ism.zip</div></div>
+  <div class="lap pop-in d2"><div class="big text-sky-300">2</div><div class="font-black text-lg mt-2">Yoddan</div><p class="text-sm text-slate-300 mt-1">Slaydsiz yozing. Xato chiqsa — “Xatolar” betiga qarang.</p><div class="zipname">sms_2_Ism.zip</div></div>
+  <div class="lap pop-in d3"><div class="big text-amber-300">★</div><div class="font-black text-lg mt-2">Bonus</div><p class="text-sm text-slate-300 mt-1"><b>Eskiz</b> akkaunti bilan <b>o‘z raqamingizga</b> haqiqiy SMS yuboring va skrinshot oling.</p><div class="zipname">bonus_screenshot.png</div></div>
 </div>
 <div class="grid lg:grid-cols-2 gap-5">
   <div class="slide22-task">
     <div class="text-sm uppercase tracking-widest text-blue-700 font-black mb-3"><i class="fas fa-vial-circle-check mr-1"></i> 7 ta test</div>
     <div class="expect text-slate-700">
-      <span class="st bg-green-100 text-green-700">POST</span><span class="mono text-xs">/api/register/ (+998 90 … formatida)</span><span class="st bg-green-100 text-green-700">201</span>
-      <span class="st bg-slate-100 text-slate-700">—</span><span class="mono text-xs">kod terminalda / telefonda</span><span class="st bg-green-100 text-green-700">✓</span>
+      <span class="st bg-green-100 text-green-700">POST</span><span class="mono text-xs">/api/register/</span><span class="st bg-green-100 text-green-700">201</span>
+      <span class="st bg-slate-100 text-slate-700">—</span><span class="mono text-xs">terminalda [SMS] chiqdi</span><span class="st bg-green-100 text-green-700">✓</span>
       <span class="st bg-rose-100 text-rose-700">POST</span><span class="mono text-xs">/api/login/ (tasdiqsiz)</span><span class="st bg-rose-100 text-rose-700">401</span>
       <span class="st bg-orange-100 text-orange-700">POST</span><span class="mono text-xs">/api/verify-phone/ (xato kod)</span><span class="st bg-rose-100 text-rose-700">400</span>
       <span class="st bg-sky-100 text-sky-700">POST</span><span class="mono text-xs">/api/verify-phone/ (to‘g‘ri)</span><span class="st bg-green-100 text-green-700">200</span>
@@ -1300,30 +1701,28 @@ class ResendCodeView(generics.GenericAPIView):
   <div class="slide22-task bg-gradient-to-br from-amber-50 to-white border-amber-100">
     <div class="text-sm uppercase tracking-widest text-amber-700 font-black mb-3"><i class="fas fa-paper-plane mr-1"></i> Topshirish</div>
     <ul class="space-y-2 text-sm text-gray-700">
-      <li><i class="fas fa-check text-green-500 mr-2"></i>2 ta zip: console va telegram versiyalari.</li>
-      <li><i class="fas fa-check text-green-500 mr-2"></i><span class="mono">.env</span>, <span class="mono">venv</span>, <span class="mono">db.sqlite3</span> zip ichida <b>bo‘lmasin</b>.</li>
-      <li><i class="fas fa-check text-green-500 mr-2"></i>Telefonga kelgan kodning skrinshoti (raqamning oxirgi 4 xonasini yopib qo‘ying).</li>
-      <li><i class="fas fa-star text-amber-500 mr-2"></i>Mustaqil ishdagi <b>2FA login</b> qo‘shilsa — alohida ball.</li>
+      <li><i class="fas fa-check text-green-500 mr-2"></i>Har urinishdan keyin zip → jami <b>2 ta zip</b>.</li>
+      <li><i class="fas fa-check text-green-500 mr-2"></i>Zip ichida <span class="mono">venv</span>, <span class="mono">db.sqlite3</span> va <span class="mono">.env</span> (Eskiz paroli!) <b>bo‘lmasin</b>.</li>
+      <li><i class="fas fa-check text-green-500 mr-2"></i>7 ta test natijasining skrinshoti.</li>
+      <li><i class="fas fa-star text-amber-500 mr-2"></i>Mustaqil ishdagi <b>parolni tiklash</b> ham qo‘shilsa — alohida ball.</li>
     </ul>
   </div>
 </div>
 </div>
 </section>
 <section class="slide bg-slate-900 text-white relative hero-grid">
-<div class="absolute inset-0 flex justify-center items-center opacity-20 blur-3xl"><div class="w-[34rem] h-[34rem] bg-django-light rounded-full"></div></div>
+<div class="absolute inset-0 flex justify-center items-center opacity-20 blur-3xl"><div class="w-[34rem] h-[34rem] bg-front-blue rounded-full"></div></div>
 <div class="lesson6-end-wrap relative z-10">
 <div class="flex justify-center items-center gap-6 mb-8">
-<div class="lesson6-end-icon animate-float"><i class="fas fa-comment-sms text-6xl text-django-light"></i></div>
-<div class="lesson6-end-icon alt animate-float" style="animation-delay:.8s"><i class="fas fa-user-shield text-6xl text-front-blue"></i></div>
+<div class="lesson6-end-icon alt animate-float"><i class="fas fa-comment-sms text-6xl text-front-blue"></i></div>
+<div class="lesson6-end-icon animate-float" style="animation-delay:.8s"><i class="fas fa-user-shield text-6xl text-django-light"></i></div>
 </div>
-<div class="text-django-light font-black tracking-[0.2em] uppercase text-xl mb-4">Xulosa</div>
-<h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-2">Uchta kanal — bitta mantiq</h2>
-<h3 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-django-light via-front-blue to-yellow-300 mb-6">JWT → 📧 email kod → 📩 SMS kod</h3>
-<p class="text-xl text-slate-300 max-w-5xl mx-auto leading-relaxed">Kod yaratish, muddat, urinishlar va cooldown — hamma joyda bir xil. Faqat <b>yuborish funksiyasi</b> almashadi. Shuning uchun keyin Telegram bot, push-bildirishnoma yoki WhatsApp qo‘shish ham siz uchun oson bo‘ladi.</p>
-<div class="flex flex-wrap justify-center gap-3 mt-8">
-<a href="index.html" class="inline-flex items-center gap-2 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-arrow-left"></i> 1-qism: JWT</a>
-<a href="email-verify.html" class="inline-flex items-center gap-2 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-envelope"></i> 2-qism: Email kod</a>
-</div>
+<div class="text-front-blue font-black tracking-[0.2em] uppercase text-xl mb-4">Xulosa</div>
+<h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-2">Endi tizimingiz to‘liq</h2>
+<h3 class="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-front-blue via-django-light to-yellow-300 mb-6">register → 📱 SMS kod → verify<br/>→ login → JWT</h3>
+<p class="text-xl text-slate-300 max-w-5xl mx-auto leading-relaxed">Telefon tasdiqlash — bu shunchaki “qo‘shimcha imkoniyat” emas. Bu real loyihaning eng birinchi talabi: <b>foydalanuvchi haqiqiy ekanini bilish</b>. Tuzilma email bilan bir xil — faqat kanal boshqa.</p>
+<a href="index.html" class="inline-flex items-center gap-2 mt-8 bg-white/10 border border-white/15 hover:bg-white/20 px-5 py-3 rounded-full font-bold text-sm"><i class="fas fa-arrow-left"></i> 1-qism: JWT register / login</a>
+<a href="email-verify.html" class="inline-flex items-center gap-2 mt-8 ml-3 bg-front-blue text-slate-900 hover:opacity-90 px-5 py-3 rounded-full font-black text-sm"><i class="fas fa-envelope"></i> 2-qism: Email kod</a>
 </div>
 </section></div>
 </main>
@@ -1489,17 +1888,6 @@ class ResendCodeView(generics.GenericAPIView):
     })();
 
     updateSlider();
-
-    /* Telefon raqam normalizatsiyasi (jonli misol) */
-    function phNorm() {
-      const el = document.getElementById('phIn'); if (!el) return;
-      const out = document.getElementById('phOut');
-      let digits = el.value.replace(/\D/g, '');
-      if (digits.length === 9) digits = '998' + digits;
-      if (/^998\d{9}$/.test(digits)) { out.textContent = digits; out.className = 'out ok'; }
-      else { out.textContent = "✗ Raqam +998 XX XXX XX XX bo'lishi kerak"; out.className = 'out bad'; }
-    }
-    function phSet(v) { const el = document.getElementById('phIn'); if (!el) return; el.value = v; phNorm(); }
   </script>
 </body>
 </html>
